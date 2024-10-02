@@ -10,3 +10,5 @@ Cahier des charges :
 - "Hard drop" -> touche espace pour placer la pièce en cours de jeu au plus bas possible
 
 - Support -> jouablilité tactile ? 
+
+- Formes des pièces 
