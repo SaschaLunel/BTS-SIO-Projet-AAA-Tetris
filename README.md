@@ -12,3 +12,6 @@ Cahier des charges :
 - Support -> jouablilité tactile ? 
 
 - Formes des pièces 
+
+-Version Dure, Version Web
+
