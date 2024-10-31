@@ -2,6 +2,7 @@ package Gameplay;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /*
@@ -35,7 +36,7 @@ public class GridSlot {
     }
 
 
-public char getSlot(boolean type){
+public BufferedImage getSlot(boolean type){
 
     if (type){return image;}
     else {return imageEmpty; }

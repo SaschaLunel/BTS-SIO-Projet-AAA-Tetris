@@ -12,6 +12,9 @@ package com.mycompany.mavenproject1;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import btn.ButtonMenu;
+import Gameplay.Grid;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 public class Panel {
     // Création d'un JPanel
     private JPanel panel;
@@ -20,15 +23,19 @@ public class Panel {
         // Initialisation du JPanel
         panel = new JPanel();
         
-        // Création du bouton de connexion
-        ButtonMenu buttonInstance = new ButtonMenu();
+        // Création de la grid
+        Grid grid = new Grid();
         
         
         
         
         // Ajout du bouton au JPanel
-        panel.add(buttonInstance.getButtonMenu());
-        panel.add(buttonInstance.getButtonMenu());
+        ArrayList<BufferedImage> toto = grid.images;
+        
+        for (int i = 0; i < toto.lenght; i++) {
+            toto[i]
+            
+        }
         
        
     }
@@ -49,5 +56,7 @@ public class Panel {
         frame.setSize(300, 200);
         frame.setVisible(true);
     }
+    
+    
 }
 
