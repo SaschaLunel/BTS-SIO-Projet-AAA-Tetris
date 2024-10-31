@@ -8,10 +8,10 @@ package com.mycompany.mavenproject1;
  *
  * @author SIO
  */
-import javax.swing.JButton;
+
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-
+import btn.ButtonMenu;
 public class Panel {
     // Création d'un JPanel
     private JPanel panel;
@@ -21,14 +21,16 @@ public class Panel {
         panel = new JPanel();
         
         // Création du bouton de connexion
-        JButton buttonLogin = new JButton("LOGIN");
+        ButtonMenu buttonInstance = new ButtonMenu();
         
-        JButton buttonGuest = new JButton("GUEST");
+        
+        
         
         // Ajout du bouton au JPanel
-        panel.add(buttonLogin);
+        panel.add(buttonInstance.getButtonMenu());
+        panel.add(buttonInstance.getButtonMenu());
         
-        panel.add(buttonGuest);
+       
     }
 
     public JPanel getPanel() {
