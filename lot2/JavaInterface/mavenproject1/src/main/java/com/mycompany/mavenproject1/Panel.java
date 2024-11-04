@@ -32,10 +32,10 @@ public class Panel {
         // Ajout du bouton au JPanel
         ArrayList<BufferedImage> toto = grid.images;
         
-        for (int i = 0; i < toto.lenght; i++) {
+        /*for (int i = 0; i < toto.lenght; i++) {
             toto[i]
             
-        }
+        }*/
         
        
     }
