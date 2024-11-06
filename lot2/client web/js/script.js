@@ -1,8 +1,10 @@
 // Écouteur d'événements pour le bouton GuestButton de LoginGuest.html
-document.getElementById('GuestButton').addEventListener('click', () => {
+let guestButton = document.getElementById('GuestButton')
+if(guestButton) {
+    guestButton.addEventListener('click', () => {
     window.location.href = 'index.html'; // Ouvre index.html dans le même onglet
-});
-
+    });
+}
 // Variables pour le timer
 let timerElement = document.getElementById('timer');
 let seconds = 0;
@@ -41,6 +43,26 @@ function resetTimer() {
     timerElement.textContent = 'Time: 00:00';
 }
 
+// Ecouteur d'événements pour les boutons du timer
+let startTimerButton = document.getElementById('playTimer')
+if (startTimerButton){
+    startTimerButton.addEventListener('click', () => {
+        startTimer();
+    });
+}
+let pauseTimerButton = document.getElementById('pauseTimer')
+if (pauseTimerButton){
+    pauseTimerButton.addEventListener('click', () => {
+        stopTimer();
+    });
+}
+let resetTimerButton = document.getElementById('resetTimer')
+if (resetTimerButton){
+    resetTimerButton.addEventListener('click', () => {
+        resetTimer();
+    });
+}
+
 // Fonction pour créer la grille de jeu
 function createGrid() {
     let gameGrid = document.getElementById('gameGrid');
@@ -56,15 +78,18 @@ function createGrid() {
 // Écouteur d'événements pour le bouton Play de index.html
 let playButton = document.getElementById('playButton')
 if (playButton) {
-    document.getElementById('playButton').addEventListener('click', () => {
+    playButton.addEventListener('click', () => {
         window.open('game.html', '_blank'); // Ouvre game.html dans un nouvel onglet
     });
 }
 
 // Écouteur d'événements pour le bouton Quit de index.html
-document.getElementById('quitButton').addEventListener('click', () => {
+let quitButton = document.getElementById('quitButton')
+if (quitButton){
+    quitButton.addEventListener('click', () => {
     window.location.href = 'LoginGuest.html'; // Ouvre LoginGuest.html dans le même onglet
-});
+    });
+}
 
 // Écouteur d'événements pour le bouton Play de game.html
 let startGameButton = document.getElementById('startGameButton');
@@ -75,14 +100,13 @@ if (startGameButton) {
         createGrid();
     });
 }
+
 // Écouteur d'événements pour le bouton Quit de game.html
 let quitGameButton = document.getElementById('quitGameButton');
 if (quitGameButton) {
     quitGameButton.addEventListener('click', () => {
-        stopTimer();
-        resetTimer();
-        document.getElementById('gameGrid').innerHTML = '';
-        document.getElementById('gameGrid').classList.add('hidden');
+        resetTimer();      
+        window.location.href = 'index.html'; //Ouvre index.html dans le même onglet
     });
 }
 
