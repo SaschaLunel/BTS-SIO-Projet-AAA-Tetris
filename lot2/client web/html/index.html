@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tetriscraft</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Section pour les boutons en haut à droite -->
@@ -15,10 +16,25 @@
 
     <!-- Section centrale pour les boutons principaux -->
     <div class="center-buttons">
-        <button>Play</button>
+        <button id="playButton">Play</button>
         <button>Stats</button>
         <button>Settings</button>
-        <button>Quit</button>
+        <button id="quitButton">Quit</button>
     </div>
+
+    <!-- Section pour le timer en haut à gauche -->
+    <div id="timer-container">
+        <div id="timer">Time: 00:00</div>
+        <div class="timer-buttons">
+            <button id="playTimer">Play</button>
+            <button id="pauseTimer">Pause</button>
+            <button id="resetTimer">Reset</button>
+        </div>
+    </div>
+
+    <div id="actionDisplay">Appuyez sur une flèche pour voir l'action</div>
+    
+    <!-- Lien vers le script JavaScript -->
+    <script src="../js/script.js"></script> 
 </body>
 </html>

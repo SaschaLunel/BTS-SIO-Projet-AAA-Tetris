@@ -26,18 +26,21 @@ body {
 }
 
 .header-buttons button {
-    background-color: rgba(255, 255, 255, 0.8); /* Couleur de fond blanche avec transparence */
-    border: none;
-    padding: 10px 20px;
-    margin-left: 10px;
+    background-color: #b38b29; /* Marron doré */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
     cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    text-transform: uppercase;
+    transition: 0.3s ease;
 }
 
 .header-buttons button:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: #9e7824; /* Couleur marron légèrement plus sombre */
+    transform: scale(1.05);
 }
 
 /* Centrer les boutons dans l'écran */
@@ -49,15 +52,136 @@ body {
 }
 
 .center-buttons button {
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    padding: 15px 30px;
+    background-color: #d73a3a; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art, vous pouvez la remplacer par une police similaire */
     font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
     cursor: pointer;
-    border-radius: 10px;
-    transition: background-color 0.3s;
+    text-transform: uppercase;
+    width: 200px;
+    transition: 0.3s ease;
 }
 
 .center-buttons button:hover {
-    background-color: rgba(255, 255, 255, 1);
+    background-color: #b12d2d; /* Couleur rouge plus sombre */
+    transform: scale(1.05);
+}
+
+/* Style pour le conteneur du timer */
+#timer-container {
+    position: absolute; /* Positionnement absolu pour placer en haut à gauche */
+    top: 20px; /* Ajustez la position selon vos besoins */
+    left: 20px;
+    background-color: rgba(139, 62, 47, 0.8); /* Un fond semi-transparent */
+    border: 4px solid #5d2d1a; /* Bordure sombre */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px; /* Espace interne */
+    color: white; /* Couleur du texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+}
+
+/* Style pour le timer */
+#timer {
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px; /* Espace entre le timer et les boutons */
+}
+
+/* Style pour le message d'action */
+#actionDisplay {
+    position: fixed; /* Pour le fixer en bas de la page */
+    bottom: 20px;    /* Marge de 20px par rapport au bas */
+    left: 50%;       /* Centre horizontalement */
+    transform: translateX(-50%); /* Centre parfaitement l'élément */
+    
+    background-color: #8b3e2f; /* Couleur de fond similaire aux boutons */
+    border: 4px solid #5d2d1a; /* Bordure foncée pour l'encadré */
+    color: #000; /* Couleur du texte */
+    font-family: 'Press Start 2P', cursive; /* Police pour le style rétro */
+    font-size: 14px; /* Taille du texte */
+    padding: 15px 30px; /* Espace intérieur pour l'encadré */
+    text-align: center; /* Centrer le texte dans l'encadré */
+    box-shadow: 4px 4px 0 #5d2d1a; /* Ombre pour un effet 3D rétro */
+    width: fit-content; /* Ajuste la largeur à la taille du texte */
+    min-width: 200px; /* Largeur minimale pour un bon affichage */
+}
+
+/* Style pour la grille de jeu */
+#gameGrid {
+    display: grid;
+    grid-template-columns: repeat(10, 30px); /* 10 colonnes de 30px */
+    grid-template-rows: repeat(20, 30px); /* 20 lignes de 30px */
+    gap: 1px; /* Espacement entre les cellules */
+    margin: 20px auto; /* Centrer la grille horizontalement */
+    padding: 10px;
+    background-color: #222; /* Couleur de fond pour la grille */
+    border: 4px solid #5d2d1a; /* Bordure autour de la grille */
+    box-shadow: 4px 4px 0 #5d2d1a;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: #333; /* Couleur de base pour les cellules */
+    border: 1px solid #111;
+}
+
+/* Masque la grille par défaut */
+.hidden {
+    display: none;
+}
+
+/* Boutons latéraux page game*/
+.side-buttons {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-buttons button {
+    background-color: #d73a3a; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px; /* Ajustez si nécessaire */
+    transition: 0.3s ease;
+}
+
+.side-buttons button:hover {
+    transform: translateY(-2px);
+}
+
+/* Style pour les boutons du timer */
+.timer-buttons {
+    display: flex;
+    gap: 5px; /* Espace entre les boutons */
+}
+
+.timer-buttons button {
+    background-color: #d73a3a; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 14px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 10px 15px; /* Espace interne */
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.timer-buttons button:hover {
+    background-color: #b12d2d; /* Couleur rouge plus sombre */
+    transform: scale(1.05);
 }
