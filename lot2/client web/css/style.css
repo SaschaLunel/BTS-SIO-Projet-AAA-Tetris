@@ -11,7 +11,7 @@ html, body {
 
 /* Image de fond couvrant tout l'écran */
 body {
-    background-image: url('../terraria.png'); /* Remplace par le chemin de ton image */
+    background-image: url('../images/autumn.png'); /* Remplace par le chemin de ton image */
     background-size: cover;
     background-position: center;
     display: flex;
@@ -26,7 +26,7 @@ body {
 }
 
 .header-buttons button {
-    background-color: #b38b29; /* Marron doré */
+    background-color: #C9B19D; /* Marron doré */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px;
@@ -39,8 +39,34 @@ body {
 }
 
 .header-buttons button:hover {
-    background-color: #9e7824; /* Couleur marron légèrement plus sombre */
+    background-color: #a79483; /* Couleur marron légèrement plus sombre */
     transform: scale(1.05);
+    transform: translateY(-2px);
+}
+
+/*Bouton Login-Guest en version centrale pour la page LoginGuest.html*/
+.LG-center-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.LG-center-buttons button {
+    background-color: #C9B19D; /* Marron doré */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 50px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+.LG-center-buttons button:hover {
+    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
 /* Centrer les boutons dans l'écran */
@@ -52,7 +78,7 @@ body {
 }
 
 .center-buttons button {
-    background-color: #d73a3a; /* Rouge pixel */
+    background-color: #4B606E  ; /* Rouge pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art, vous pouvez la remplacer par une police similaire */
     font-size: 18px;
@@ -66,17 +92,18 @@ body {
 }
 
 .center-buttons button:hover {
-    background-color: #b12d2d; /* Couleur rouge plus sombre */
+    background-color: #455763; /* Couleur rouge plus sombre */
     transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
-/* Style pour le conteneur du timer */
-#timer-container {
-    position: absolute; /* Positionnement absolu pour placer en haut à gauche */
-    top: 20px; /* Ajustez la position selon vos besoins */
+/* Style pour le petit encadré de test du timer */
+#timer-test {
+    position: absolute; 
+    top: 20px; 
     left: 20px;
-    background-color: rgba(139, 62, 47, 0.8); /* Un fond semi-transparent */
-    border: 4px solid #5d2d1a; /* Bordure sombre */
+    background-color: rgba(242, 233, 208, 0.8); /* Un fond semi-transparent */
+    border: 4px solid #C9B19D; /* Bordure sombre */
     border-radius: 5px; /* Coins arrondis */
     padding: 10px; /* Espace interne */
     color: white; /* Couleur du texte */
@@ -92,20 +119,20 @@ body {
 }
 
 /* Style pour le message d'action */
-#actionDisplay {
+#inputTest {
     position: fixed; /* Pour le fixer en bas de la page */
     bottom: 20px;    /* Marge de 20px par rapport au bas */
     left: 50%;       /* Centre horizontalement */
     transform: translateX(-50%); /* Centre parfaitement l'élément */
     
-    background-color: #8b3e2f; /* Couleur de fond similaire aux boutons */
-    border: 4px solid #5d2d1a; /* Bordure foncée pour l'encadré */
+    background-color: #D5833A ; /* Couleur de fond similaire aux boutons */
+    border: 4px solid #1a1a1a; /* Bordure foncée pour l'encadré */
     color: #000; /* Couleur du texte */
     font-family: 'Press Start 2P', cursive; /* Police pour le style rétro */
     font-size: 14px; /* Taille du texte */
     padding: 15px 30px; /* Espace intérieur pour l'encadré */
     text-align: center; /* Centrer le texte dans l'encadré */
-    box-shadow: 4px 4px 0 #5d2d1a; /* Ombre pour un effet 3D rétro */
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour un effet 3D rétro */
     width: fit-content; /* Ajuste la largeur à la taille du texte */
     min-width: 200px; /* Largeur minimale pour un bon affichage */
 }
@@ -119,8 +146,8 @@ body {
     margin: 20px auto; /* Centrer la grille horizontalement */
     padding: 10px;
     background-color: #222; /* Couleur de fond pour la grille */
-    border: 4px solid #5d2d1a; /* Bordure autour de la grille */
-    box-shadow: 4px 4px 0 #5d2d1a;
+    border: 4px solid #1a1a1a; /* Bordure autour de la grille */
+    box-shadow: 4px 4px 0 #1a1a1a;
 }
 
 .cell {
@@ -146,7 +173,7 @@ body {
 }
 
 .side-buttons button {
-    background-color: #d73a3a; /* Rouge pixel */
+    background-color: #4B606E; /* Rouge pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px;
@@ -160,6 +187,7 @@ body {
 }
 
 .side-buttons button:hover {
+    transform: scale(1.05);
     transform: translateY(-2px);
 }
 
@@ -170,7 +198,7 @@ body {
 }
 
 .timer-buttons button {
-    background-color: #d73a3a; /* Rouge pixel */
+    background-color: #D5833A ; /* Rouge pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 14px;
@@ -182,6 +210,7 @@ body {
 }
 
 .timer-buttons button:hover {
-    background-color: #b12d2d; /* Couleur rouge plus sombre */
+    background-color: #bf7635; /* Couleur rouge plus sombre */
     transform: scale(1.05);
+    transform: translateY(-2px);
 }

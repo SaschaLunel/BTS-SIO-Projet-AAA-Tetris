@@ -1,3 +1,8 @@
+// Écouteur d'événements pour le bouton GuestButton de LoginGuest.html
+document.getElementById('GuestButton').addEventListener('click', () => {
+    window.location.href = 'index.html'; // Ouvre index.html dans le même onglet
+});
+
 // Variables pour le timer
 let timerElement = document.getElementById('timer');
 let seconds = 0;
@@ -36,7 +41,7 @@ function resetTimer() {
     timerElement.textContent = 'Time: 00:00';
 }
 
-// Fonction pour créer une grille de 10x20
+// Fonction pour créer la grille de jeu
 function createGrid() {
     let gameGrid = document.getElementById('gameGrid');
     gameGrid.innerHTML = ''; // Vide le contenu de la grille
@@ -49,48 +54,50 @@ function createGrid() {
 }
 
 // Écouteur d'événements pour le bouton Play de index.html
-document.getElementById('playButton').addEventListener('click', () => {
-    window.open('game.html', '_blank'); // Ouvre game.html dans un nouvel onglet
+let playButton = document.getElementById('playButton')
+if (playButton) {
+    document.getElementById('playButton').addEventListener('click', () => {
+        window.open('game.html', '_blank'); // Ouvre game.html dans un nouvel onglet
+    });
+}
+
+// Écouteur d'événements pour le bouton Quit de index.html
+document.getElementById('quitButton').addEventListener('click', () => {
+    window.location.href = 'LoginGuest.html'; // Ouvre LoginGuest.html dans le même onglet
 });
 
 // Écouteur d'événements pour le bouton Play de game.html
 let startGameButton = document.getElementById('startGameButton');
 if (startGameButton) {
     startGameButton.addEventListener('click', () => {
-        console.log('Start Game Button clicked'); // Vérifie si le bouton est cliqué
-        resetTimer(); // Réinitialise le timer
-        console.log('Timer reset'); // Vérifie si la réinitialisation fonctionne
-        startTimer(); // Démarre le timer
-        console.log('Timer started'); // Vérifie si le timer démarre
-        createGrid(); // Crée la grille de jeu
-        console.log('Grid created'); // Vérifie si la grille est créée
+        resetTimer();
+        startTimer();
+        createGrid();
     });
 }
-
-
 // Écouteur d'événements pour le bouton Quit de game.html
 let quitGameButton = document.getElementById('quitGameButton');
 if (quitGameButton) {
     quitGameButton.addEventListener('click', () => {
-        stopTimer(); // Arrête le timer
-        resetTimer(); // Réinitialise le timer
-        document.getElementById('gameGrid').innerHTML = ''; // Efface la grille
-        document.getElementById('gameGrid').classList.add('hidden'); // Cache la grille
+        stopTimer();
+        resetTimer();
+        document.getElementById('gameGrid').innerHTML = '';
+        document.getElementById('gameGrid').classList.add('hidden');
     });
 }
 
-// Fonction pour afficher un message temporaire
-let actionDisplay = document.getElementById('actionDisplay');
+// Fonction d'affichage temporaire - test des input clavier
+let inputTest = document.getElementById('inputTest');
 let resetMessageTimeout;
 function showTemporaryMessage(message) {
-    actionDisplay.textContent = message;
+    inputTest.textContent = message;
     clearTimeout(resetMessageTimeout);
     resetMessageTimeout = setTimeout(() => {
-        actionDisplay.textContent = 'Appuyez sur une flèche pour voir l\'action';
+        inputTest.textContent = 'Appuyez sur une flèche pour voir l\'action';
     }, 1000);
 }
 
-// Fonction pour gérer les appuis sur les touches fléchées
+// Fonction de détection des input clavier 
 document.addEventListener('keydown', (event) => {
     switch (event.key) {
         case 'ArrowRight':
