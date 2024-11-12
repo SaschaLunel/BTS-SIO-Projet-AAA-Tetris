@@ -146,7 +146,7 @@ public class PanelGame extends JPanel {
     
     
     
-static void initBlock(Grid grid, Block block){
+static void initBlock(){
     
     System.out.println(blockX + blockY);
     grid.grid[blockX][blockY].SetUse(true);
