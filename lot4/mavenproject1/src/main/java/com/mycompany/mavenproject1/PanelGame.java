@@ -41,7 +41,11 @@ public class PanelGame extends JPanel {
     public static BufferedImage background;
     static BufferedImage blockImage;
     
-    static PlayerController pcGame = new PlayerController();
+    
+    //Player COntroller
+    PlayerController pcGame = new PlayerController();
+    
+    
     static Block block = new Block();
     static int blockX = Math.round(grid.getLenghtRow()*0.5f);
     static int blockY = 0;
@@ -52,7 +56,6 @@ public class PanelGame extends JPanel {
     
     @Override
     protected void paintComponent(Graphics g) {
-        System.out.println("paintCOmponent");;
         super.paintComponent(g);
         
         
@@ -112,6 +115,11 @@ public class PanelGame extends JPanel {
     public PanelGame() {
         grid = new Grid();
         
+        this.addKeyListener(pcGame);
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+
+        
         //Timer: Définir la chaine de caractere écrivant l'heure 
         JTextArea textArea = new JTextArea(GetTimer());
         
@@ -119,7 +127,6 @@ public class PanelGame extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 secondes++;
-                System.out.println("Temps écoulé : " + secondes + " secondes");
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }
