@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class Grid {
     
-    public static int row= 15;
-    public static int column = 25; 
+    public static int row= 10;
+    public static int column = 20; 
     static GridSlot[][] grid = new GridSlot [column][row];
     static BufferedImage[][] images = new BufferedImage [column][row];
     static GridSlot slot = new GridSlot();

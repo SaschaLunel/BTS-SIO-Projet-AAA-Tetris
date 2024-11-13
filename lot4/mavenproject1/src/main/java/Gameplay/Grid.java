@@ -24,7 +24,7 @@ public class Grid {
         
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                images[i][j]=slot.getImage(true) ;
+                images[i][j]=slot.getImage(false) ;
                 grid[i][j]= new GridSlot();
             }
             
