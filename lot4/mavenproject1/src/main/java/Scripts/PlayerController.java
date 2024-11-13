@@ -6,6 +6,7 @@ package Scripts;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import events.EventDispatcher; // AJouter le packtage EventDIspacher
 
 
 /**
@@ -13,8 +14,11 @@ import java.awt.event.KeyListener;
  * @author SIO
  */
 public class PlayerController implements KeyListener {
+    
+    private EventDispatcher dispatcher;  // Déclaration de l'EventDispatcher
 
-    public PlayerController() {
+    public PlayerController(EventDispatcher dispatcher) {
+        this.dispatcher = dispatcher;  // Initialisation du dispatcher
     }
     
     
@@ -32,11 +36,11 @@ public class PlayerController implements KeyListener {
                 break;
             case KeyEvent.VK_LEFT:
                 // Code pour la touche "Gauche"
-                System.out.println("Touche Gauche pressée");
+                dispatcher.dispatchEvent("KEY_PRESS", "Gauche");
                 break;
             case KeyEvent.VK_RIGHT:
                 // Code pour la touche "Droite"
-                System.out.println("Touche Droite pressée");
+                dispatcher.dispatchEvent("KEY_PRESS", "Droite");
                 break;
             case KeyEvent.VK_SPACE:
                 break;

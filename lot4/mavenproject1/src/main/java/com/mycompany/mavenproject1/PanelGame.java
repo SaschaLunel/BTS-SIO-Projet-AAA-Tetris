@@ -24,11 +24,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
 
+import events.EventListener;    //event dispatcher
+import events.EventDispatcher;   //event dispatcher
+
 /**
  *
  * @author SIO
  */
-public class PanelGame extends JPanel {
+public class PanelGame extends JPanel implements EventListener {
+    static Grid grid = new Grid();
     
     private int secondes = 0;
     private Timer swingTimer;
@@ -37,18 +41,18 @@ public class PanelGame extends JPanel {
     public int sizeHeight = 720;
     public int sizeWidth = 1080;
     
-    static Grid grid = new Grid();
+    
     public static BufferedImage background;
     static BufferedImage blockImage;
-    
-    
+    //Event Dispacher
+    private EventDispatcher dispatcher;  // Déclaration de l'instance d'EventDispatcher
     //Player COntroller
-    PlayerController pcGame = new PlayerController();
+    PlayerController pcGame;
     
     
     static Block block = new Block();
-    static int blockX = Math.round(grid.getLenghtRow()*0.5f);
-    static int blockY = 0;
+    static int blockX = 0;
+    static int blockY = Math.round(grid.getLenghtRow()*0.5f)-1;
     
     //Variable Timer
     JTextArea textArea = new JTextArea("Vous pouvez modifier ce texte.");
@@ -87,14 +91,15 @@ public class PanelGame extends JPanel {
         for (int i = 0; i < grid.getLenghtColumn(); i++) {
             for (int j = 0; j < grid.getLenghtRow(); j++) {
                 if (grid.grid[i][j] != null){
-                    if (grid.isValidSlot(i, j)){ // Si C'est un block
+                    if (grid.grid[i][j].block != null){ // Si C'est un block
                         int x = Math.round(cellWidth * j);
                         int y = Math.round(cellHeight * i);
                         g.drawImage(blockImage, x+gridOffsetX, y+1, cellSize, cellSize, this);
-                        System.out.println("pat");
+                        
 
                     }
                     else { // SI c'est vide !
+                        System.out.println("pat");
                         int x = Math.round(cellWidth * j);
                         int y = Math.round(cellHeight * i);
                         BufferedImage image = grid.getImage(i, j);
@@ -115,10 +120,15 @@ public class PanelGame extends JPanel {
     public PanelGame() {
         grid = new Grid();
         
+        //event DIspatcher
+        dispatcher = new EventDispatcher();
+        dispatcher.addListener(this); // S'inscrire en tant qu'écouteur d'événements
+
+        pcGame = new PlayerController(dispatcher);
+        
         this.addKeyListener(pcGame);
         this.setFocusable(true);
         this.requestFocusInWindow();
-
         
         //Timer: Définir la chaine de caractere écrivant l'heure 
         JTextArea textArea = new JTextArea(GetTimer());
@@ -127,6 +137,7 @@ public class PanelGame extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 secondes++;
+                dropBlock();
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }
@@ -151,12 +162,22 @@ public class PanelGame extends JPanel {
         
     }
     
+static void dropBlock(){
+    int x = blockX;
+    int y = blockY;
+        
+    Block block = grid.grid[x][y].block;
+    grid.grid[x][y].block = null;
+    x = x+1;
+    grid.grid[x][y].block = block;
+    blockX = x;
+}
     
     
 static void initBlock(){
     
-    System.out.println(blockX + blockY);
-    grid.grid[blockX][blockY].SetUse(true);
+    System.out.println(grid.grid[blockX][blockY]+"toto");
+    grid.grid[blockX][blockY].block= new Block();
     
 }
  
@@ -188,4 +209,34 @@ static void initBlock(){
         return  (bMinutes+" : "+bSecondes);
     }
     
+    
+   private void moveBlock(int direction){
+       int futurY = blockY + direction; 
+       if (grid.grid[blockX][futurY] != null){
+            Block bloc = grid.grid[blockX][blockY].block;
+            grid.grid[blockX][blockY].block= null;
+            blockY = blockY + direction;
+            grid.grid[blockX][blockY].block= bloc;
+            repaint();
+       }
+   }
+    
+   // Implémentation de la méthode onEvent de l'interface EventListener
+    @Override
+    public void onEvent(String eventName, Object data) {
+        if ("KEY_PRESS".equals(eventName)) {
+            // Vérifiez quel événement a été déclenché et affichez la touche pressée
+            String key = (String) data;
+            if (key == "Gauche"){moveBlock(-1);}
+            else if (key == "Droite"){moveBlock(1);}
+        }
+    }
+
+    
+     // Méthode pour déclencher un événement de test
+    public void triggerEvent() {
+        dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
+    }
 }
+
+

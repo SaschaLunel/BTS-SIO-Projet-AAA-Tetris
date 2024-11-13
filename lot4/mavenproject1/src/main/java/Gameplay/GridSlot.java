@@ -1,5 +1,6 @@
 package Gameplay;
 
+import BlockFolder.Block;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class GridSlot {
     public static BufferedImage image;
     private static BufferedImage imageEmpty;
     private static boolean useSlot = false;
+    public Block block = null;
     
     
     

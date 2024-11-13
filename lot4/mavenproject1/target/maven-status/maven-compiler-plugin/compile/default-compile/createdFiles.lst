@@ -1,3 +1,5 @@
+events\EventListener.class
+events\EventDispatcher.class
 Gameplay\TimerWidget.class
 BlockFolder\Block.class
 com\mycompany\mavenproject1\PanelGame.class
