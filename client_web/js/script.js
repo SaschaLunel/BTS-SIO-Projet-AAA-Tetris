@@ -2,9 +2,25 @@
 let guestButton = document.getElementById('GuestButton')
 if(guestButton) {
     guestButton.addEventListener('click', () => {
-    window.location.href = 'index.html'; // Ouvre index.html dans le même onglet
+    window.location.href = 'index.php'; // Ouvre index.php dans le même onglet
     });
 }
+
+// Écouteur d'événements pour le bouton LoginButton de LoginGuest.html
+let LoginButton = document.getElementById('LoginButton')
+if(LoginButton) {
+    LoginButton.addEventListener('click', () => {
+    window.location.href = 'login.php'; // Ouvre login.php dans le même onglet
+    });
+}
+// Écouteur d'événements pour le bouton newaccButton de login.html
+let newaccButton = document.getElementById('newaccButton')
+if(newaccButton) {
+    newaccButton.addEventListener('click', () => {
+    window.location.href = 'create_account.php'; // Ouvre create_account.php dans le même onglet
+    });
+}
+
 // Variables pour le timer (lot4)
 let timerElement = document.getElementById('timer');
 let seconds = 0;
@@ -75,15 +91,15 @@ function createGrid() {
     gameGrid.classList.remove('hidden'); // Affiche la grille après création
 }
 
-// Écouteur d'événements pour le bouton Play de index.html
+// Écouteur d'événements pour le bouton Play de index.php
 let playButton = document.getElementById('playButton')
 if (playButton) {
     playButton.addEventListener('click', () => {
-        window.open('game.html', '_blank'); // Ouvre game.html dans un nouvel onglet
+        window.open('game.php', '_blank'); // Ouvre game.php dans un nouvel onglet
     });
 }
 
-// Écouteur d'événements pour le bouton Quit de index.html
+// Écouteur d'événements pour le bouton Quit de index.php
 let quitButton = document.getElementById('quitButton')
 if (quitButton){
     quitButton.addEventListener('click', () => {
@@ -91,7 +107,7 @@ if (quitButton){
     });
 }
 
-// Écouteur d'événements pour le bouton Play de game.html
+// Écouteur d'événements pour le bouton Play de game.php
 let startGameButton = document.getElementById('startGameButton');
 if (startGameButton) {
     startGameButton.addEventListener('click', () => {
@@ -99,12 +115,12 @@ if (startGameButton) {
     });
 }
 
-// Écouteur d'événements pour le bouton Quit de game.html
+// Écouteur d'événements pour le bouton Quit de game.php
 let quitGameButton = document.getElementById('quitGameButton');
 if (quitGameButton) {
     quitGameButton.addEventListener('click', () => {
         resetTimer();      
-        window.location.href = 'index.html'; //Ouvre index.html dans le même onglet
+        window.location.href = 'index.php'; //Ouvre index.php dans le même onglet
     });
 }
 
@@ -129,7 +145,7 @@ document.addEventListener('keydown', (event) => {
             showTemporaryMessage('left');
             break;
         case 'ArrowUp':
-            showTemporaryMessage('slow down');
+            showTemporaryMessage('rotate');
             break;
         case 'ArrowDown':
             showTemporaryMessage('hard drop');
@@ -274,7 +290,7 @@ function fixTetromino() {
     });
     checkCompletedRows(); // Vérifie les lignes complètes et les efface si nécessaire
     if (!isGameOver()) {
-        spawnTetromino(); // Apparition d'un nouveau tétraminos
+        spawnTetromino(); // Apparition d'un nouveau tétrominos
     } else {
         stopAutoDrop(); // Fin de la partie
         alert("Game Over!");
@@ -310,7 +326,7 @@ function initGame() {
     resetTimer();
     startTimer();
     createGrid();  // Crée la grille visuelle
-    spawnTetromino();  // Fait apparaître le premier tétraminos
+    spawnTetromino();  // Fait apparaître le premier tétrominos
     startAutoDrop();  // Démarre le mouvement automatique vers le bas
 }
 

@@ -1,3 +1,11 @@
+<?php
+session_start(); // Démarre la session
+
+// Vérifie si un utilisateur est connecté
+$isUserLoggedIn = isset($_SESSION['username']);
+$username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,18 +16,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
+
 <body>
     <!-- Section pour les boutons en haut à droite -->
     <div class="header-buttons">
-        <button>Login</button>
-        <button>Guest</button>
+        <!-- Si l'utilisateur est connecté, afficher son nom et le bouton Logout -->
+        <?php if ($isUserLoggedIn): ?>
+            <button id="userButton"><?php echo htmlspecialchars($username); ?></button>
+            <!-- Formulaire pour le bouton Logout -->
+            <form action="logout.php" method="POST" class="logout-form" style="display:inline;">
+                <button type="submit" id="logoutButton">Logout</button>
+            </form>
+        <?php else: ?>
+            <button id="LoginButton" onclick="window.location.href='login.php'">Login</button>
+        <?php endif; ?>
+        <button id="GuestButton">Guest</button>
     </div>
 
     <!-- Section centrale pour les boutons principaux -->
     <div class="center-buttons">
         <button id="playButton">Play</button>
-        <button>Stats</button>
-        <button>Settings</button>
+        <button id="statsButton">Stats</button>
+        <button id="settingsButton">Settings</button>
         <button id="quitButton">Quit</button>
     </div>
 

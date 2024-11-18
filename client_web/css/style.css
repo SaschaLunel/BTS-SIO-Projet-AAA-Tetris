@@ -1,0 +1,364 @@
+/* Appliquer une taille pour s'assurer que tout prend l'écran */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Image de fond couvrant tout l'écran */
+body {
+    background-image: url('../images/autumn.png'); /* Remplace par le chemin de ton image */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Style des boutons login/guest en haut à droite de la page index.php*/
+.header-buttons {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center; /* Assurez-vous que tout est aligné verticalement */
+    gap: 10px; /* Espacement entre les boutons */
+}
+
+.header-buttons button {
+    background-color: #C9B19D; /* Marron doré */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.header-buttons button:hover {
+    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+/* Fin du style des boutons login/guest en haut à droite de la page index.php*/
+
+
+/*Style des bouton Login-Guest en version centrale pour la page LoginGuest.html*/
+.LG-center-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.LG-center-buttons button {
+    background-color: #C9B19D; /* Marron doré */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 50px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+.LG-center-buttons button:hover {
+    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+/*Fin du style des bouton Login-Guest en version centrale pour la page LoginGuest.html*/
+
+/*Style des boutons se connecter/new account/forgot password pour la page login.html*/
+.conpage-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.conpage-buttons button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    color: #1a1a1a; /* Texte noir profond */
+    background-color: #C9B19D; /* Marron doré */
+    border: 2px solid #1a1a1a; /* Bordure noire */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet de relief */
+    text-transform: uppercase;
+}
+.conpage-buttons button:hover {
+    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+/*Fin du style des boutons se connecter/new account/forgot password center-buttons*/
+
+/* Style pour centrer les boutons dans la page index.php */
+.center-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.center-buttons button {
+    background-color: #4B606E  ; /* bleu pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art, vous pouvez la remplacer par une police similaire */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px;
+    transition: 0.3s ease;
+}
+
+.center-buttons button:hover {
+    background-color: #455763; /* Couleur bleu plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+/* Fin du style pour centrer les boutons dans la page index.php */
+
+/* Style pour le petit encadré de test du timer dans la page index.php*/
+#timer-test {
+    position: absolute; 
+    top: 20px; 
+    left: 20px;
+    background-color: rgba(242, 233, 208, 0.8); /* Un fond semi-transparent */
+    border: 4px solid #C9B19D; /* Bordure sombre */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px; /* Espace interne */
+    color: white; /* Couleur du texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+}
+
+/* Style pour le timer */
+#timer {
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px; /* Espace entre le timer et les boutons */
+}
+
+/* Style pour le message d'action */
+#inputTest {
+    position: fixed; /* Pour le fixer en bas de la page */
+    bottom: 20px;    /* Marge de 20px par rapport au bas */
+    left: 50%;       /* Centre horizontalement */
+    transform: translateX(-50%); /* Centre parfaitement l'élément */
+    
+    background-color: #D5833A ; /* Couleur de fond similaire aux boutons */
+    border: 4px solid #1a1a1a; /* Bordure foncée pour l'encadré */
+    color: #000; /* Couleur du texte */
+    font-family: 'Press Start 2P', cursive; /* Police pour le style rétro */
+    font-size: 14px; /* Taille du texte */
+    padding: 15px 30px; /* Espace intérieur pour l'encadré */
+    text-align: center; /* Centrer le texte dans l'encadré */
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour un effet 3D rétro */
+    width: fit-content; /* Ajuste la largeur à la taille du texte */
+    min-width: 200px; /* Largeur minimale pour un bon affichage */
+}
+
+/* Masque la grille par défaut */
+.hidden {
+    display: none;
+}
+
+/* Boutons latéraux page game*/
+.side-buttons {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-buttons button {
+    background-color: #4B606E; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px; /* Ajustez si nécessaire */
+    transition: 0.3s ease;
+}
+
+.side-buttons button:hover {
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+
+/* Style pour les boutons du timer */
+.timer-buttons {
+    display: flex;
+    gap: 5px; /* Espace entre les boutons */
+}
+
+.timer-buttons button {
+    background-color: #D5833A ; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 14px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 10px 15px; /* Espace interne */
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.timer-buttons button:hover {
+    background-color: #bf7635; /* Couleur rouge plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+
+/* Style pour la grille de jeu */
+#gameGrid {
+    display: grid;
+    grid-template-columns: repeat(10, 30px); /* 10 colonnes de 30px */
+    grid-template-rows: repeat(20, 30px); /* 20 lignes de 30px */
+    gap: 1px; /* Espacement entre les cellules */
+    margin: 20px auto; /* Centrer la grille horizontalement */
+    padding: 10px;
+    background-color: #222; /* Couleur de fond pour la grille */
+    border: 4px solid #1a1a1a; /* Bordure autour de la grille */
+    box-shadow: 4px 4px 0 #1a1a1a;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: #333; /* Couleur de base pour les cellules */
+    border: 1px solid #111;
+}
+
+/* Styles pour les cellules de la grille */
+.cell {
+    width: 30px;
+    height: 30px;
+    background-color: #222; /* Couleur par défaut des cellules vides */
+}
+
+/* Styles pour les tétrominos */
+.tetromino {
+    background-color: #8da198; /* Couleur des tétraminos actifs */
+}
+
+/* Styles pour les tétrominos fixés */
+.fixed {
+    background-color: #455763; /* Couleur pour les tétraminos fixés */
+}
+
+/* Style du formulaire de connexion */
+.login-form {
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent pour laisser l'image en arrière-plan */
+    padding: 30px;
+    border: 3px solid #C9B19D; /* Bordure dorée */
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
+    width: 320px;
+    text-align: center;
+    margin: 20px;
+}
+
+/* Style des labels */
+.login-form label {
+    display: block;
+    font-size: 14px;
+    color: #C9B19D; /* Marron doré */
+    margin-bottom: 10px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+}
+
+/* Style des champs de saisie */
+.login-form input[type="text"],
+.login-form input[type="password"],
+.login-form input[type="email"],
+.login-form input[type="date"] {
+    width: 90%;
+    padding: 12px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #C9B19D; /* Bordure dorée */
+    border-radius: 5px;
+    background-color: #1a1a1a; /* Fond noir profond */
+    color: #C9B19D; /* Texte doré */
+    font-size: 14px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    box-shadow: inset 2px 2px 4px #333;
+}
+
+/* Style du bouton de soumission */
+.login-form button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    color: #1a1a1a; /* Texte noir profond */
+    background-color: #C9B19D; /* Marron doré */
+    border: 2px solid #1a1a1a; /* Bordure noire */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet de relief */
+    text-transform: uppercase;
+}
+
+/* Effet de survol pour le bouton de soumission */
+.login-form button[type="submit"]:hover {
+    background-color: #a79483; /* Doré plus sombre */
+    transform: scale(1.05);
+}
+
+/* Centrage du formulaire et espacement */
+body > form {
+    margin-top: 50px;
+}
+/* Fin du style du formulaire de connexion */
+
+/* Style spécifique pour le formulaire de déconnexion */
+
+.logout-form {
+    display: inline-block; /* Assure que le formulaire et les autres éléments soient alignés horizontalement */
+    margin-left: 10px; /* Espacement pour éviter que le bouton de déconnexion soit trop proche du bouton utilisateur */
+    vertical-align: middle; /* Aligner verticalement avec les autres boutons */
+}
+
+.logout-form button {
+    all: unset; /* Supprime tous les styles par défaut du bouton dans le formulaire */
+    display: inline-block; /* Rend le bouton inline-block pour éviter un écart */
+    background-color: #C9B19D; /* Couleur identique à celle du bouton Guest */
+    color: #1a1a1a; /* Texte noir profond */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px; /* Taille de texte similaire */
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.logout-form button:hover {
+    background-color: #a79483; /* Même couleur de survol */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+/* Fin du style spécifique pour le formulaire de déconnexion */

@@ -1,3 +1,11 @@
+<?php
+session_start(); // Démarre la session
+
+// Vérifie si un utilisateur est connecté
+$isUserLoggedIn = isset($_SESSION['username']);
+$username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,7 +16,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
+
 <body>
+
+    <!-- Section pour les boutons en haut à droite -->
+    <div class="header-buttons">
+        <!-- Si l'utilisateur est connecté, afficher son nom -->
+        <?php if ($isUserLoggedIn): ?>
+            <button id="userButton"><?php echo htmlspecialchars($username); ?></button>
+            <button id="logoutButton" onclick="window.location.href='logout.php'">Logout</button>
+        <?php else: ?>
+            <button id="LoginButton">Login</button>
+        <?php endif; ?>
+        <button id="GuestButton">Guest</button>
+    </div>
+    
     <!-- Timer -->
     <div id="timer">Time: 00:00</div>
 
@@ -18,13 +40,15 @@
     <!-- Boutons de commande sur le côté droit, en bas -->
     <div class="side-buttons">
         <button id="startGameButton">Play</button>
-        <button>Stats</button>
-        <button>Settings</button>
+        <button id="statsButton">Stats</button>
+        <button id="settingsButton">Settings</button>
         <button id="quitGameButton">Quit</button>
     </div>
 
     <div id="inputTest">Appuyez sur une flèche pour voir l'action</div>
-    
+
+    <!-- Lien vers le script JavaScript -->
     <script src="../js/script.js"></script> 
+    
 </body>
 </html>
