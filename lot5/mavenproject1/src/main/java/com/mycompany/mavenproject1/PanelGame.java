@@ -4,14 +4,13 @@
  */
 package com.mycompany.mavenproject1;
 
-import Gameplay.Grid;
-import BlockFolder.Block;
-import static Gameplay.GridSlot.image;
-import Scripts.PlayerController;
+import Gameplay.Grid;                 //Import du pactage Gameplay
+import Gameplay.GridTetrominos;
 import Gameplay.TimerWidget;
+import Scripts.PlayerController;
+
 import java.awt.Color;
 import java.awt.Font;
-
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,90 +31,40 @@ import events.EventDispatcher;   //event dispatcher
  * @author SIO
  */
 public class PanelGame extends JPanel implements EventListener {
-    static Grid grid = new Grid();
     
+    //Chemin absolu du projet 
+    String directoryProject = System.getProperty("user.dir");
+    
+    //Variables Globales des Tailles des grilles 
+    public static int row= 15;
+    public static int column = 25; 
+    
+    //Taille Ecran
+    public int sizeHeight = 720;
+    public int sizeWidth = 1080;
+    
+    //Instances des grille de jeux 
+    private Grid grid ;
+    private GridTetrominos gridBlock;
+    
+    //Gestion du temps
     private int secondes = 0;
     private Timer swingTimer;
     private TimerWidget timer = new TimerWidget();
     
-    public int sizeHeight = 720;
-    public int sizeWidth = 1080;
     
-    
-    public static BufferedImage background;
-    static BufferedImage blockImage;
+    private static BufferedImage img_background;
+    private static BufferedImage img_slot;
+    private static BufferedImage img_block;
+     
     //Event Dispacher
     private EventDispatcher dispatcher;  // Déclaration de l'instance d'EventDispatcher
     //Player COntroller
     PlayerController pcGame;
     
     
-    static Block block = new Block();
-    static int blockX = 0;
-    static int blockY = Math.round(grid.getLenghtRow()*0.5f)-1;
     
-    //Variable Timer
-    JTextArea textArea = new JTextArea("Vous pouvez modifier ce texte.");
-    
-    
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        
-        
-        float ratiocell = 0.035f;
-        sizeWidth = getWidth();
-        sizeHeight = getHeight();
-       
-        float cellWidth = sizeHeight*ratiocell; // Largeur d'une case
-        float cellHeight = sizeHeight*ratiocell;// Hauteur d'une case
-        
-        int cellSize = Math.round(sizeHeight*ratiocell);
-        
-        int gridOffsetX = Math.round(sizeWidth*0.5f-(Grid.row*0.5f*cellWidth));
-        
-        g.drawImage(background, 0, 0, sizeWidth, sizeHeight,  this);
-        
-        // Définir la couleur du texte
-        g.setColor(Color.WHITE);
-        
-        g.setFont(new Font("Arial", Font.BOLD, 48)); // Police Arial, taille 48, style gras
-    
-        g.drawString(GetTimer(), 50, 50);
-        
-        g.draw3DRect(100, 300, 30, 30, true);
-        
-        
-
-        for (int i = 0; i < grid.getLenghtColumn(); i++) {
-            for (int j = 0; j < grid.getLenghtRow(); j++) {
-                if (grid.grid[i][j] != null){
-                    if (grid.grid[i][j].block != null){ // Si C'est un block
-                        int x = Math.round(cellWidth * j);
-                        int y = Math.round(cellHeight * i);
-                        g.drawImage(blockImage, x+gridOffsetX, y+1, cellSize, cellSize, this);
-                        
-
-                    }
-                    else { // SI c'est vide !
-                        System.out.println("pat");
-                        int x = Math.round(cellWidth * j);
-                        int y = Math.round(cellHeight * i);
-                        BufferedImage image = grid.getImage(i, j);
-                        g.drawImage(image, x+gridOffsetX, y+1, cellSize, cellSize, this);
-                        
-                }
-                }
-            }
-            
-        }    
-        
-        
-        
-    }
-    
-   
+    //COnstructeur
     
     public PanelGame() {
         grid = new Grid();
@@ -144,40 +93,97 @@ public class PanelGame extends JPanel implements EventListener {
         });
         swingTimer.start(); // Démarrer le timer
         
-        
-        String directoryProject = System.getProperty("user.dir");
-        
         try {
-            background = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\ImageFolder\\background.png")));
-            blockImage = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\ImageFolder\\spriteBlock.png")));
+        img_background = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\background.png")));
+        img_slot = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\img_slot.png")));
+        img_block = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\sprite_block.png")));
             
         } catch (IOException e) {
             // Log the error or handle it appropriately
             System.err.println("Error loading background: " + e.getMessage());
-            // Provide default images or set to null
-            
-        }
-        
-        
-        
-    }
+           
+    }}
     
-static void dropBlock(){
-    int x = blockX;
-    int y = blockY;
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         
-    Block block = grid.grid[x][y].block;
-    grid.grid[x][y].block = null;
-    x = x+1;
-    grid.grid[x][y].block = block;
-    blockX = x;
+        
+        
+        float ratiocell = 0.035f;
+        sizeWidth = getWidth();
+        sizeHeight = getHeight();
+       
+        float cellWidth = sizeHeight*ratiocell; // Largeur d'une case
+        float cellHeight = sizeHeight*ratiocell;// Hauteur d'une case
+        
+        int cellSize = Math.round(sizeHeight*ratiocell);
+        int gridOffsetX = Math.round(sizeWidth*0.5f-(row*0.5f*cellWidth));
+        
+        //Ajout du fond 
+        g.drawImage(img_background, 0, 0, sizeWidth, sizeHeight,  this);
+        
+        // Définir la couleur du texte
+        g.setColor(Color.WHITE);
+        
+        //Définir la police 
+        g.setFont(new Font("Arial", Font.BOLD, 48)); // Police Arial, taille 48, style gras
+    
+        //Dessiner le temps restant
+        g.drawString(GetTimer(), 50, 50);
+        
+        //Dessiner la grille  vide
+         for (int i = 0; i < column; i++) {
+            for (int j = 0; j < row; j++) {
+                int x = Math.round(cellWidth * j);
+                int y = Math.round(cellHeight * i);
+                g.drawImage(img_slot, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+            }}
+    
+        for (int i = 0; i < column; i++) {
+            for (int j = 0; j < row; j++) {
+                int x = Math.round(cellWidth * j);
+                int y = Math.round(cellHeight * i);
+                 
+                g.drawImage(img_block, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+            }}}
+        /*
+        for (int i = 0; i < grid.getLenghtColumn(); i++) {
+            for (int j = 0; j < grid.getLenghtRow(); j++) {
+                if (grid.grid[i][j] != null){
+                    if (grid.grid[i][j].block != null){ // Si C'est un block
+                        int x = Math.round(cellWidth * j);
+                        int y = Math.round(cellHeight * i);
+                        g.drawImage(blockImage, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+
+                    }
+                    else { // SI c'est vide !
+                        System.out.println("pat");
+                        int x = Math.round(cellWidth * j);
+                        int y = Math.round(cellHeight * i);
+                        BufferedImage image = grid.getImage(i, j);
+                        g.drawImage(image, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+                }
+                }
+            }
+            
+        }    
+        */
+        
+        
+    
+    
+    //FOnction pour faire descendre le tetronimo
+static void dropBlock(){
+    
 }
     
-    
+    // FOnction lancer au demarrage de la partie 
 static void initBlock(){
-    
-    System.out.println(grid.grid[blockX][blockY]+"toto");
-    grid.grid[blockX][blockY].block= new Block();
     
 }
  
@@ -196,6 +202,7 @@ static void initBlock(){
         }
     }
    
+    //Renvoie une chaine de caractere de la forme "MM : SS"
     private String GetTimer(){
         String bMinutes = Integer.toString(timer.minutes);
         String bSecondes = Integer.toString(timer.secondes);
@@ -211,14 +218,7 @@ static void initBlock(){
     
     
    private void moveBlock(int direction){
-       int futurY = blockY + direction; 
-       if (grid.grid[blockX][futurY] != null){
-            Block bloc = grid.grid[blockX][blockY].block;
-            grid.grid[blockX][blockY].block= null;
-            blockY = blockY + direction;
-            grid.grid[blockX][blockY].block= bloc;
-            repaint();
-       }
+       
    }
     
    // Implémentation de la méthode onEvent de l'interface EventListener
