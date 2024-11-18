@@ -4,17 +4,58 @@ package BlockFolder;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-
 /**
  *
  * @author SIO
  */
 public class Block {
-    public Block(){
-        int height = 1;
-        int width = 1;
-        boolean [][] Structure = new boolean [height][width];
-        Structure[0][0]=true;
-                
+    public int dimention = 2;
+
+    public Block() {
+        
+        
+        
+        // Block L
+int structL[][][] = {{{0, 0, 0}, {0, 1, 0}, {1, 1, 1}},
+                     {{0, 1, 0}, {1, 1, 0}, {0, 1, 0}},
+                     {{0, 0, 0}, {1, 1, 1}, {0, 1, 0}},
+                     {{0, 1, 0}, {0, 1, 1}, {0, 1, 0}}};
+
+// Block O
+int structO[][][] = {{{1, 1, 0}, {1, 1, 0}, {0, 0, 0}},
+                     {{1, 1, 0}, {1, 1, 0}, {0, 0, 0}},
+                     {{1, 1, 0}, {1, 1, 0}, {0, 0, 0}},
+                     {{1, 1, 0}, {1, 1, 0}, {0, 0, 0}}};
+
+// Block Z
+int structZ[][][] = {{{1, 1, 0}, {0, 1, 1}, {0, 0, 0}},
+                     {{0, 1, 0}, {1, 1, 0}, {1, 0, 0}},
+                     {{1, 1, 0}, {0, 1, 1}, {0, 0, 0}},
+                     {{0, 1, 0}, {1, 1, 0}, {1, 0, 0}}};
+
+// Block S
+int structS[][][] = {{{0, 1, 1}, {1, 1, 0}, {0, 0, 0}},
+                     {{0, 1, 0}, {0, 1, 1}, {0, 0, 1}},
+                     {{0, 1, 1}, {1, 1, 0}, {0, 0, 0}},
+                     {{0, 1, 0}, {0, 1, 1}, {0, 0, 1}}};
+
+// Block J
+int structJ[][][] = {{{1, 0, 0}, {1, 1, 1}, {0, 0, 0}},
+                     {{1, 1, 0}, {1, 0, 0}, {1, 0, 0}},
+                     {{0, 0, 0}, {1, 1, 1}, {0, 0, 1}},
+                     {{0, 1, 0}, {0, 1, 1}, {0, 1, 0}}};
+
+// Corrected Block I (horizontal and vertical line)
+int structI[][][] = {{{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+                     {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}},
+                     {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+                     {{0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}}};
+
+// Block T
+int structT[][][] = {{{0, 0, 0}, {0, 1, 0}, {1, 1, 1}},
+                     {{0, 1, 0}, {1, 1, 0}, {0, 1, 0}},
+                     {{0, 0, 0}, {1, 1, 1}, {0, 1, 0}},
+                     {{0, 1, 0}, {0, 1, 1}, {0, 1, 0}}};
+
     }
 }

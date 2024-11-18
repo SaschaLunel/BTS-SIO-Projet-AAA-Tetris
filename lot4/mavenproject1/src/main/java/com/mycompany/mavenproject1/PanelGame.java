@@ -57,6 +57,10 @@ public class PanelGame extends JPanel implements EventListener {
     //Variable Timer
     JTextArea textArea = new JTextArea("Vous pouvez modifier ce texte.");
     
+    //Variables MainBlock 
+    int currentRotation = 0;
+    int currentBlock[][];
+    
     
     @Override
     protected void paintComponent(Graphics g) {
@@ -229,6 +233,7 @@ static void initBlock(){
             String key = (String) data;
             if (key == "Gauche"){moveBlock(-1);}
             else if (key == "Droite"){moveBlock(1);}
+            else if (key == "Tourner"){RotationBlock();}
         }
     }
 
@@ -236,6 +241,14 @@ static void initBlock(){
      // Méthode pour déclencher un événement de test
     public void triggerEvent() {
         dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
+    }
+    
+    
+    //Main Blocks
+    public void RotationBlock(){
+    currentRotation = (currentRotation + 1) % 4;
+    int dimentionBlock = block.dimention;
+    currentBlock = new int[dimentionBlock][dimentionBlock];
     }
 }
 
