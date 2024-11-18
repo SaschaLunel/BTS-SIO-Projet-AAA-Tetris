@@ -45,6 +45,7 @@ public class PlayerController implements KeyListener {
             case KeyEvent.VK_SPACE:
                 break;
             case KeyEvent.VK_CONTROL:
+                dispatcher.dispatchEvent("KEY_PRESS", "Tourner");
                 break;
             default:
                 // Code par défaut si aucune des touches n'est détectée
