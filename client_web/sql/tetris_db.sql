@@ -1,5 +1,8 @@
+-- Supprime la base de données existante si elle existe déjà
+DROP DATABASE IF EXISTS tetris_db;
+
 -- Création de la base de données
-CREATE DATABASE IF NOT EXISTS tetris_db;
+CREATE DATABASE tetris_db;
 
 -- Utilisation de la base de données
 USE tetris_db;
@@ -13,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
     prenom VARCHAR(50) NOT NULL,           -- Prénom de l'utilisateur
     nom VARCHAR(50) NOT NULL,              -- Nom de l'utilisateur
     pseudo VARCHAR(50) NOT NULL UNIQUE,    -- Pseudonyme de l'utilisateur
-    dBrith DATE NOT NULL,                   -- Date de naissance de l'utilisateur
+    dBirth DATE NOT NULL,                   -- Date de naissance de l'utilisateur
     dInscr DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date d'inscription
     dDeco DATETIME                          -- Date de dernière connexion
 );
@@ -26,4 +29,3 @@ CREATE TABLE IF NOT EXISTS score (
     dScore DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date du score
     FOREIGN KEY (iduser) REFERENCES users(iduser)  -- Relation avec la table 'users'
 );
-

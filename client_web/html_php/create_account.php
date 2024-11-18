@@ -18,15 +18,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $nom = $_POST['nom'];
         $pseudo = $_POST['pseudo'];
         $dbirth = $_POST['dbirth'];
+        $mdp = $_POST['mdp']; // Récupère le mot de passe
+
+        // Hachage du mot de passe avant de l'enregistrer
+        $hashed_password = password_hash($mdp, PASSWORD_DEFAULT);
 
         // Préparation de la requête d'insertion
-        $stmt = $conn->prepare("INSERT INTO users (email, prenom, nom, pseudo, dBirth) 
-                                VALUES (:email, :prenom, :nom, :pseudo, :dbirth)");
+        $stmt = $conn->prepare("INSERT INTO users (email, prenom, nom, pseudo, dBirth, mdp) 
+                                VALUES (:email, :prenom, :nom, :pseudo, :dbirth, :mdp)");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':prenom', $prenom);
         $stmt->bindParam(':nom', $nom);
         $stmt->bindParam(':pseudo', $pseudo);
         $stmt->bindParam(':dbirth', $dbirth);
+        $stmt->bindParam(':mdp', $hashed_password);  // Lié le mot de passe haché
 
         // Exécution de la requête
         $stmt->execute();
@@ -54,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
     <!-- Formulaire de création de compte -->
-    <form action="create_account.php" method="POST">
+    <form id="createaccount_form" action="create_account.php" method="POST">
         <label for="email">Email :</label>
         <input type="email" id="email" name="email" required>
         <br>
@@ -70,7 +75,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="dbirth">Date of birth</label>
         <input type="date" id="dbirth" name="dbirth" required>
         <br>
-        <button type="submit">Create account</button>
+        
+        <!-- Champ pour le mot de passe -->
+        <label for="mdp">Password :</label>
+        <input type="password" id="mdp" name="mdp" required>
+        <br>
+
+        <button id="createaccount_button" type="submit">Create account</button>
     </form>
 
     <!-- Section centrale pour les autres boutons -->

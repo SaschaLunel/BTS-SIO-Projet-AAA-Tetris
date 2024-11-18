@@ -20,7 +20,13 @@ if(newaccButton) {
     window.location.href = 'create_account.php'; // Ouvre create_account.php dans le même onglet
     });
 }
-
+// Écouteur d'événements pour le bouton createaccount_button de create_account.php
+let createaccount_button = document.getElementById('createaccount_button')
+if(createaccount_button) {
+    createaccount_button.addEventListener('click', () => {
+    window.location.href = 'my_account.php'; // Ouvre my_account.php dans le même onglet
+    });
+}
 // Variables pour le timer (lot4)
 let timerElement = document.getElementById('timer');
 let seconds = 0;
