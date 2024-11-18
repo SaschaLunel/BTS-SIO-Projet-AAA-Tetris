@@ -1,4 +1,7 @@
 <?php
+
+session_start(); // Démarre la session
+
 // Vérification de l'envoi du formulaire
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Connexion à la base de données
@@ -35,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Exécution de la requête
         $stmt->execute();
+
+        
         echo "Compte créé avec succès !";
     } catch (PDOException $e) {
         echo "Erreur : " . $e->getMessage();

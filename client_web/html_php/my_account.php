@@ -1,9 +1,12 @@
 <?php
+
+session_start(); // Démarre la session
+
 // Connexion à la base de données
 $servername = "localhost";
 $username = "root"; // Remplacez par votre nom d'utilisateur DB
 $password = ""; // Remplacez par votre mot de passe DB
-$dbname = "votre_db"; // Remplacez par le nom de votre base de données
+$dbname = "tetris_db"; // Remplacez par le nom de votre base de données
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -12,8 +15,6 @@ if ($conn->connect_error) {
     die("Connexion échouée : " . $conn->connect_error);
 }
 
-// Démarrer la session pour récupérer l'utilisateur connecté
-session_start();
 $user_id = $_SESSION['user_id']; // Assurez-vous que l'ID utilisateur est stocké dans la session
 
 // Récupérer les informations de l'utilisateur
