@@ -45,7 +45,9 @@ public class PanelGame extends JPanel implements EventListener {
     
     //Instances des grille de jeux 
     private Grid grid ;
-    private GridTetrominos gridBlock;
+    private GridTetrominos grid_block;
+    private int[][] grid_pattern;
+   
     
     //Gestion du temps
     private int secondes = 0;
@@ -68,6 +70,8 @@ public class PanelGame extends JPanel implements EventListener {
     
     public PanelGame() {
         grid = new Grid();
+        grid_block = new GridTetrominos(row, column);
+        grid_pattern = grid_block.getGrid();
         
         //event DIspatcher
         dispatcher = new EventDispatcher();
@@ -140,13 +144,22 @@ public class PanelGame extends JPanel implements EventListener {
                 g.drawImage(img_slot, x+gridOffsetX, y+1, cellSize, cellSize, this);
                         
             }}
+         
+         
     
         for (int i = 0; i < column; i++) {
             for (int j = 0; j < row; j++) {
                 int x = Math.round(cellWidth * j);
                 int y = Math.round(cellHeight * i);
-                 
-                g.drawImage(img_block, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                System.out.println("i"+i+"j"+j);
+                
+                   if (grid_pattern[j][i]==1){
+                    //g.drawImage(img_block, x+gridOffsetX, y+1, cellSize, cellSize, this); 
+                        System.out.println("i"+i+"j"+j);
+                } 
+                
+        
+                
                         
             }}}
         /*

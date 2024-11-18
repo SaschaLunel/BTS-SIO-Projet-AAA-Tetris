@@ -9,7 +9,7 @@ package BlockFolder;
  * @author SIO
  */
 // Bloc I
-class IBlock extends AbstractBlock {
+public class IBlock extends AbstractBlock {
     public IBlock() {
         super(new int[][][]{
             {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}}, // Orientation 0

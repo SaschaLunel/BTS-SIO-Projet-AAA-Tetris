@@ -11,5 +11,6 @@ package BlockFolder;
 public interface ITetronimo {
     int[][][] getShape(); // Méthode pour obtenir la forme du bloc
     String getName();     // Méthode pour obtenir le nom du bloc
+    int length();        // Méthode pour récupérer la longueur dans L'axe X
 }
 

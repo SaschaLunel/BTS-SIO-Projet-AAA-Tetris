@@ -10,7 +10,7 @@ package BlockFolder;
  */
 
     // Bloc Z
-class ZBlock extends AbstractBlock {
+public class ZBlock extends AbstractBlock {
     public ZBlock() {
         super(new int[][][]{
             {{1, 1, 0}, {0, 1, 1}},  // Orientation 0
