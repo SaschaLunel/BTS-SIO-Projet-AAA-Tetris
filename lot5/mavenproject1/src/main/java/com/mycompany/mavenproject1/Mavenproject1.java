@@ -24,7 +24,7 @@ public class Mavenproject1  {
         
         // Créer une instance de ta classe Panel
         PanelGame myPanel = new PanelGame();
-        myPanel.initBlock();
+        
         
         
         
