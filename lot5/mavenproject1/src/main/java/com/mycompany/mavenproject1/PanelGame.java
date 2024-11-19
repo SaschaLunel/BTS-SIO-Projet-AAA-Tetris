@@ -155,30 +155,7 @@ public class PanelGame extends JPanel implements EventListener {
         }
     }
 
-    /*
-        for (int i = 0; i < grid.getLenghtColumn(); i++) {
-            for (int j = 0; j < grid.getLenghtRow(); j++) {
-                if (grid.grid[i][j] != null){
-                    if (grid.grid[i][j].block != null){ // Si C'est un block
-                        int x = Math.round(cellWidth * j);
-                        int y = Math.round(cellHeight * i);
-                        g.drawImage(blockImage, x+gridOffsetX, y+1, cellSize, cellSize, this);
-                        
-
-                    }
-                    else { // SI c'est vide !
-                        System.out.println("pat");
-                        int x = Math.round(cellWidth * j);
-                        int y = Math.round(cellHeight * i);
-                        BufferedImage image = grid.getImage(i, j);
-                        g.drawImage(image, x+gridOffsetX, y+1, cellSize, cellSize, this);
-                        
-                }
-                }
-            }
-            
-        }    
-     */
+    
 
     // Fonction pour faire descendre le Tetromino
     void dropBlock() {
@@ -193,9 +170,10 @@ public class PanelGame extends JPanel implements EventListener {
     }
 
     private void moveBlock(int direction) {
-
+            
+            int block_length = grid_block.getNewBlock().length();
         
-            if (direction > 0 && grid_block.getStart_y()< grid_pattern.length) {
+            if (direction > 0 && grid_block.getStart_y()< grid_pattern.length-block_length) {
 
                 // Parcourir la grille de bas en haut pour éviter les collisions
                 for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier

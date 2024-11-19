@@ -27,7 +27,11 @@ public class GridTetrominos {
     private int index_color;
     private int index_x;
     private int index_y;
+    private AbstractBlock new_block;
 
+    
+
+   
     
     
     // Tableau contenant tous les types de blocs
@@ -57,7 +61,7 @@ public class GridTetrominos {
             // Méthode qui renvoie une grille
         public int[][] getGrid() {
             // Récupérer un bloc aléatoire
-            AbstractBlock new_block = getRandomBlock();
+             new_block = getRandomBlock();
 
             // Définir la position de départ du bloc, centré dans la grille en haut
              index_y = (int) (grid[0].length * 0.5f - new_block.getShape()[0].length * 0.5f); 
@@ -65,7 +69,8 @@ public class GridTetrominos {
 
             // Récupérer la forme du bloc pour l'orientation 0 (première orientation)
             int[][] blockShape = new_block.getShape()[0];
-
+            
+            
             // Placer le bloc dans la grille
             for (int i = 0; i < blockShape.length; i++) {
                 for (int j = 0; j < blockShape[i].length; j++) {
@@ -96,5 +101,8 @@ public class GridTetrominos {
         this.index_y = start_y;
     }
         
-        
+    public AbstractBlock getNewBlock() {
+        return new_block;
+    }
+  
 }
