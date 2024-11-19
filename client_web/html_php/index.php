@@ -18,9 +18,9 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
 </head>
 
 <body>
+<h1 id="page_title"> Tetriscraft</h1>
     <!-- Section pour les boutons en haut à droite -->
     <div class="header-buttons">
-        <!-- Si l'utilisateur est connecté, afficher son nom et le bouton Logout -->
         <?php if ($isUserLoggedIn): ?>
             <button id="userButton"><?php echo htmlspecialchars($username); ?></button>
             <!-- Formulaire pour le bouton Logout -->
@@ -54,6 +54,20 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
     <div id="inputTest">Appuyez sur une flèche pour voir l'action</div>
     
     <!-- Lien vers le script JavaScript -->
-    <script src="../js/script.js"></script> 
+    <script>
+        // Vérifie si l'utilisateur est connecté
+        const isUserLoggedIn = <?php echo json_encode($isUserLoggedIn); ?>;
+
+        // Gestion du clic sur le bouton userButton
+        const userButton = document.getElementById('userButton');
+        if (userButton) {
+            userButton.addEventListener('click', () => {
+                if (isUserLoggedIn) {
+                    // Redirige vers my_account.php si connecté
+                    window.location.href = 'my_account.php';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

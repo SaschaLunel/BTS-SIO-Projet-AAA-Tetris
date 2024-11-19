@@ -2,6 +2,12 @@
 
 session_start(); // Démarre la session
 
+// Vérifie si l'utilisateur est déjà connecté
+if (isset($_SESSION['user_id'])) {
+    header("Location: my_account.php");
+    exit();
+}
+
 // Vérification de l'envoi du formulaire
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Connexion à la base de données
@@ -77,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="pseudo">Username :</label>
         <input type="text" id="pseudo" name="pseudo" required>
         <br>
-        <label for="dbirth">Date of birth</label>
+        <label for="dbirth">Birthday</label>
         <input type="date" id="dbirth" name="dbirth" required>
         <br>
         

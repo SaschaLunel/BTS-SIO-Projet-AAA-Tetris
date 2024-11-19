@@ -424,3 +424,80 @@ body > form {
     background-color: #a79483; /* Doré plus sombre */
     transform: scale(1.05);
 }
+/*Style pour le formulaire de modification de compte my_account_form sur my_account.php */
+
+/* Conteneur du formulaire */
+#my_account_form {
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    padding: 30px;
+    border: 3px solid #C9B19D; /* Bordure dorée */
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
+    width: 320px;
+    text-align: center;
+    margin: 20px auto; /* Centrer le formulaire sur la page */
+}
+
+/* Style des labels */
+#my_account_form label {
+    display: block;
+    font-size: 14px;
+    color: #C9B19D; /* Marron doré */
+    margin-bottom: 10px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+}
+
+/* Style des champs de saisie */
+#my_account_form input[type="text"],
+#my_account_form input[type="password"],
+#my_account_form input[type="email"],
+#my_account_form input[type="date"] {
+    width: 90%;
+    padding: 12px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #C9B19D; /* Bordure dorée */
+    border-radius: 5px;
+    background-color: #1a1a1a; /* Fond noir profond */
+    color: #C9B19D; /* Texte doré */
+    font-size: 14px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    box-shadow: inset 2px 2px 4px #333;
+}
+
+/* Style du bouton de soumission */
+#my_account_form button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    color: #1a1a1a; /* Texte noir profond */
+    background-color: #C9B19D; /* Marron doré */
+    border: 2px solid #1a1a1a; /* Bordure noire */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet de relief */
+    text-transform: uppercase;
+}
+
+/* Effet de survol pour le bouton de soumission */
+#my_account_form button[type="submit"]:hover {
+    background-color: #a79483; /* Doré plus sombre */
+    transform: scale(1.05);
+}
+
+/*Style pour le title central des pages*/ 
+#page_title {
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 48px; /* Taille assez grande pour être central */
+    text-align: center; /* Centrer le texte */
+    color: #ffffff; /* Texte blanc pour contraster avec le fond */
+    background-color: #D5833A; /* Couleur de fond, ici un orange/marron */
+    border: 5px solid #1a1a1a; /* Bordure noire épaisse */
+    padding: 20px; /* Espacement interne pour donner un effet d'encadré */
+    margin: 20px auto; /* Espacement externe et centrage horizontal */
+    width: fit-content; /* Ajuste la largeur à la taille du texte */
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet 3D rétro */
+    text-transform: uppercase; /* Texte en majuscules */
+    transition: 0.3s ease; /* Animation de transition pour survol */
+}

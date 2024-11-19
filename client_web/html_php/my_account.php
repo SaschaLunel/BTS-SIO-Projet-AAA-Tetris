@@ -1,6 +1,11 @@
 <?php
-
 session_start(); // Démarre la session
+
+// Vérifiez si l'utilisateur est connecté
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
 // Connexion à la base de données
 $servername = "localhost";
@@ -15,10 +20,10 @@ if ($conn->connect_error) {
     die("Connexion échouée : " . $conn->connect_error);
 }
 
-$user_id = $_SESSION['user_id']; // Assurez-vous que l'ID utilisateur est stocké dans la session
+$user_id = $_SESSION['user_id']; // Récupère l'ID utilisateur de la session
 
 // Récupérer les informations de l'utilisateur
-$sql = "SELECT email, prenom, nom, pseudo FROM users WHERE id = ?";
+$sql = "SELECT email, prenom, nom, pseudo, dBirth FROM users WHERE iduser = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -36,11 +41,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     $prenom = $_POST['prenom'];
     $nom = $_POST['nom'];
     $pseudo = $_POST['pseudo'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hasher le mot de passe
+    $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
-    $sql = "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ?, password = ? WHERE id = ?";
+    $sql = $password 
+        ? "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ?, password = ? WHERE id = ?" 
+        : "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssi", $email, $prenom, $nom, $pseudo, $password, $user_id);
+
+    if ($password) {
+        $stmt->bind_param("sssssi", $email, $prenom, $nom, $pseudo, $password, $user_id);
+    } else {
+        $stmt->bind_param("ssssi", $email, $prenom, $nom, $pseudo, $user_id);
+    }
 
     if ($stmt->execute()) {
         echo "Informations mises à jour avec succès.";
@@ -68,50 +80,44 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Compte</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account</title>
+<link rel="stylesheet" href="../css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
 <body>
-    <h1>Mon Compte</h1>
+    <h1 id="page_title"> My Account</h1>
+    <form id="my_account_form" method="POST" action="">
+        <label>Email:</label>
+        <input type="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required>
+        <br>
 
-    <!-- Formulaire pour afficher et modifier les informations utilisateur -->
-    <form action="mon_compte.php" method="POST">
-        <label for="email">Email :</label>
-        <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+        <label>First name:</label>
+        <input type="text" name="prenom" value="<?= htmlspecialchars($user['prenom']) ?>" required>
         <br>
-        
-        <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom" value="<?= htmlspecialchars($user['prenom']); ?>" required>
+
+        <label>Last name:</label>
+        <input type="text" name="nom" value="<?= htmlspecialchars($user['nom']) ?>" required>
         <br>
-        
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" value="<?= htmlspecialchars($user['nom']); ?>" required>
+
+        <label>Username:</label>
+        <input type="text" name="pseudo" value="<?= htmlspecialchars($user['pseudo']) ?>" required>
         <br>
-        
-        <label for="pseudo">Pseudo :</label>
-        <input type="text" id="pseudo" name="pseudo" value="<?= htmlspecialchars($user['pseudo']); ?>" required>
+
+        <label>Birthday:</label>
+        <input type="date" name="date_de_naissance" value="<?= htmlspecialchars($user['dBirth']) ?>" required>
         <br>
-        
-        <label for="password">Nouveau mot de passe :</label>
-        <input type="password" id="password" name="password">
-        <small>(Laissez vide pour ne pas changer le mot de passe)</small>
+
+        <label>New password:</label>
+        <input type="password" name="password">
         <br>
-        
-        <button type="submit" name="update">Mettre à jour</button>
+
+        <button type="submit" name="update">Update</button>
+        <button type="submit" name="delete" onclick="return confirm('Voulez-vous vraiment supprimer votre compte ?');">Delete account</button>
     </form>
-
-    <!-- Boutons Retour, Se déconnecter et Supprimer le compte -->
-    <div class="conpage-buttons">
-        <button onclick="location.href='dashboard.php'">Retour</button>
-        <button onclick="location.href='logout.php'">Se déconnecter</button>
-        <form action="mon_compte.php" method="POST" style="display:inline;">
-            <button type="submit" name="delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')">Supprimer le compte</button>
-        </form>
-    </div>
 </body>
 </html>

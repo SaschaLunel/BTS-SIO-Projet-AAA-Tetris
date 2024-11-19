@@ -11,7 +11,7 @@ USE tetris_db;
 CREATE TABLE IF NOT EXISTS users (
     iduser INT AUTO_INCREMENT PRIMARY KEY,  -- Identifiant unique pour l'utilisateur
     email VARCHAR(50) NOT NULL UNIQUE,     -- Email unique de l'utilisateur
-    mdp VARCHAR(50) NOT NULL,              -- Mot de passe de l'utilisateur
+    mdp VARCHAR(255) NOT NULL,              -- Mot de passe de l'utilisateur
     verifemail BOOLEAN DEFAULT FALSE,      -- Vérification de l'email
     prenom VARCHAR(50) NOT NULL,           -- Prénom de l'utilisateur
     nom VARCHAR(50) NOT NULL,              -- Nom de l'utilisateur
@@ -29,3 +29,6 @@ CREATE TABLE IF NOT EXISTS score (
     dScore DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date du score
     FOREIGN KEY (iduser) REFERENCES users(iduser)  -- Relation avec la table 'users'
 );
+-- Insertion d'un compte admin pour tests 
+INSERT INTO users (email, mdp, verifemail, prenom, nom, pseudo, dBirth)
+VALUES ('admin@admin.com', 'admin', TRUE, 'Admin', 'Admin', 'admin', '1990-01-01');

@@ -20,7 +20,13 @@ if(newaccButton) {
     window.location.href = 'create_account.php'; // Ouvre create_account.php dans le même onglet
     });
 }
-
+// Écouteur d'événements pour le bouton userButton de index.html
+let userButton = document.getElementById('userButton')
+if(userButton) {
+    userButton.addEventListener('click', () => {
+    window.location.href = 'my_account.php'; // Ouvre my_account.php dans le même onglet
+    });
+}
 // Variables pour le timer (lot4)
 let timerElement = document.getElementById('timer');
 let seconds = 0;
