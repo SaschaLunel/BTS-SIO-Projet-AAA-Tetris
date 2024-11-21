@@ -67,7 +67,7 @@ public class PanelGame extends JPanel implements EventListener {
     public PanelGame() {
         grid = new Grid();
         grid_block = new GridTetrominos(row, column);
-        grid_pattern = grid_block.getGrid();
+        grid_pattern = grid_block.CreateGrid();
 
         //event DIspatcher
         dispatcher = new EventDispatcher();
@@ -166,14 +166,16 @@ public class PanelGame extends JPanel implements EventListener {
         }
         // Vider la première ligne après le déplacement
         grid_pattern[0] = new int[column];
-
+        
+        grid_block.setStart_x(grid_block.getStart_x()+1);
+        
     }
 
     private void moveBlock(int direction) {
             
             int block_length = grid_block.getNewBlock().length();
         
-            if (direction > 0 && grid_block.getStart_y()< grid_pattern.length-block_length) {
+            if (direction > 0 && grid_block.getStart_y()< grid_pattern[0].length - (grid_block.getNewBlock().length())) {
 
                 // Parcourir la grille de bas en haut pour éviter les collisions
                 for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
@@ -185,6 +187,7 @@ public class PanelGame extends JPanel implements EventListener {
                     grid_pattern[i][0] = 0; // 0 représente une case vide // Suppose qu'une ligne vide est un tableau d'entiers initialisés à 0
                 }
 
+                System.out.println(grid_block.getStart_y() + "<<" + (grid_pattern[0].length - grid_block.getNewBlock().length()));
                  grid_block.setStart_y(grid_block.getStart_y()+1);
                 repaint();
 
@@ -204,6 +207,10 @@ public class PanelGame extends JPanel implements EventListener {
 
     }
     
+    private void rotationBlock(){
+        grid_pattern = grid_block.rotationGrid();
+        repaint();
+    }
 
     // Pour arrêter le timer
     public void stopTimer() {
@@ -244,8 +251,10 @@ public class PanelGame extends JPanel implements EventListener {
                 moveBlock(-1);
             } else if (key == "Droite") {
                 moveBlock(1);
+            } else if (key == "Tourner") {
+                rotationBlock();
             }
-
+            
         }
     }
 

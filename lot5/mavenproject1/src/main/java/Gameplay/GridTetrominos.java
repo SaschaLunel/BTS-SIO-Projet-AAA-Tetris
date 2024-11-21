@@ -25,6 +25,7 @@ public class GridTetrominos {
     private int row;
     private int column;
     private int index_color;
+    private int index_rotation;
     private int index_x;
     private int index_y;
     private AbstractBlock new_block;
@@ -59,7 +60,7 @@ public class GridTetrominos {
     }
     
             // Méthode qui renvoie une grille
-        public int[][] getGrid() {
+        public int[][] CreateGrid() {
             // Récupérer un bloc aléatoire
              new_block = getRandomBlock();
 
@@ -84,6 +85,22 @@ public class GridTetrominos {
             return grid;
         }
     
+    public int[][] rotationGrid() {
+        
+        index_rotation = (index_rotation + 1) % 4;
+        
+        int[][] blockShape = new_block.getShape()[index_rotation];
+        
+        for (int i = 0; i < blockShape.length; i++) {
+                for (int j = 0; j < blockShape[i].length; j++) {
+                    // Vérifier si la position du bloc est valide (dans les limites de la grille)
+                    if (index_x + i < grid.length && index_y + j < grid[0].length) {
+                        grid[index_x + i][index_y + j] = blockShape[i][j]; // Placer le bloc dans la grille
+                    }
+                }
+            }
+        return grid;
+    }
    
         public int getStart_x() {
         return index_x;
