@@ -40,14 +40,14 @@ public class PanelGame extends JPanel implements EventListener {
     public static int row = 25;
     public static int column = 15;
 
-    //Taille Ecran
-    public int sizeHeight = 720;
-    public int sizeWidth = 1080;
+    //Taille Ecran voulu 
+    public static int sizeHeight = 720;
+    public static int sizeWidth = 1080;
 
     //Instances des grille de jeux 
-    private Grid grid;
-    private GridTetrominos grid_block;
-    private int[][] grid_pattern;
+    protected Grid grid;
+    protected static GridTetrominos grid_block;
+    protected static  int[][] grid_pattern;
 
     //Gestion du temps
     private int secondes = 0;
@@ -86,7 +86,7 @@ public class PanelGame extends JPanel implements EventListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 secondes++;
-                dropBlock();
+                PanelGameUtils.dropBlock(PanelGame.this);
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }
@@ -156,58 +156,8 @@ public class PanelGame extends JPanel implements EventListener {
     }
 
     
-
-    // Fonction pour faire descendre le Tetromino
-    void dropBlock() {
-        // Parcourir la grille de bas en haut pour éviter les collisions
-        for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
-            // Copier la ligne actuelle dans la ligne du dessous
-            grid_pattern[i + 1] = grid_pattern[i];
-        }
-        // Vider la première ligne après le déplacement
-        grid_pattern[0] = new int[column];
-        
-        grid_block.setStart_x(grid_block.getStart_x()+1);
-        
-    }
-
-    private void moveBlock(int direction) {
-            
-            int block_length = grid_block.getNewBlock().length();
-        
-            if (direction > 0 && grid_block.getStart_y()< grid_pattern[0].length - (grid_block.getNewBlock().length())) {
-
-                // Parcourir la grille de bas en haut pour éviter les collisions
-                for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
-                    // Copier la ligne actuelle dans la ligne du dessous
-                    for (int j = grid_pattern[i].length - 2; j >= 0; j--) {
-                        grid_pattern[i][j + 1] = grid_pattern[i][j];
-                    }
-                    // Vider la première ligne après le déplacement
-                    grid_pattern[i][0] = 0; // 0 représente une case vide // Suppose qu'une ligne vide est un tableau d'entiers initialisés à 0
-                }
-
-                System.out.println(grid_block.getStart_y() + "<<" + (grid_pattern[0].length - grid_block.getNewBlock().length()));
-                 grid_block.setStart_y(grid_block.getStart_y()+1);
-                repaint();
-
-            } 
-
-            else if (direction < 0 && grid_block.getStart_y()> 0) { // Déplacement à gauche
-            // Parcourir la grille de haut en bas
-            for (int i = 0; i < grid_pattern.length; i++) {
-                for (int j = 1; j < grid_pattern[i].length; j++) { // Parcourir de gauche à droite
-                    grid_pattern[i][j - 1] = grid_pattern[i][j]; // Déplacer vers la gauche
-                }
-                grid_pattern[i][grid_pattern[i].length - 1] = 0; // Effacer la dernière colonne
-            }
-                grid_block.setStart_y(grid_block.getStart_y()-1);
-                repaint();
-            }
-
-    }
-    
-    private void rotationBlock(){
+private void rotationBlock(){
+        System.out.println("rotation !!!!");
         grid_pattern = grid_block.rotationGrid();
         repaint();
     }
@@ -248,9 +198,9 @@ public class PanelGame extends JPanel implements EventListener {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
             String key = (String) data;
             if (key == "Gauche") {
-                moveBlock(-1);
+                PanelGameUtils.moveBlock(this, -1);
             } else if (key == "Droite") {
-                moveBlock(1);
+                PanelGameUtils.moveBlock(this, 1);
             } else if (key == "Tourner") {
                 rotationBlock();
             }

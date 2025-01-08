@@ -3,6 +3,7 @@ BlockFolder\JBlock.class
 events\EventDispatcher.class
 Gameplay\GridTetrominos.class
 BlockFolder\SBlock.class
+com\mycompany\mavenproject1\PanelGameUtils.class
 Scripts\PlayerController.class
 BlockFolder\OBlock.class
 Gameplay\Grid.class
@@ -18,3 +19,4 @@ com\mycompany\mavenproject1\Mavenproject1.class
 BlockFolder\LBlock.class
 btn\ButtonMenu.class
 BlockFolder\ITetronimo.class
+com\mycompany\mavenproject1\DebugFunction.class

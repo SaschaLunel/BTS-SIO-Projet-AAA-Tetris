@@ -85,22 +85,84 @@ public class GridTetrominos {
             return grid;
         }
     
-    public int[][] rotationGrid() {
+  public int[][] rotationGrid() {
         
         index_rotation = (index_rotation + 1) % 4;
         
         int[][] blockShape = new_block.getShape()[index_rotation];
         
+        int[][] copyGrid = copyGrid(grid);
+        
+        copyGrid = clearGrid(grid);
+        
+        
+        
         for (int i = 0; i < blockShape.length; i++) {
                 for (int j = 0; j < blockShape[i].length; j++) {
                     // Vérifier si la position du bloc est valide (dans les limites de la grille)
-                    if (index_x + i < grid.length && index_y + j < grid[0].length) {
-                        grid[index_x + i][index_y + j] = blockShape[i][j]; // Placer le bloc dans la grille
+                    if (index_x + i < copyGrid.length && index_y + j < grid[0].length) {
+                        copyGrid[index_x + i][index_y + j] = blockShape[i][j]; // Placer le bloc dans la grille
                     }
                 }
             }
-        return grid;
+        return copyGrid;
     }
+
+  
+   private int [][] clearGrid(int [][] grid){
+       for (int i = 0; i < grid.length; i++) {
+                for (int j = 0; j < grid[i].length; j++) {
+                    grid[i][j]= 0;
+                }
+            }
+       return grid;
+   }
+
+// Helper method to print the grid (for debugging purposes)
+private void printGrid(int[][] grid) {
+    for (int i = 0; i < grid.length; i++) {
+        for (int j = 0; j < grid[i].length; j++) {
+            System.out.print(grid[i][j] + " ");
+        }
+        System.out.println(); // Nouvelle ligne après chaque ligne de la grille
+    }
+}
+
+// Helper method to print the block shape (for debugging purposes)
+private void printBlockShape(int[][] blockShape) {
+    for (int i = 0; i < blockShape.length; i++) {
+        for (int j = 0; j < blockShape[i].length; j++) {
+            System.out.print(blockShape[i][j] + " ");
+        }
+        System.out.println(); // Nouvelle ligne après chaque ligne du bloc
+    }
+}
+
+
+
+
+// Helper method to clear the old block from the grid
+private void clearBlockFromGrid(int[][] grid, int x, int y, int[][] blockShape) {
+    for (int i = 0; i < blockShape.length; i++) {
+        for (int j = 0; j < blockShape[i].length; j++) {
+            if (x + i >= 0 && x + i < grid.length && y + j >= 0 && y + j < grid[0].length) {
+                if (blockShape[i][j] != 0) {
+                    grid[x + i][y + j] = 0; // Clear the old block
+                }
+            }
+        }
+    }
+}
+
+// Helper method to create a copy of the grid
+private int[][] copyGrid(int[][] grid) {
+    int[][] newGrid = new int[grid.length][grid[0].length];
+    for (int i = 0; i < grid.length; i++) {
+        System.arraycopy(grid[i], 0, newGrid[i], 0, grid[i].length);
+    }
+    return newGrid;
+}
+
    
         public int getStart_x() {
         return index_x;
