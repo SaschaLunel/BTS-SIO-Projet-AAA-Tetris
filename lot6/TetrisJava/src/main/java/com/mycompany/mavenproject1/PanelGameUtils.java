@@ -20,25 +20,37 @@ public class PanelGameUtils {
     
     // Fonction pour faire descendre le Tetromino
     protected static void dropBlock(PanelGame PanelGame) {
-        if (canMoveBlock()){
+        
+        PanelGame.gridGameInstance.setStart_x(PanelGame.gridGameInstance.getStart_x() + 1);
+        
+        int[][] copyGridGame = copyGrid(PanelGame.gridGameInstance.gridGame);
+        int[] localRow = copyGridGame[-1];
+        
+        PanelGame.gridGameInstance.clearBlockInGrid(copyGridGame);
+        
         // Parcourir la grille de bas en haut pour éviter les collisions
-        for (int i = PanelGame.gridGameInstance.gridGame.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
+        for (int i = copyGridGame.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
             // Copier la ligne actuelle dans la ligne du dessous
-            PanelGame.gridGameInstance.gridGame[i + 1] = PanelGame.gridGameInstance.gridGame[i];
+            copyGridGame[i-1] = copyGridGame[i];
         }
         // Vider la première ligne après le déplacement
-        PanelGame.gridGameInstance.gridGame[0] = new int[PanelGame.column];
+        copyGridGame[0] = new int[PanelGame.column];
         
         PanelGame.gridGameInstance.setStart_x(PanelGame.gridGameInstance.getStart_x()+1);
+        
         }
-        else {
-            
-        }
-    }
+
+    
     
      protected static  void moveBlock(PanelGame PanelGame, int direction) {
             
             int block_length = PanelGame.gridGameInstance.getNewBlock().length();
+            
+            if (!canMoveBlock()){
+            return;
+            }
+
+
         
             if (direction > 0 && PanelGame.gridGameInstance.getStart_y()< PanelGame.gridGameInstance.gridGame[0].length - (PanelGame.gridGameInstance.getNewBlock().length())) {
 
@@ -71,4 +83,13 @@ public class PanelGameUtils {
             }
 
     }
+     
+            // Helper method to create a copy of the gridGame
+       private static int[][] copyGrid(int[][] grid) {
+           int[][] newGrid = new int[grid.length][grid[0].length];
+           for (int i = 0; i < grid.length; i++) {
+               System.arraycopy(grid[i], 0, newGrid[i], 0, grid[i].length);
+           }
+           return newGrid;
+       }
 }
