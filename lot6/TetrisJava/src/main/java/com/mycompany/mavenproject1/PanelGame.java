@@ -53,9 +53,11 @@ public class PanelGame extends JPanel implements EventListener {
     private Timer swingTimer;
     private TimerWidget timer = new TimerWidget();
 
+    //image 
     private static BufferedImage img_background;
     private static BufferedImage img_slot;
     private static BufferedImage img_block;
+    private static BufferedImage img_block7;
 
     //Event Dispacher
     private EventDispatcher dispatcher;  // Déclaration de l'instance d'EventDispatcher
@@ -64,7 +66,7 @@ public class PanelGame extends JPanel implements EventListener {
 
     //COnstructeur
     public PanelGame() {
-        grid = new Grid();
+        
         gridGameInstance = new GridGame(row, column);
         gridGameInstance.CreateGrid();
 
@@ -85,8 +87,9 @@ public class PanelGame extends JPanel implements EventListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 secondes++;
-                PanelGameUtils.dropBlock(PanelGame.this);
+                PanelGameUtils.dropBlock(PanelGame.this, gridGameInstance);
                 timer.removeTime();
+                gridGameInstance.printGrid(gridGameInstance.gridGame);
                 repaint(); // Rafraîchir l'affichage
             }
         });
@@ -96,6 +99,7 @@ public class PanelGame extends JPanel implements EventListener {
             img_background = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\background.png")));
             img_slot = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\img_slot.png")));
             img_block = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\sprite_block.png")));
+            img_block7 = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\sprite_block_7.png")));
 
         } catch (IOException e) {
             // Log the error or handle it appropriately
@@ -147,6 +151,10 @@ public class PanelGame extends JPanel implements EventListener {
                 int y = Math.round(cellHeight * i);
                 if (gridGameInstance.gridGame[i][j] == 1) {
                     g.drawImage(img_block, x + gridOffsetX, y + 1, cellSize, cellSize, this);
+
+                }
+                if (gridGameInstance.gridGame[i][j] == 7) {
+                    g.drawImage(img_block7, x + gridOffsetX, y + 1, cellSize, cellSize, this);
 
                 }
 
