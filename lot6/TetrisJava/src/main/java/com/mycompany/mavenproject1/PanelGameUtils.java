@@ -27,9 +27,6 @@ public class PanelGameUtils {
         // Create a copy of the current grid
         int[][] copyGridGame = copyGrid(panelGame.gridGameInstance.gridGame);
 
-        // Clear the current block's position in the copied grid
-        panelGame.gridGameInstance.clearBlockInGrid(copyGridGame);
-
         // Retrieve the current block's shape based on its rotation index
         AbstractBlock currentBlock = panelGame.gridGameInstance.new_block;
         int[][][] blockShapes = currentBlock.getShape();
@@ -44,11 +41,13 @@ public class PanelGameUtils {
         );
 
         if (isAdded) {
+            // Clear the current block's position in the copied grid
+            panelGame.gridGameInstance.clearBlockInGrid(copyGridGame);
             // Update the grid with the new block position
             panelGame.gridGameInstance.gridGame = copyGridGame;
+
         } else {
             // Handle the case where the block can no longer move down
-            panelGame.gridGameInstance.gridGame = copyGridGame;
             handleBlockLock(panelGame);
         }
     }
@@ -169,6 +168,7 @@ public class PanelGameUtils {
                 for (int j = 0; j < smallGrid[i].length; j++) {
                     largeGrid[originX + i][originY + j] += smallGrid[i][j]; // Additionner les valeurs
                     if (largeGrid[originX + i][originY + j] % 2 == 0 && largeGrid[originX + i][originY + j] != 0) {
+                        System.out.println("Il y a un nombre pair >0");
                         return false;
                     }
                 }
