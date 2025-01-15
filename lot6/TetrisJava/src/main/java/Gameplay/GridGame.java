@@ -48,6 +48,12 @@ public class GridGame {
         this.column = column;
         this.row = row;
         gridGame = new int[row][column];
+         // Initialisation de chaque élément à 1
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                gridGame[i][j] = 1; // Set each element to 1
+            }
+        }
     }
 
     // Méthode pour récupérer un bloc aléatoire
@@ -79,7 +85,7 @@ public class GridGame {
             for (int j = 0; j < blockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (index_x + i < gridGame.length && index_y + j < gridGame[0].length) {
-                    gridGame[index_x + i][index_y + j] = blockShape[i][j]; // Placer le bloc dans la grille
+                    gridGame[index_x + i][index_y + j] += blockShape[i][j]; // Placer le bloc dans la grille
                 }
             }
         }
@@ -129,8 +135,8 @@ public class GridGame {
     public int[][] clearBlockInGrid(int[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 1) {
-                    grid[i][j] = 0;
+                if (grid[i][j] == 2) {
+                    grid[i][j] = 1;
                 }
             }
         }
