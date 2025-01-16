@@ -149,11 +149,11 @@ public class PanelGame extends JPanel implements EventListener {
             for (int j = 0; j < column; j++) {
                 int x = Math.round(cellWidth * j);
                 int y = Math.round(cellHeight * i);
-                if (gridGameInstance.gridGame[i][j] == 1) {
+                if (gridGameInstance.gridGame[i][j] == 2) {
                     g.drawImage(img_block, x + gridOffsetX, y + 1, cellSize, cellSize, this);
 
                 }
-                if (gridGameInstance.gridGame[i][j] == 7) {
+                if (gridGameInstance.gridGame[i][j] == 4) {
                     g.drawImage(img_block7, x + gridOffsetX, y + 1, cellSize, cellSize, this);
 
                 }

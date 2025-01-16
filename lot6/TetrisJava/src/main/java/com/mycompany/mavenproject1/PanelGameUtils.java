@@ -18,22 +18,23 @@ public class PanelGameUtils {
         return true;
     }
 
-    // Function to drop the Tetromino one step down
     protected static void dropBlock(PanelGame panelGame, GridGame grid) {
-
-        // Increment the origin of the block to move it down
-        panelGame.gridGameInstance.setStart_x(panelGame.gridGameInstance.getStart_x() + 1);
-
-        // Create a copy of the current grid
+        // Créer une copie de la grille
         int[][] copyGridGame = copyGrid(panelGame.gridGameInstance.gridGame);
 
-        // Retrieve the current block's shape based on its rotation index
+        // Effacer l'ancien bloc (mettre les cases à "vide")
+        copyGridGame = panelGame.gridGameInstance.clearBlockInGrid(copyGridGame);
+
+        // Incrémenter la position pour descendre le bloc
+        panelGame.gridGameInstance.setStart_x(panelGame.gridGameInstance.getStart_x() + 1);
+
+        // Récupérer la forme du bloc avec sa rotation actuelle
         AbstractBlock currentBlock = panelGame.gridGameInstance.new_block;
         int[][][] blockShapes = currentBlock.getShape();
         int[][] rotatedBlock = blockShapes[panelGame.gridGameInstance.getIndex_rotation()];
 
-        // Attempt to add the block to the new position in the grid
-        boolean isAdded = addBlockToGrid(
+        // Tenter d'ajouter le bloc à la nouvelle position
+        boolean isAdded = CanAddBlockToGrid(
                 copyGridGame,
                 rotatedBlock,
                 panelGame.gridGameInstance.index_x,
@@ -41,13 +42,11 @@ public class PanelGameUtils {
         );
 
         if (isAdded) {
-            // Clear the current block's position in the copied grid
-            panelGame.gridGameInstance.clearBlockInGrid(copyGridGame);
-            // Update the grid with the new block position
+            // Si le bloc peut être placé, mettre à jour la grille
             panelGame.gridGameInstance.gridGame = copyGridGame;
-
         } else {
-            // Handle the case where the block can no longer move down
+            // Si le bloc ne peut pas descendre, annuler le déplacement et le verrouiller
+            panelGame.gridGameInstance.setStart_x(panelGame.gridGameInstance.getStart_x() - 1);
             handleBlockLock(panelGame);
         }
     }
@@ -60,12 +59,13 @@ public class PanelGameUtils {
         AbstractBlock currentBlock = panelGame.gridGameInstance.new_block;
         int[][][] blockShapes = currentBlock.getShape();
         int[][] rotatedBlock = blockShapes[panelGame.gridGameInstance.getIndex_rotation()];
-        addBlockToGrid(
-                panelGame.gridGameInstance.gridGame,
-                rotatedBlock,
-                panelGame.gridGameInstance.index_x,
-                panelGame.gridGameInstance.index_y
-        );
+//        CanAddBlockToGrid(
+//                panelGame.gridGameInstance.gridGame,
+//                rotatedBlock,
+//                panelGame.gridGameInstance.index_x,
+//                panelGame.gridGameInstance.index_y
+//        );
+        convertBlockOnGrid(panelGame.gridGameInstance.gridGame);
 
         // 2. Check for and clear any completed rows
         clearCompletedRows(panelGame.gridGameInstance.gridGame);
@@ -85,7 +85,7 @@ public class PanelGameUtils {
 
             // Check if the row is completely filled
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 0) {
+                if (grid[i][j] == PanelGame.gridGameInstance.getBlockIndex("vide")) {
                     isRowComplete = false;
                     break;
                 }
@@ -102,7 +102,7 @@ public class PanelGameUtils {
 // Function to clear a specific row and shift rows above it down
     private static void clearRow(int[][] grid, int rowIndex) {
         for (int i = rowIndex; i > 0; i--) {
-            grid[i] = grid[i - 1]; // Shift the row above down
+            grid[i] = grid[PanelGame.gridGameInstance.getBlockIndex("vide")]; // Shift the row above down
         }
         grid[0] = new int[grid[0].length]; // Clear the top row
     }
@@ -159,25 +159,49 @@ public class PanelGameUtils {
         return newGrid;
     }
 
-    // Fonction pour ajouter une grille 4x4 dans une grille 20x20 à une position d'origine variable
-    public static boolean addBlockToGrid(int[][] largeGrid, int[][] smallGrid, int originX, int originY) {
-        // Vérifier que la grille 4x4 peut être insérée dans la grille 20x20 à la position donnée
-        if (originX + smallGrid.length <= largeGrid.length && originY + smallGrid[0].length <= largeGrid[0].length) {
-            // Ajouter la grille 4x4 dans la grille 20x20 en additionnant les valeurs
-            for (int i = 0; i < smallGrid.length; i++) {
-                for (int j = 0; j < smallGrid[i].length; j++) {
-                    largeGrid[originX + i][originY + j] += smallGrid[i][j]; // Additionner les valeurs
-                    if (largeGrid[originX + i][originY + j] % 2 == 0 && largeGrid[originX + i][originY + j] != 0) {
-                        System.out.println("Il y a un nombre pair >0");
+    private static void convertBlockOnGrid(int[][] gridGame) {
+
+        for (int i = 0; i < gridGame.length; i++) {
+            for (int j = 0; j < gridGame[0].length; j++) {
+                if (gridGame[i][j] == 3 || gridGame[i][j] == 2) {
+                    gridGame[i][j] = 4;                                 // Si le slot = collision ou slot = block player alors il est transformer en block poser
+                }
+            }
+
+        }
+
+    }
+
+    public static boolean CanAddBlockToGrid(int[][] largeGrid, int[][] smallGrid, int originX, int originY) {
+        // Vérifier que le bloc peut être inséré dans la grille aux coordonnées données
+        if (originX + smallGrid.length > largeGrid.length || originY + smallGrid[0].length > largeGrid[0].length) {
+            System.out.println("Le bloc dépasse les limites de la grille.");
+            return false;
+        }
+
+        // Première passe : vérification des collisions
+        for (int i = 0; i < smallGrid.length; i++) {
+            for (int j = 0; j < smallGrid[i].length; j++) {
+                if (smallGrid[i][j] == 1) {
+                    // Vérifier s'il y a déjà un bloc posé (valeur 4) à cet endroit
+                    if (largeGrid[originX + i][originY + j] == PanelGame.gridGameInstance.getBlockIndex("block_poser")) {
+                        System.out.println("Collision détectée avec un bloc existant");
                         return false;
                     }
                 }
-
             }
-        } else {
-            System.out.println("La grille 4x4 dépasse les limites de la grille 20x20.");
-            return false;
         }
+
+        // Deuxième passe : placement du bloc
+        for (int i = 0; i < smallGrid.length; i++) {
+            for (int j = 0; j < smallGrid[i].length; j++) {
+                if (smallGrid[i][j] == 1) {
+                    // Placer le bloc avec la valeur 2 (block_player) au lieu de 3 (collision)
+                    largeGrid[originX + i][originY + j] = PanelGame.gridGameInstance.getBlockIndex("block_player");
+                }
+            }
+        }
+
         return true;
     }
 
@@ -191,7 +215,7 @@ public class PanelGameUtils {
 
         // Check if the new Tetromino can be placed
         int[][] initialBlockShape = newBlock.getShape()[0];
-        return addBlockToGrid(
+        return CanAddBlockToGrid(
                 gridGame.gridGame,
                 initialBlockShape,
                 gridGame.index_x,

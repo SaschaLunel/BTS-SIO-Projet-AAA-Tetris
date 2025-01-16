@@ -43,6 +43,26 @@ public class GridGame {
         new IBlock(),
         new TBlock()
     };
+    
+    private static final String[] ArrayNomenclatureBlock = {
+        "none",
+        "vide",
+        "block_player",
+        "collision",
+        "block_poser"
+    };
+    
+    public int getBlockIndex(String blockName) {
+    for (int i = 0; i < ArrayNomenclatureBlock.length; i++) {
+        if (ArrayNomenclatureBlock[i].equals(blockName)) {
+            return i; // Retourne l'indice si le nom correspond
+        }
+    }
+    return -1; // Retourne -1 si le nom n'est pas trouvé
+}
+
+    public GridGame() {
+    }
 
     public GridGame(int row, int column) {
         this.column = column;
@@ -51,7 +71,7 @@ public class GridGame {
          // Initialisation de chaque élément à 1
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                gridGame[i][j] = 1; // Set each element to 1
+                gridGame[i][j] = getBlockIndex("vide"); // Set each element to 1
             }
         }
     }
@@ -85,7 +105,10 @@ public class GridGame {
             for (int j = 0; j < blockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (index_x + i < gridGame.length && index_y + j < gridGame[0].length) {
-                    gridGame[index_x + i][index_y + j] += blockShape[i][j]; // Placer le bloc dans la grille
+                    if (blockShape[i][j] != 0){
+                        gridGame[index_x + i][index_y + j] = getBlockIndex("block_player");   // Placer le bloc dans la grille
+                    }
+                   
                 }
             }
         }
@@ -124,7 +147,7 @@ public class GridGame {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] > 1) {
+                if (grid[i][j] == 4) {
                     return true;
                 }
             }
@@ -135,8 +158,8 @@ public class GridGame {
     public int[][] clearBlockInGrid(int[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 2) {
-                    grid[i][j] = 1;
+                if (grid[i][j] == getBlockIndex("block_player")) {
+                    grid[i][j] = getBlockIndex("vide");
                 }
             }
         }
@@ -185,7 +208,10 @@ public class GridGame {
             for (int j = 0; j < blockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (index_x + i < gridGame.length && index_y + j < gridGame[0].length) {
-                    gridGame[index_x + i][index_y + j] = blockShape[i][j]; // Placer le bloc dans la grille
+                    if (blockShape[i][j]==1){
+                        gridGame[index_x + i][index_y + j] = getBlockIndex("block_player"); // Placer le bloc dans la grille
+                    }
+                    
                 }
             }
         }
