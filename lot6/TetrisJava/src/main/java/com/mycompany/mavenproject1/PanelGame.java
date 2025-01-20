@@ -34,19 +34,21 @@ import java.util.Set;
 public class PanelGame extends JPanel implements EventListener {
 
     //Chemin absolu du projet 
-    String directoryProject = System.getProperty("user.dir");
+    private String directoryProject = System.getProperty("user.dir");
 
     //Variables Globales des Tailles des grilles 
-    public static int row = 25;
-    public static int column = 15;
+    private static int row;
+    private static int column;
 
     //Taille Ecran voulu 
-    public static int sizeHeight = 720;
-    public static int sizeWidth = 1080;
+    private static int sizeHeight;
+    private static int sizeWidth;
 
+  
     //Instances des grille de jeux 
-    protected Grid grid;
+   
     protected static GridGame gridGameInstance;
+    protected static int [][] gridGame;
 
     //Gestion du temps
     private int secondes = 0;
@@ -67,8 +69,14 @@ public class PanelGame extends JPanel implements EventListener {
     //COnstructeur
     public PanelGame() {
         
+        row = 25;
+        column = 15;
+        sizeHeight = 720;
+        sizeWidth = 1080;
         gridGameInstance = new GridGame(row, column);
         gridGameInstance.CreateGrid();
+        
+        gridGame = gridGameInstance.gridGame;
 
         //event DIspatcher
         dispatcher = new EventDispatcher();
@@ -204,12 +212,23 @@ private void rotationBlock(){
         if ("KEY_PRESS".equals(eventName)) {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
             String key = (String) data;
-            if (key == "Gauche") {
-                PanelGameUtils.moveBlock(this, -1);
-            } else if (key == "Droite") {
-                PanelGameUtils.moveBlock(this, 1);
-            } else if (key == "Tourner") {
-                rotationBlock();
+            int[][][] shape = gridGameInstance.new_block.getShape();
+            switch (key) {
+                case "Gauche":
+                    
+                    gridGameInstance.index_y = PanelGameUtils.movePiece(shape[gridGameInstance.getIndex_rotation()], gridGameInstance.index_x, gridGameInstance.index_x, -1) ;
+                    repaint();
+                    break;
+                case "Droite":
+                    
+                    gridGameInstance.index_y = PanelGameUtils.movePiece(shape[gridGameInstance.getIndex_rotation()], gridGameInstance.index_x, gridGameInstance.index_x, 1) ;
+                    repaint();
+                    break;
+                case "Tourner":
+                    rotationBlock();
+                    break;
+                default:
+                    break;
             }
             
         }
@@ -219,4 +238,22 @@ private void rotationBlock(){
     public void triggerEvent() {
         dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
     }
+    
+    //GETTER ET SETTER 
+    public static int getRow() {
+        return row;
+    }
+
+    public static int getColumn() {
+        return column;
+    }
+    
+      public static int getSizeHeight() {
+        return sizeHeight;
+    }
+
+    public static int getSizeWidth() {
+        return sizeWidth;
+    }
+
 }

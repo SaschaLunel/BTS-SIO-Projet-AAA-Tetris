@@ -107,47 +107,63 @@ public class PanelGameUtils {
         grid[0] = new int[grid[0].length]; // Clear the top row
     }
 
-    private static void SuccesBlock() {
+    private void SuccesBlock() {
         replaceOneAndTwoWithSeven(PanelGame.gridGameInstance.gridGame);
         PanelGame.gridGameInstance.CreateNewBlock();
     }
 
-    protected static void moveBlock(PanelGame PanelGame, int direction) {
+    public static boolean canMoveHorizontal(int[][] piece, int posX, int posY, int direction) {
+        int height = piece.length;
+        int width = piece[0].length;
 
-        int block_length = PanelGame.gridGameInstance.getNewBlock().length();
-
-        if (!canMoveBlock()) {
-            return;
+        // Vérifier les limites de la grille
+        int newPosX = posX + direction;
+        if (newPosX < 0 || newPosX + width > PanelGame.gridGameInstance.gridGame[0].length) {
+            return false;
         }
 
-        if (direction > 0 && PanelGame.gridGameInstance.getStart_y() < PanelGame.gridGameInstance.gridGame[0].length - (PanelGame.gridGameInstance.getNewBlock().length())) {
-
-            // Parcourir la grille de bas en haut pour éviter les collisions
-            for (int i = PanelGame.gridGameInstance.gridGame.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
-                // Copier la ligne actuelle dans la ligne du dessous
-                for (int j = PanelGame.gridGameInstance.gridGame[i].length - 2; j >= 0; j--) {
-                    PanelGame.gridGameInstance.gridGame[i][j + 1] = PanelGame.gridGameInstance.gridGame[i][j];
+        // Vérifier les collisions avec les autres blocs
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (piece[y][x] == 3) {
+                    int gridCell = PanelGame.gridGameInstance.gridGame[posY + y][newPosX + x];
+                    if (gridCell == 4 || gridCell == 3) {
+                        return false;
+                    }
                 }
-                // Vider la première ligne après le déplacement
-                PanelGame.gridGameInstance.gridGame[i][0] = 0; // 0 représente une case vide // Suppose qu'une ligne vide est un tableau d'entiers initialisés à 0
             }
-
-            System.out.println(PanelGame.gridGameInstance.getStart_y() + "<<" + (PanelGame.gridGameInstance.gridGame[0].length - PanelGame.gridGameInstance.getNewBlock().length()));
-            PanelGame.gridGameInstance.setStart_y(PanelGame.gridGameInstance.getStart_y() + 1);
-            PanelGame.repaint();
-
-        } else if (direction < 0 && PanelGame.gridGameInstance.getStart_y() > 0) { // Déplacement à gauche
-            // Parcourir la grille de haut en bas
-            for (int i = 0; i < PanelGame.gridGameInstance.gridGame.length; i++) {
-                for (int j = 1; j < PanelGame.gridGameInstance.gridGame[i].length; j++) { // Parcourir de gauche à droite
-                    PanelGame.gridGameInstance.gridGame[i][j - 1] = PanelGame.gridGameInstance.gridGame[i][j]; // Déplacer vers la gauche
-                }
-                PanelGame.gridGameInstance.gridGame[i][PanelGame.gridGameInstance.gridGame[i].length - 1] = 0; // Effacer la dernière colonne
-            }
-            PanelGame.gridGameInstance.setStart_y(PanelGame.gridGameInstance.getStart_y() - 1);
-            PanelGame.repaint();
         }
+        return true;
+    }
 
+    public static int movePiece(int[][] piece, int posX, int posY, int direction) {
+        System.out.println(canMoveHorizontal(piece, posX, posY, direction));
+        if (canMoveHorizontal(piece, posX, posY, direction)) {
+            // Effacer l'ancienne position (remettre à VIDE)
+            int height = piece.length;
+            int width = piece[0].length;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (piece[y][x] == 3) {
+                        PanelGame.gridGameInstance.gridGame[posY + y][posX + x] = 1;
+                    }
+                }
+            }
+
+            // Dessiner à la nouvelle position
+            int newPosX = posX + direction;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    if (piece[y][x] == 3) {
+                        PanelGame.gridGameInstance.gridGame[posY + y][newPosX + x] = 3;
+                    }
+                }
+            }
+            
+            return newPosX;
+        }
+        
+        return posX;
     }
 
     // Helper method to create a copy of the gridGame
