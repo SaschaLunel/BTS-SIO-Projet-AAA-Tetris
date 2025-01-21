@@ -44,11 +44,9 @@ public class PanelGame extends JPanel implements EventListener {
     private static int sizeHeight;
     private static int sizeWidth;
 
-  
     //Instances des grille de jeux 
-   
     protected static GridGame gridGameInstance;
-    protected static int [][] gridGame;
+    protected static int[][] gridGame;
 
     //Gestion du temps
     private int secondes = 0;
@@ -68,14 +66,14 @@ public class PanelGame extends JPanel implements EventListener {
 
     //COnstructeur
     public PanelGame() {
-        
+
         row = 25;
         column = 15;
         sizeHeight = 720;
         sizeWidth = 1080;
         gridGameInstance = new GridGame(row, column);
         gridGameInstance.CreateGrid();
-        
+
         gridGame = gridGameInstance.gridGame;
 
         //event DIspatcher
@@ -118,6 +116,7 @@ public class PanelGame extends JPanel implements EventListener {
 
     @Override
     protected void paintComponent(Graphics g) {
+        System.out.println("Sa peint !!");
         super.paintComponent(g);
 
         float ratiocell = 0.035f;
@@ -170,8 +169,7 @@ public class PanelGame extends JPanel implements EventListener {
         }
     }
 
-    
-private void rotationBlock(){
+    private void rotationBlock() {
         System.out.println("rotation !!!!");
         gridGameInstance.gridGame = gridGameInstance.rotationGrid();
         repaint();
@@ -213,24 +211,36 @@ private void rotationBlock(){
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
             String key = (String) data;
             int[][][] shape = gridGameInstance.new_block.getShape();
+            System.out.println(key);
             switch (key) {
-                case "Gauche":
-                    
-                    gridGameInstance.index_y = PanelGameUtils.movePiece(shape[gridGameInstance.getIndex_rotation()], gridGameInstance.index_x, gridGameInstance.index_x, -1) ;
+                case "Gauche" -> {
+                    // Changé index_x en index_y
+                    gridGameInstance.index_y = PanelGameUtils.movePiece(
+                            shape[gridGameInstance.getIndex_rotation()],
+                            gridGameInstance.index_y, // Position y actuelle
+                            gridGameInstance.index_x, // Position x actuelle
+                            -1 // Déplacement vers la gauche
+                    );
+                    System.out.println("gauche");
                     repaint();
-                    break;
-                case "Droite":
-                    
-                    gridGameInstance.index_y = PanelGameUtils.movePiece(shape[gridGameInstance.getIndex_rotation()], gridGameInstance.index_x, gridGameInstance.index_x, 1) ;
+                }
+                case "Droite" -> {
+                    // Changé index_x en index_y
+                    gridGameInstance.index_y = PanelGameUtils.movePiece(
+                            shape[gridGameInstance.getIndex_rotation()],
+                            gridGameInstance.index_y, // Position y actuelle
+                            gridGameInstance.index_x, // Position x actuelle
+                            1 // Déplacement vers la droite
+                    );
+                    System.out.println("droite");
                     repaint();
-                    break;
-                case "Tourner":
+                }
+                case "Tourner" ->
                     rotationBlock();
-                    break;
-                default:
-                    break;
+                default -> {
+                }
             }
-            
+
         }
     }
 
@@ -238,7 +248,7 @@ private void rotationBlock(){
     public void triggerEvent() {
         dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
     }
-    
+
     //GETTER ET SETTER 
     public static int getRow() {
         return row;
@@ -247,12 +257,12 @@ private void rotationBlock(){
     public static int getColumn() {
         return column;
     }
-    
-      public static int getSizeHeight() {
+
+    public int getSizeHeight() {
         return sizeHeight;
     }
 
-    public static int getSizeWidth() {
+    public int getSizeWidth() {
         return sizeWidth;
     }
 

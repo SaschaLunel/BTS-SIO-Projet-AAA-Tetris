@@ -13,15 +13,10 @@ import javax.swing.JFrame;
  */
 public class Mavenproject1  {
 
-    int sizeWidth;
-    int sizeHeight;
-    PanelGame myPanel;
+    static int sizeWidth;
+    static int sizeHeight;
+    
     public Mavenproject1() {
-        
-        // Créer une instance de ta classe Panel
-        myPanel = new PanelGame();
-        int sizeWidth = myPanel.getWidth();
-        int sizeHeight = myPanel.getHeight();
         
     }
 
@@ -34,7 +29,11 @@ public class Mavenproject1  {
         // Assurer que l'application se termine lorsque la fenêtre est fermée
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
+        // Créer une instance de ta classe Panel
+        PanelGame myPanel = new PanelGame();
         
+        int sizeWidth = myPanel.getSizeWidth();
+        int sizeHeight = myPanel.getSizeHeight();
         
         
         
