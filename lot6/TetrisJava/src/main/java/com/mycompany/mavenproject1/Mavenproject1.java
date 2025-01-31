@@ -6,15 +6,18 @@ package com.mycompany.mavenproject1;
 
 
 import javax.swing.JFrame;
+import BDD.baseDeDonnees;
+import events.InterfaceMain;
 
 /**
  *
  * @author SIO
  */
-public class Mavenproject1  {
+public class Mavenproject1 implements InterfaceMain  {
 
-    static int sizeWidth;
-    static int sizeHeight;
+    private static int sizeWidth;
+    private static int sizeHeight;
+    private static baseDeDonnees bdd;
     
     public Mavenproject1() {
         
@@ -49,4 +52,15 @@ public class Mavenproject1  {
         // Optionnel : centrer la fenêtre à l'écran
         frame.setLocationRelativeTo(null);
     }
+    
+    /**
+     *
+     * @param login
+     * @param mdp
+     */
+    @Override
+    public void SeconnecterBDD(String login, String mdp){
+        bdd = new baseDeDonnees(login, mdp);
+    }
+    
 }

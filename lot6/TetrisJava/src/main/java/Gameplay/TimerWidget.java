@@ -10,25 +10,21 @@ package Gameplay;
  */
 public class TimerWidget {
 
-   public static int minutes = 3;
-   public static int secondes = 4;
+   public static int minutes = 0;
+   public static int secondes = 0;
     public TimerWidget() {
         
         
     }
     
-    public boolean removeTime(){
-        if (secondes<1){
-            secondes=59;
-            minutes-=1;
+    public void removeTime(){
+        if (secondes>59){
+            secondes=0;
+            minutes+=1;
         }
         else {
-            secondes-=1;
-            if (secondes<1){
-                return true;
-            }
+            secondes+=1;
         }
-        return false;
     }
     
 }

@@ -28,11 +28,11 @@ public class PlayerController implements KeyListener {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_DOWN:
                 // Code pour la touche "Bas"
-                System.out.println("Touche Bas pressée");
+                dispatcher.dispatchEvent("KEY_PRESS", "Bas");
                 break;
             case KeyEvent.VK_UP:
                 // Code pour la touche "Haut"
-                System.out.println("Touche Haut pressée");
+                
                 break;
             case KeyEvent.VK_LEFT:
                 // Code pour la touche "Gauche"
@@ -49,7 +49,7 @@ public class PlayerController implements KeyListener {
                 break;
             default:
                 // Code par défaut si aucune des touches n'est détectée
-                System.out.println("Autre touche pressée");
+                
                 break;
         }
     }
