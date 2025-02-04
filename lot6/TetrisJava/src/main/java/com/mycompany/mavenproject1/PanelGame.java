@@ -68,7 +68,7 @@ public class PanelGame extends JPanel implements EventListener {
     //COnstructeur
     public PanelGame() {
 
-        row = 25;
+        row = 15;
         column = 15;
         sizeHeight = 720;
         sizeWidth = 1080;
