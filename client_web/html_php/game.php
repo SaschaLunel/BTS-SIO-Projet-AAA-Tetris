@@ -44,11 +44,12 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
         <button id="settingsButton">Settings</button>
         <button id="quitGameButton">Quit</button>
     </div>
-
-    <div id="inputTest">Appuyez sur une flèche pour voir l'action</div>
+    
+    <!-- Score, masqué par défaut -->
+    <div id="score-box"><span id="score">0</span></div>
 
     <!-- Lien vers le script JavaScript -->
-    <script src="../js/script.js"></script> 
+    <script src="../js/script_constversion.js"></script> 
     
 </body>
 </html>

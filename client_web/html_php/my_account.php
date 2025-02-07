@@ -118,6 +118,14 @@ $conn->close();
 
         <button type="submit" name="update">Update</button>
         <button type="submit" name="delete" onclick="return confirm('Voulez-vous vraiment supprimer votre compte ?');">Delete account</button>
-    </form>
+    
+    <!-- Boutons à droite du menu pour jouer ou quitter le jeu -->
+    <div id="right_buttons">
+    <button onclick="window.location.href='game.php';">Play</button>
+    <button onclick="window.location.href='index.php';">Quit</button>
+</div>
+
+<script src="../js/script_constversion.js"></script> 
+
 </body>
 </html>

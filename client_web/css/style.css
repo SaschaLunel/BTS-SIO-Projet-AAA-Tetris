@@ -501,3 +501,47 @@ body > form {
     text-transform: uppercase; /* Texte en majuscules */
     transition: 0.3s ease; /* Animation de transition pour survol */
 }
+
+/*Style pour les boutons à droite du menu central sur la page my_account.php*/
+#right_buttons {
+    position: absolute;
+    right: 180px; /* Ajustez pour définir la marge droite */
+    top: 50%; /* Ajustez pour la hauteur */
+    transform: translateY(-50%); /* Centrer verticalement */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espace entre les boutons */
+}
+
+#right_buttons button {
+    background-color: #4B606E; /* Rouge pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px; /* Ajustez si nécessaire */
+    transition: 0.3s ease;
+}
+#right_buttons button:hover {
+    transform: scale(1.05);
+    transform: translateY(-2px);}
+
+/*Style encadré des scores de la page game.php*/
+#score-box {
+    position: absolute; 
+    left: 25%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(242, 233, 208, 0.8); /* Fond semi-transparent */
+    border: 4px solid #C9B19D; /* Bordure dorée */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 15px;
+    color: white; /* Couleur du texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    text-align: center;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet 3D */
+}

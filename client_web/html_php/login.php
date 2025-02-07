@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Lien vers le script JavaScript -->
-    <script src="../js/script.js"></script>
+    <script src="../js/script_constversion.js"></script> 
 </body>
 
 </html>
