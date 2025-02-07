@@ -1,9 +1,11 @@
 events\EventListener.class
+Menu\PanelMenu.class
 BlockFolder\JBlock.class
 Gameplay\GridGame.class
 BDD\baseDeDonnees.class
 Scripts\PlayerController.class
 Gameplay\Grid.class
+Menu\ButtonMenu.class
 connect\Panel_Login$1.class
 Gameplay\TimerWidget.class
 Menu\Panel.class

@@ -31,7 +31,7 @@ public class PlayerController implements KeyListener {
                 dispatcher.dispatchEvent("KEY_PRESS", "Bas");
                 break;
             case KeyEvent.VK_UP:
-                // Code pour la touche "Haut"
+                dispatcher.dispatchEvent("KEY_PRESS", "Tourner");
                 
                 break;
             case KeyEvent.VK_LEFT:
@@ -47,6 +47,7 @@ public class PlayerController implements KeyListener {
             case KeyEvent.VK_CONTROL:
                 dispatcher.dispatchEvent("KEY_PRESS", "Tourner");
                 break;
+                
             default:
                 // Code par défaut si aucune des touches n'est détectée
                 

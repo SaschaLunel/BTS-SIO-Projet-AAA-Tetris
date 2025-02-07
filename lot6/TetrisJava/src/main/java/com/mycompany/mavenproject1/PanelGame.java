@@ -102,7 +102,7 @@ public class PanelGame extends JPanel implements EventListener {
         swingTimer.start(); // Démarrer le timer
 
         try {
-            img_background = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\background.png")));
+            img_background = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\background\\background.png")));
             img_slot = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\img_slot.png")));
             img_block = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\sprite_block.png")));
             img_block7 = ImageIO.read(new File(directoryProject.concat("\\src\\main\\java\\Ressources\\sprite_block_7.png")));
