@@ -1,12 +1,11 @@
+console.log("✅ JS Chargé !");
 // Écouteur d'événements pour le bouton GuestButton de LoginGuest.html
-
 let guestButton = document.getElementById('GuestButton')
 if(guestButton) {
     guestButton.addEventListener('click', () => {
     window.location.href = 'index.php'; // Ouvre index.php dans le même onglet
     });
 }
-
 // Écouteur d'événements pour le bouton LoginButton de LoginGuest.html
 let LoginButton = document.getElementById('LoginButton')
 if(LoginButton) {
@@ -28,12 +27,13 @@ if(userButton) {
     window.location.href = 'my_account.php'; // Ouvre my_account.php dans le même onglet
     });
 }
-// Variables pour le timer (lot4)
+
+// Variables pour le timer
 let timerElement = document.getElementById('timer');
 let seconds = 0;
 let timerInterval;
 
-// Fonction pour formater le temps en mm:ss (lot4)
+// Fonction pour formater le temps en mm:ss 
 function formatTime(seconds) {
     let minutes = Math.floor(seconds / 60);
     let remainingSeconds = seconds % 60;
@@ -43,7 +43,7 @@ function formatTime(seconds) {
     );
 }
 
-// Fonction pour démarrer le timer (lot4)
+// Fonction pour démarrer le timer 
 function startTimer() {
     if (!timerInterval) {
         timerInterval = setInterval(() => {
@@ -53,20 +53,20 @@ function startTimer() {
     }
 }
 
-// Fonction pour arrêter le timer (lot4)
+// Fonction pour arrêter le timer 
 function stopTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
 }
 
-// Fonction pour réinitialiser le timer (lot4)
+// Fonction pour réinitialiser le timer 
 function resetTimer() {
     stopTimer();
     seconds = 0;
     timerElement.textContent = 'Time: 00:00';
 }
 
-// Ecouteur d'événements pour les boutons du timer (lot4)
+// Ecouteur d'événements pour les boutons du timer 
 let startTimerButton = document.getElementById('playTimer')
 if (startTimerButton){
     startTimerButton.addEventListener('click', () => {
@@ -85,12 +85,13 @@ if (resetTimerButton){
         resetTimer();
     });
 }
+
 //constantes de dimensions de la grille
 const GRID_WIDTH = 10;
 const GRID_HEIGHT = 20;
 const GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
-// Fonction pour créer la grille de jeu (lot3)
+// Fonction pour créer la grille de jeu 
 function createGrid() {
     let gameGrid = document.getElementById('gameGrid');
     gameGrid.innerHTML = ''; // Vide le contenu de la grille
@@ -103,10 +104,10 @@ function createGrid() {
 }
 
 // Écouteur d'événements pour le bouton Play de index.php
-let playButton = document.getElementById('playButton')
+let playButton = document.getElementById('playButton');
 if (playButton) {
     playButton.addEventListener('click', () => {
-        window.open('game.php', '_blank'); // Ouvre game.php dans un nouvel onglet
+        window.open('game.php', '_self'); // Ouvre game.php dans le même onglet
     });
 }
 
@@ -189,14 +190,25 @@ let currentRotation = 0;
 let currentPosition = Math.floor(GRID_WIDTH / 2) - 1; // Position de départ au centre de la grille
 
 function spawnTetromino() {
-    console.log("spawnTetro OK");
+    console.log("🚀 Tentative de spawn d'un nouveau tétraminos");
+
+    // On ne vérifie le Game Over QUE si des blocs sont déjà fixés
+    if (document.querySelectorAll('.fixed').length > 0 && isGameOver()) {
+        stopAutoDrop();
+        console.log("💀 GAME OVER - Plus d’espace pour spawner un nouveau tétromino !");
+        return;
+    }
+
     const tetrominoKeys = Object.keys(tetrominos);
     const randomKey = tetrominoKeys[Math.floor(Math.random() * tetrominoKeys.length)];
     currentTetromino = tetrominos[randomKey];
     currentRotation = 0;
-    currentPosition = 4; // Position de départ pour chaque nouveau tétraminos
+    currentPosition = 4; // Position de départ
+
     drawTetromino();
 }
+
+
 
 function drawTetromino() {
     console.log("drawTetro OK");
@@ -234,10 +246,8 @@ function moveDown() {
         spawnTetromino();
     }
 }
+
 //Gestion du mouvement avec les flèches
-
-
-
 function canMove(offset) {
     return currentTetromino[currentRotation].every(index => {
         let newPos = currentPosition + index + offset;
@@ -277,25 +287,41 @@ function rotateTetromino() {
 }
 
 //Fixer le tétrominos en bas et faire apparaître un nouveau
-
 function isAtBottom() {
     return currentTetromino[currentRotation].some(index => {
         let newPos = currentPosition + index + GRID_WIDTH;
         return newPos >= GRID_SIZE || document.querySelectorAll('.cell')[newPos].classList.contains('fixed');
     });
 }
-
+//Fonction pour fixer le tétrominos
 function fixTetromino() {
     currentTetromino[currentRotation].forEach(index => {
-        document.querySelectorAll('.cell')[currentPosition + index].classList.add('fixed');
+        let cellIndex = currentPosition + index;
+        let cells = document.querySelectorAll('.cell');
+
+        if (!cells[cellIndex]) {
+            console.error("❌ ERREUR : Cellule hors de la grille !");
+            return;
+        }
+        cells[cellIndex].classList.add('fixed');
     });
-    checkCompletedRows(); // Vérifie les lignes complètes et les efface si nécessaire
-    if (!isGameOver()) {
-        spawnTetromino(); // Apparition d'un nouveau tétrominos
-    } else {
-        stopAutoDrop(); // Fin de la partie
-        alert("Game Over!");
+
+    checkCompletedRows(); // Vérifie et nettoie les lignes complètes
+
+    if (isGameOver()) {
+        stopAutoDrop();
+        console.log("💀 GAME OVER - Redirection vers gameover.php !");
+        
+        // ✅ **Stocker le score avant de rediriger**
+        localStorage.setItem("lastScore", score);
+
+        setTimeout(() => {
+            window.location.href = 'gameover.php';
+        }, 500);
+        return;
     }
+
+    spawnTetromino(); // Apparition d'un nouveau tétromino
 }
 
 //Gestion du score
@@ -303,7 +329,6 @@ let score = 0;
 let scoreElement = document.getElementById('score'); 
 
 //Vérification et effacement des lignes complètes
-
 function checkCompletedRows() {
     const cells = document.querySelectorAll('.cell');
     let completedRows = 0; // Compteur de lignes complètes
@@ -327,13 +352,13 @@ function checkCompletedRows() {
         }
     }
 
-    // Mise à jour du score en fonction du nombre de lignes complétées
+// Mise à jour du score en fonction du nombre de lignes complétées
     if (completedRows > 0) {
         score += completedRows * 100; // 100 points par ligne
         updateScoreDisplay();
     }
 }
-
+//Mise à jour de l'affichage du score
 function updateScoreDisplay() {
     if (scoreElement) {
         scoreElement.textContent = `Score: ${score}`;
@@ -345,47 +370,123 @@ let lateralMoveCount = 0;
 const MAX_LATERAL_MOVES = 3; // Nombre maximum de déplacements latéraux avant de forcer la descente
 
 //Lancement du jeu 
-function initGame() { // Fonction d'initialisation du jeu
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ DOM chargé, script actif !");
+    initGame();
+});
+
+// Vérifier si la grille est bien créée avant de l'utiliser
+function initGame() {
+    console.log("🎮 Initialisation du jeu...");
+    
+    createGrid(); // Crée la grille
     resetTimer(); // Réinitialise le timer
     startTimer(); // Démarre le timer
-    createGrid();  // Crée la grille visuelle
-    spawnTetromino();  // Fait apparaître le premier tétrominos
-    startAutoDrop();  // Démarre le mouvement automatique vers le bas
+
+    if (!document.querySelectorAll('.cell').length) {
+        console.error("❌ ERREUR : La grille n'a pas été générée !");
+        return;
+    }
+
+    spawnTetromino(); // Fait apparaître le premier tétraminos
+    startAutoDrop(); // Lance la descente automatique
 }
 
 //Gestion de fin de jeu 
-function isGameOver() { 
-    return Array.from(document.querySelectorAll('.cell')).slice(0, GRID_WIDTH).some(cell => cell.classList.contains('fixed'));
+// Correction du Game Over check
+function isGameOver() {
+    let cells = document.querySelectorAll('.cell');
+    if (cells.length === 0) {
+        console.error("❌ ERREUR : Impossible de vérifier le Game Over, la grille est vide !");
+        return false;
+    }
+
+    let spawnZone = Array.from(cells).slice(GRID_WIDTH, GRID_WIDTH * 2); // Vérifie uniquement la 2e ligne
+    let gameOver = spawnZone.some(cell => cell.classList.contains('fixed'));
+
+    console.log("🔍 Vérification ligne de spawn :", gameOver);
+    return gameOver;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    let inputTest = document.getElementById('inputTest');
-    let gameGrid = document.getElementById('gameGrid');
+//Gestion des touches du clavier
+let dropFastInterval = null; // Intervalle pour la descente rapide
+let moveLeftInterval = null; // Intervalle pour le déplacement à gauche
+let moveRightInterval = null; // Intervalle pour le déplacement à droite
 
-    document.addEventListener('keydown', (event) => {
-        if (inputTest && !gameGrid) {
-            // Mode page d'accueil -> Tester les touches
-            showTemporaryMessage(event.key);
-        } else if (gameGrid) {
-            // Mode jeu -> Gérer les mouvements
-            if (event.repeat) return; // Empêche les répétitions involontaires
 
-            undrawTetromino();
+document.addEventListener('keydown', (event) => {
+    if (event.repeat) return; // Évite les déclenchements multiples immédiats
 
-            if (event.key === 'ArrowLeft' && canMove(-1)) {
-                currentPosition -= 1;
-            } else if (event.key === 'ArrowRight' && canMove(1)) {
-                currentPosition += 1;
-            } else if (event.key === 'ArrowDown') {
-                moveDown();
-                lateralMoveCount = 0; // Réinitialisation du compteur
-            } else if (event.key === 'ArrowUp') {
-                rotateTetromino();
-            }
+    undrawTetromino();
 
-            drawTetromino();
+    if (event.key === 'ArrowLeft' && canMove(-1)) {
+        currentPosition -= 1;
+        drawTetromino();
+
+        // Déplacement en continu si la touche reste enfoncée
+        if (!moveLeftInterval) {
+            moveLeftInterval = setInterval(() => {
+                if (canMove(-1)) {
+                    undrawTetromino();
+                    currentPosition -= 1;
+                    drawTetromino();
+                }
+            }, 180); // 180ms entre chaque déplacement
         }
-    });
+    } 
+
+    else if (event.key === 'ArrowRight' && canMove(1)) {
+        currentPosition += 1;
+        drawTetromino();
+
+        // Déplacement en continu si la touche reste enfoncée
+        if (!moveRightInterval) {
+            moveRightInterval = setInterval(() => {
+                if (canMove(1)) {
+                    undrawTetromino();
+                    currentPosition += 1;
+                    drawTetromino();
+                }
+            }, 180); // 180ms entre chaque déplacement
+        }
+    }
+
+    else if (event.key === 'ArrowDown') {
+        moveDown(); // Descente immédiate
+        lateralMoveCount = 0; // Réinitialisation
+
+        // Activation de la descente continue
+        if (!dropFastInterval) {
+            dropFastInterval = setInterval(() => {
+                moveDown();
+            }, 100); // 100ms entre chaque descente
+        }
+    }
+
+    else if (event.key === 'ArrowUp') {
+        rotateTetromino();
+    }
+
+    drawTetromino();
+});
+
+
+// Arrêter la descente rapide quand on relâche la touche
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'ArrowLeft' && moveLeftInterval) {
+        clearInterval(moveLeftInterval);
+        moveLeftInterval = null;
+    }
+
+    if (event.key === 'ArrowRight' && moveRightInterval) {
+        clearInterval(moveRightInterval);
+        moveRightInterval = null;
+    }
+
+    if (event.key === 'ArrowDown' && dropFastInterval) {
+        clearInterval(dropFastInterval);
+        dropFastInterval = null;
+    }
 });
 
 // Fonction pour afficher temporairement la touche appuyée sur la page d'accueil
@@ -400,4 +501,19 @@ function showTemporaryMessage(message) {
     }
 }
 
+function checkGameOver() {
+    if (isGameOver()) {
+        stopAutoDrop();
+        console.log("💀 GAME OVER - Redirection vers l'écran de fin !");
+        
+        // ✅ Stocker le score dans le localStorage avant de quitter la page
+        localStorage.setItem("lastScore", score);
 
+        setTimeout(() => {
+            window.location.href = 'gameover.php';
+        }, 500); // Laisse 500ms avant la redirection
+    }
+}
+
+fixTetromino();
+checkGameOver(); // Vérifie si la partie est finie après avoir fixé un bloc

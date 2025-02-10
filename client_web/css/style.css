@@ -545,3 +545,60 @@ body > form {
     text-align: center;
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet 3D */
 }
+/*Style pour le titre du gameover*/
+.gameover-title {
+    font-size: 80px; /* Plus grand que "TETRISCRAFT" */
+    color: #FF0000; /* Rouge vif pour un effet dramatique */
+    text-shadow: 6px 6px 0 #1a1a1a, 10px 10px 20px rgba(255, 0, 0, 0.5); /* Ombre noire + glow */
+    animation: gameover-blink 0.8s infinite alternate;
+    text-transform: uppercase;
+    letter-spacing: 4px; /* Espacement des lettres pour un effet plus imposant */
+    position: relative;
+    top: -80px;
+}
+
+@keyframes gameover-blink {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+#score-box-center {
+    position: relative; /* Assurez-vous que la boîte reste positionnée normalement */
+    z-index: 10; /* Donne la priorité d'affichage sur d'autres éléments */
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border: 3px solid #C9B19D;
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a;
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    color: white;
+}
+.center-buttons-GO {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.center-buttons-GO button {
+    background-color: #4B606E;
+    color: #1a1a1a;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 18px;
+    border: 3px solid #1a1a1a;
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px;
+    transition: 0.3s ease;
+}
+
+.center-buttons button:hover {
+    background-color: #455763;
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
