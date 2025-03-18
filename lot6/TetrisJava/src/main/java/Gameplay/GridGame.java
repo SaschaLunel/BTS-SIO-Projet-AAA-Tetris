@@ -13,6 +13,7 @@ import BlockFolder.JBlock;
 import BlockFolder.IBlock;
 import BlockFolder.TBlock;
 import java.util.Random;
+import javax.swing.Timer;
 
 /**
  *
@@ -30,6 +31,9 @@ public class GridGame {
     public int indexOffset_x;
     public int indexOffset_y;
     public AbstractBlock new_block;
+    
+    private boolean isGameOver = false;
+    private Timer dropTimer; // Ajoutez cette variable pour stocker le Timer
 
     private long lastSoftDropTime = 0;
     private static final long SOFT_DROP_COOLDOWN = 100; // 0.1 seconde en millisecondes
@@ -120,29 +124,29 @@ public class GridGame {
 
     ////////////////////////////FONCTION PRIMAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void movePiece(int direction) {
-    int newY = indexOffset_y + direction;
-    
-    int[][] currentShape = new_block.getShape()[index_rotation];
-    
-    // Vérifier les limites horizontales de manière plus permissive
-    if (newY < 0 || newY + currentShape[0].length > column) {
-        return; // Ne pas permettre le mouvement si cela causerait un débordement
+        int newY = indexOffset_y + direction;
+
+        int[][] currentShape = new_block.getShape()[index_rotation];
+
+        // Vérifier les limites horizontales de manière plus permissive
+        if (newY < 0 || newY + currentShape[0].length > column) {
+            return; // Ne pas permettre le mouvement si cela causerait un débordement
+        }
+
+        int[][] copyGridGame = copyGrid(gridGame);
+        copyGridGame = clearBlockInGrid(copyGridGame);
+
+        // Mettre à jour temporairement la position pour le test
+        indexOffset_y = newY;
+
+        // Vérifier si le bloc peut être placé à la nouvelle position
+        if (CanAddBlockToGrid(copyGridGame)) {
+            gridGame = addBlockToGrid(copyGridGame);
+        } else {
+            // Si le mouvement n'est pas possible, restaurer l'ancienne position
+            indexOffset_y = newY - direction;
+        }
     }
-    
-    int[][] copyGridGame = copyGrid(gridGame);
-    copyGridGame = clearBlockInGrid(copyGridGame);
-    
-    // Mettre à jour temporairement la position pour le test
-    indexOffset_y = newY;
-    
-    // Vérifier si le bloc peut être placé à la nouvelle position
-    if (CanAddBlockToGrid(copyGridGame)) {
-        gridGame = addBlockToGrid(copyGridGame);
-    } else {
-        // Si le mouvement n'est pas possible, restaurer l'ancienne position
-        indexOffset_y = newY - direction;
-    }
-}
 
     public void dropBlock() {
         // Créer une copie de la grille
@@ -220,41 +224,105 @@ public class GridGame {
     }
 
     ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+   
+        // Ajoutez ces attributs pour gérer l'état du jeu
+    ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   
+        // Ajoutez ces attributs pour gérer l'état du jeu
+
+        
+
+        // Méthode pour initialiser le Timer
+        public void setDropTimer(Timer timer) {
+            this.dropTimer = timer;
+        }
+    // Modifiez la méthode endGame pour arrêter le Timer
+    // Ajoutez un getter pour vérifier l'état du jeu
+    // Modifiez handleBlockLock pour utiliser la nouvelle logique
+    // Modifiez la méthode endGame pour arrêter le Timer
+    // Ajoutez un getter pour vérifier l'état du jeu
+    // Modifiez handleBlockLock pour utiliser la nouvelle logique
+
+
+
+
+       
+
+        // Renommez l'ancienne méthode isGameOver en checkGameOver pour plus de clarté
+        private boolean checkGameOver() {
+            int initialX = 0;
+            int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+
+            int savedX = indexOffset_x;
+            int savedY = indexOffset_y;
+
+            indexOffset_x = initialX;
+            indexOffset_y = initialY;
+
+            int[][] testGrid = copyGrid(gridGame);
+            boolean canPlace = CanAddBlockToGrid(testGrid);
+
+            indexOffset_x = savedX;
+            indexOffset_y = savedY;
+
+            return !canPlace;
+        }
+    // Ici vous pouvez ajouter du code pour:
+    // 1. Afficher un écran de game over
+    // 2. Jouer un son de game over
+    // 3. Sauvegarder le score
+    // 4. etc.
+
+
+        // Méthode pour réinitialiser le jeu si nécessaire
+        public void resetGame() {
+            isGameOver = false;
+            // Réinitialiser la grille
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < column; j++) {
+                    gridGame[i][j] = getBlockIndex("vide");
+                }
+            }
+            // Réinitialiser les autres variables
+            indexOffset_x = 0;
+            indexOffset_y = 0;
+            index_rotation = 0;
+
+            // Créer un nouveau bloc
+            CreateNewBlock();
+        }
     
 
-public int[] calculateBlockWidth(int[][] blockShape) {
-    int startColumn = blockShape[0].length;
-    int endColumn = -1;
-    
-    // Parcourir chaque ligne du bloc
-    for (int[] row : blockShape) {
-        for (int j = 0; j < row.length; j++) {
-            if (row[j] != 0) {
-                // Mettre à jour la colonne de début
-                startColumn = Math.min(startColumn, j);
-                
-                // Mettre à jour la colonne de fin
-                endColumn = Math.max(endColumn, j);
+    public int[] calculateBlockWidth(int[][] blockShape) {
+        int startColumn = blockShape[0].length;
+        int endColumn = -1;
+
+        // Parcourir chaque ligne du bloc
+        for (int[] row : blockShape) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] != 0) {
+                    // Mettre à jour la colonne de début
+                    startColumn = Math.min(startColumn, j);
+
+                    // Mettre à jour la colonne de fin
+                    endColumn = Math.max(endColumn, j);
+                }
             }
         }
+
+        // Si aucun bloc n'est trouvé, retourner des valeurs par défaut
+        if (startColumn > endColumn) {
+            return new int[]{0, blockShape[0].length - 1};
+        }
+
+        return new int[]{startColumn, endColumn};
     }
-    
-    // Si aucun bloc n'est trouvé, retourner des valeurs par défaut
-    if (startColumn > endColumn) {
-        return new int[]{0, blockShape[0].length - 1};
-    }
-    
-    return new int[]{startColumn, endColumn};
-}
-    
+
+    // Modifiez la méthode handleBlockLock pour utiliser la nouvelle vérification
     private void handleBlockLock() {
-        
         ScoreWidget.addScore(20);
-        
         System.out.println("Block locked in place!");
 
-        // Vérifier que le bloc actuel existe
         if (new_block == null) {
             System.err.println("Erreur: Aucun bloc actif à verrouiller.");
             return;
@@ -266,15 +334,15 @@ public int[] calculateBlockWidth(int[][] blockShape) {
         // Vérifier et supprimer les lignes complètes
         clearCompletedRows(gridGame);
 
-        // Tenter de générer un nouveau bloc
+        // Générer un nouveau bloc
         new_block = getRandomBlock();
         indexOffset_x = 0;
         indexOffset_y = (gridGame[0].length - new_block.getShape()[0].length) / 2;
         index_rotation = 0;
 
-        // Vérifier si le nouveau bloc peut être placé, sinon fin du jeu
-        if (!CanAddBlockToGrid(gridGame)) {
-            System.out.println("Game Over!");
+        // Vérifier le game over avec la nouvelle méthode
+        if (isGameOver()) {
+            System.out.println("Game Over! Le nouveau bloc ne peut pas être placé!");
             endGame();
         }
     }
@@ -305,7 +373,7 @@ public int[] calculateBlockWidth(int[][] blockShape) {
 
     // Vérifier et effacer les lignes complètes
     private void clearCompletedRows(int[][] grid) {
-        
+
         // Parcourir la grille du bas vers le haut
         for (int i = grid.length - 1; i >= 0; i--) {
             if (isRowComplete(grid[i])) {
@@ -328,7 +396,7 @@ public int[] calculateBlockWidth(int[][] blockShape) {
 
 // Déplacer les lignes vers le bas à partir d'une ligne donnée
     private void shiftRowsDown(int[][] grid, int startRow) {
-        
+
         // Déplacer chaque ligne au-dessus de startRow vers le bas
         for (int i = startRow; i > 0; i--) {
             for (int j = 0; j < grid[i].length; j++) {
@@ -351,52 +419,82 @@ public int[] calculateBlockWidth(int[][] blockShape) {
     }
 
     public boolean CanAddBlockToGrid(int[][] copyGrid) {
-    int[][] currentShape = new_block.getShape()[index_rotation];
-    
-    // Parcourir la forme du bloc actuel
-    for (int i = 0; i < currentShape.length; i++) {
-        for (int j = 0; j < currentShape[i].length; j++) {
-            // Ignorer les cellules vides du bloc
-            if (currentShape[i][j] == 0) {
-                continue;
-            }
-            
-            int gridY = indexOffset_x + i;
-            int gridX = indexOffset_y + j;
-            
-            // Vérifier les limites de la grille avec plus de souplesse
-            if (gridY < 0 || gridY >= row || gridX < 0 || gridX >= column) {
-                return false;
-            }
-            
-            // Vérifier la collision avec des blocs existants
-            if (copyGrid[gridY][gridX] == getBlockIndex("block_poser")) {
-                return false;
+        int[][] currentShape = new_block.getShape()[index_rotation];
+
+        // Parcourir la forme du bloc actuel
+        for (int i = 0; i < currentShape.length; i++) {
+            for (int j = 0; j < currentShape[i].length; j++) {
+                // Ignorer les cellules vides du bloc
+                if (currentShape[i][j] == 0) {
+                    continue;
+                }
+
+                int gridY = indexOffset_x + i;
+                int gridX = indexOffset_y + j;
+
+                // Vérifier les limites de la grille avec plus de souplesse
+                if (gridY < 0 || gridY >= row || gridX < 0 || gridX >= column) {
+                    return false;
+                }
+
+                // Vérifier la collision avec des blocs existants
+                if (copyGrid[gridY][gridX] == getBlockIndex("block_poser")) {
+                    return false;
+                }
             }
         }
-    }
-    
-    return true;
-}
 
-// Function to end the game (could include score handling, UI updates, etc.)
-    private static void endGame() {
-        System.out.println("Game Over! Thanks for playing.");
-        // Add additional logic to reset or stop the game
+        return true;
     }
 
-//    // Function to spawn a new Tetromino
-//    private boolean spawnNewBlock(GridGame gridGame) {
-//        // Create and set a new Tetromino
-//        AbstractBlock newBlock = getRandomBlock(); // Assume a BlockFactory exists
-//        gridGame.new_block = newBlock;
-//        gridGame.setStart_x(0); // Reset position at the top of the grid
-//        gridGame.setIndex_rotation(0);
-//
-//        // Check if the new Tetromino can be placed
-//        int[][] initialBlockShape = newBlock.getShape()[0];
-//        return CanAddBlockToGrid(this.gridGame);
-//    }
+    private boolean isGameOver() {
+        // Position initiale pour un nouveau bloc
+        int initialX = 0;
+        int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+
+        // Sauvegarder la position actuelle
+        int savedX = indexOffset_x;
+        int savedY = indexOffset_y;
+
+        // Temporairement mettre le bloc à la position initiale
+        indexOffset_x = initialX;
+        indexOffset_y = initialY;
+
+        // Créer une copie de la grille pour le test
+        int[][] testGrid = copyGrid(gridGame);
+
+        // Vérifier si le bloc peut être placé à la position initiale
+        boolean canPlace = CanAddBlockToGrid(testGrid);
+
+        // Restaurer la position originale
+        indexOffset_x = savedX;
+        indexOffset_y = savedY;
+
+        return !canPlace;
+    }
+
+// Modifiez la méthode endGame pour la rendre non-statique et plus complète
+    private void endGame() {
+        System.out.println("Game Over! Score final: " + ScoreWidget.getScore());
+        isGameOver = true;
+        // Vous pouvez ajouter ici du code pour :
+        // 1. Sauvegarder le score
+        // 2. Afficher un écran de game over
+        // 3. Proposer de recommencer
+        // 4. Retourner au menu principal
+
+        // Par exemple, vous pourriez vouloir notifier d'autres parties de votre jeu
+        // que la partie est terminée
+        notifyGameOver();
+    }
+
+// Ajoutez cette méthode pour notifier le game over
+    private void notifyGameOver() {
+        // Ici, vous pouvez implémenter la logique pour notifier
+        // d'autres parties de votre application que le jeu est terminé
+        // Par exemple, afficher un panneau de game over, etc.
+    }
+
     private void convertBlockOnGrid(int[][] gridGame) {
 
         for (int i = 0; i < gridGame.length; i++) {
@@ -457,7 +555,7 @@ public int[] calculateBlockWidth(int[][] blockShape) {
         // Définir la position de départ du bloc, centré dans la grille en haut
         indexOffset_y = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
         indexOffset_x = 0;
-        // Récupérer la forme du bloc pour l'orientation 0 (première orientation)
+        // Récupérer la forme du blocc pour l'orientation 0 (première orientation)
         int[][] blockShape = new_block.getShape()[0];
 
         // Placer le bloc dans la grille
@@ -526,4 +624,9 @@ public int[] calculateBlockWidth(int[][] blockShape) {
         return gridGame;
     }
 
+    public boolean getIsGameOver() {
+        return isGameOver;
+    }
+
+    
 }

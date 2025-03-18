@@ -14,6 +14,7 @@ com\mycompany\mavenproject1\Mavenproject1.class
 BlockFolder\ITetronimo.class
 com\mycompany\mavenproject1\DebugFunction.class
 events\EventDispatcher.class
+Menu\PanelTransition.class
 BlockFolder\SBlock.class
 BlockFolder\OBlock.class
 Gameplay\ScoreWidget.class

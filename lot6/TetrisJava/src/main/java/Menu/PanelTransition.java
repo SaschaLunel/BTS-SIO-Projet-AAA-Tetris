@@ -1,15 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+package Menu;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+import events.InterfaceMain;
 
 public class PanelTransition extends JPanel {
     private JProgressBar progressBar;
     private JLabel messageLabel;
-    private Timer timer;
+    private Timer messageTimer, progressTimer;
     private String[] messages = {
         "Calculating the meaning of life...",
         "Hacking the mainframe...",
@@ -19,51 +18,50 @@ public class PanelTransition extends JPanel {
         "Finding your data... Don't panic."
     };
     private JPanel nextPanel;
+    private int progress = 0;
+    private Image backgroundImage;
+    private InterfaceMain interfaceMain;
 
-    public PanelTransition(JPanel nextPanel) {
+    public PanelTransition(InterfaceMain interfaceMain) {
         this.nextPanel = nextPanel;
+        this.interfaceMain = interfaceMain;
+        String directoryProject = System.getProperty("user.dir");
+        String backgroundPath = directoryProject + "\\src\\main\\java\\Ressources\\background\\background3.png";
         setLayout(new BorderLayout());
-        setBackground(new Color(0, 0, 0)); // Fond noir
-
+        
+        // Chargement de l'image de fond
+        backgroundImage = new ImageIcon(backgroundPath).getImage();
+        
         // Message
         messageLabel = new JLabel("", SwingConstants.CENTER);
         messageLabel.setForeground(Color.WHITE);
         messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
         add(messageLabel, BorderLayout.NORTH);
-
+        
         // Progress Bar
-        progressBar = new JProgressBar();
-        progressBar.setIndeterminate(true);
+        progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true);
-        add(progressBar, BorderLayout.CENTER);
-
-        // Timer pour afficher des messages et ajuster la durée
+        add(progressBar, BorderLayout.SOUTH);
+        
         Random rand = new Random();
-        int duration = rand.nextInt(2000) + 2000; // entre 2 et 4 secondes
-
-        timer = new Timer(500, e -> {
-            // Change le message toutes les 500ms
-            messageLabel.setText(messages[rand.nextInt(messages.length)]);
+        messageTimer = new Timer(500, e -> messageLabel.setText(messages[rand.nextInt(messages.length)]));
+        messageTimer.start();
+        
+        progressTimer = new Timer(20, e -> {
+            progress += 1;
+            progressBar.setValue(progress);
+            if (progress >= 100) {
+                ((Timer) e.getSource()).stop();
+                messageTimer.stop();
+                interfaceMain.addNewPanelGame();
+            }
         });
-
-        timer.start();
-
-        // Délai de fermeture après entre 2 et 4 secondes
-        new Timer(duration, e -> {
-            timer.stop();
-            // Ici, vous pouvez rajouter un code pour passer à un autre écran si besoin.
-            JOptionPane.showMessageDialog(this, "Chargement terminé !");
-            System.err.println("il faut ouvrir "+nextPanel);
-        }).start();
+        progressTimer.start();
     }
 
-//    public static void main(String[] args) {
-//        JFrame frame = new JFrame("Transition Panel");
-//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        frame.setSize(400, 200);
-//        frame.setLocationRelativeTo(null);
-//        frame.setContentPane(new JPanelTransition());
-//        frame.setVisible(true);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
 }
-

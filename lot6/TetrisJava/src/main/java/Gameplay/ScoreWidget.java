@@ -11,6 +11,14 @@ package Gameplay;
 public class ScoreWidget {
     private static int currentScore;
 
+    static String getScore() {
+        return ""+currentScore;
+    }
+
+    static void stopGame() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public ScoreWidget() {
         currentScore = 0;
     }

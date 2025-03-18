@@ -93,6 +93,9 @@ public class PanelGame extends JPanel implements EventListener {
         swingTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (gridGameInstance.getIsGameOver()){
+                    swingTimer.stop();
+                }
                 secondes++;
                 gridGameInstance.dropBlock();
                 timer.removeTime();
@@ -215,11 +218,12 @@ public class PanelGame extends JPanel implements EventListener {
     // Implémentation de la méthode onEvent de l'interface EventListener
     @Override
     public void onEvent(String eventName, Object data) {
-        if ("KEY_PRESS".equals(eventName)) {
+        if ("KEY_PRESS".equals(eventName) && ! gridGameInstance.getIsGameOver()) {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
             String key = (String) data;
             switch (key) {
                 case "Gauche" -> {
+                    
                     gridGameInstance.movePiece(-1);
                     
                     repaint();
