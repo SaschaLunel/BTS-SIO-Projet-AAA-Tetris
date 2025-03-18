@@ -155,6 +155,80 @@ public class PanelGame extends JPanel implements EventListener {
         }
     }
 
+<<<<<<< Updated upstream:lot5/TetrisJava/src/main/java/com/mycompany/mavenproject1/PanelGame.java
+=======
+    /*
+        for (int i = 0; i < grid.getLenghtColumn(); i++) {
+            for (int j = 0; j < grid.getLenghtRow(); j++) {
+                if (grid.grid[i][j] != null){
+                    if (grid.grid[i][j].block != null){ // Si C'est un block
+                        int x = Math.round(cellWidth * j);
+                        int y = Math.round(cellHeight * i);
+                        g.drawImage(blockImage, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+
+                    }
+                    else { // SI c'est vide !
+                        System.out.println("pat");
+                        int x = Math.round(cellWidth * j);
+                        int y = Math.round(cellHeight * i);
+                        BufferedImage image = grid.getImage(i, j);
+                        g.drawImage(image, x+gridOffsetX, y+1, cellSize, cellSize, this);
+                        
+                }
+                }
+            }
+            
+        }    
+     */
+
+    // Fonction pour faire descendre le Tetromino
+    void dropBlock() {
+        // Parcourir la grille de bas en haut pour éviter les collisions
+        for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
+            // Copier la ligne actuelle dans la ligne du dessous
+            grid_pattern[i + 1] = grid_pattern[i];
+        }
+        // Vider la première ligne après le déplacement
+        grid_pattern[0] = new int[column];
+
+    }
+
+    private void moveBlock(int direction) {
+
+        
+            if (direction > 0 && grid_block.getStart_y()< grid_pattern.length-10) {
+
+                // Parcourir la grille de bas en haut pour éviter les collisions
+                for (int i = grid_pattern.length - 2; i >= 0; i--) { // -2 car on commence à l'avant-dernier
+                    // Copier la ligne actuelle dans la ligne du dessous
+                    for (int j = grid_pattern[i].length - 2; j >= 0; j--) {
+                        grid_pattern[i][j + 1] = grid_pattern[i][j];
+                    }
+                    // Vider la première ligne après le déplacement
+                    grid_pattern[i][0] = 0; // 0 représente une case vide // Suppose qu'une ligne vide est un tableau d'entiers initialisés à 0
+                }
+
+                 grid_block.setStart_x(grid_block.getStart_x()+1);
+                repaint();
+                
+                System.out.println(grid_block.getStart_x()+"<"+grid_pattern.length);
+            } 
+
+            else if (direction < 0 && grid_block.getStart_y()> 0) { // Déplacement à gauche
+            // Parcourir la grille de haut en bas
+            for (int i = 0; i < grid_pattern.length; i++) {
+                for (int j = 1; j < grid_pattern[i].length; j++) { // Parcourir de gauche à droite
+                    grid_pattern[i][j - 1] = grid_pattern[i][j]; // Déplacer vers la gauche
+                }
+                grid_pattern[i][grid_pattern[i].length - 1] = 0; // Effacer la dernière colonne
+            }
+                grid_block.setStart_y(grid_block.getStart_y()-1);
+                repaint();
+            }
+
+    }
+>>>>>>> Stashed changes:lot5/mavenproject1/src/main/java/com/mycompany/mavenproject1/PanelGame.java
     
 private void rotationBlock(){
         System.out.println("rotation !!!!");
