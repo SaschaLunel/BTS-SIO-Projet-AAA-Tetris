@@ -17,8 +17,13 @@ public class IBlock extends AbstractBlock {
             {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}}, // Orientation 2
             {{1}, {1}, {1}, {1}}            // Orientation 3
         });
+    
+
+    setLength(2);
+
     }
 
+        
     @Override
     public String getName() {
         return "IBlock";

@@ -29,4 +29,9 @@ public abstract class AbstractBlock implements ITetronimo {
     public int length() {
         return length;
     }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+    
 }

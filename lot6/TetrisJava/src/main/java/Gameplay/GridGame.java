@@ -48,23 +48,18 @@ public class GridGame {
         new IBlock(),
         new TBlock()
     };
+    
 
-    private static final String[] ArrayNomenclatureBlock = {
-        "none",
-        "vide",
-        "block_player",
-        "collision",
-        "block_poser"
-    };
+    
+    
+    final private int NONE = 0;
+    final private int VIDE = 1;
+    final private int BLOCK_PLAYER = 2;
+    final private int COLLISION = 3;
+    final private int BLOCK_POSER = 4;
+    
 
-    public int getBlockIndex(String blockName) {
-        for (int i = 0; i < ArrayNomenclatureBlock.length; i++) {
-            if (ArrayNomenclatureBlock[i].equals(blockName)) {
-                return i; // Retourne l'indice si le nom correspond
-            }
-        }
-        return -1; // Retourne -1 si le nom n'est pas trouvé
-    }
+   
 
     public GridGame() {
     }
@@ -76,7 +71,7 @@ public class GridGame {
         // Initialisation de chaque élément à 1
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                gridGame[i][j] = getBlockIndex("vide"); // Set each element to 1
+                gridGame[i][j] = VIDE; // Set each element to 1
             }
         }
     }
@@ -112,7 +107,7 @@ public class GridGame {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (indexOffset_x + i < gridGame.length && indexOffset_y + j < gridGame[0].length) {
                     if (blockShape[i][j] != 0) {
-                        gridGame[indexOffset_x + i][indexOffset_y + j] = getBlockIndex("block_player");   // Placer le bloc dans la grille
+                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;   // Placer le bloc dans la grille
                     }
 
                 }
@@ -196,31 +191,33 @@ public class GridGame {
         }
     }
 
-    public int[][] rotationGrid() {
+    public void rotationGrid() {
 
-        index_rotation = (index_rotation + 1) % 4;
+        int copy_index_rotation = (index_rotation + 1) % 4;
+        
+        
 
-        int[][] NewBlockShape = new_block.getShape()[index_rotation];
+        int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
 
         int[][] copyGridGame = copyGrid(gridGame);
 
         copyGridGame = clearBlockInGrid(copyGridGame);
 
-        for (int i = 0; i < NewBlockShape.length; i++) {
-            for (int j = 0; j < NewBlockShape[i].length; j++) {
+        for (int i = 0; i < newBlockShape.length; i++) {
+            for (int j = 0; j < newBlockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (indexOffset_x + i < copyGridGame.length && indexOffset_y + j < gridGame[0].length) {
-                    copyGridGame[indexOffset_x + i][indexOffset_y + j] = NewBlockShape[i][j] + copyGridGame[indexOffset_x + i][indexOffset_y + j]; // Placer le bloc dans la grille
+                    copyGridGame[indexOffset_x + i][indexOffset_y + j] = newBlockShape[i][j] + copyGridGame[indexOffset_x + i][indexOffset_y + j]; // Placer le bloc dans la grille
                 }
             }
         }
 
-        if (hasCollision(gridGame)) {
+        if (hasCollision(copyGridGame)) {
             System.out.println("collision detected");
-            return gridGame;
+            return;
         }
-
-        return copyGridGame;
+        index_rotation = copy_index_rotation;
+        gridGame = copyGridGame;
     }
 
     ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +277,7 @@ public class GridGame {
             // Réinitialiser la grille
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < column; j++) {
-                    gridGame[i][j] = getBlockIndex("vide");
+                    gridGame[i][j] = VIDE;
                 }
             }
             // Réinitialiser les autres variables
@@ -373,21 +370,42 @@ public class GridGame {
 
     // Vérifier et effacer les lignes complètes
     private void clearCompletedRows(int[][] grid) {
-
+       
+        int i = grid.length - 1;
+        
+        
         // Parcourir la grille du bas vers le haut
-        for (int i = grid.length - 1; i >= 0; i--) {
+        while (i >= 0) {
             if (isRowComplete(grid[i])) {
                 ScoreWidget.addScore(1000);
                 // Si une ligne est complète, déplacer toutes les lignes au-dessus vers le bas
                 shiftRowsDown(grid, i);
+                 
+            }
+            else {
+                i -= 1;
             }
         }
-    }
+    } 
+    
+//    // Vérifier et effacer les lignes complètes
+//    private void clearCompletedRows(int[][] grid) {
+//
+//        // Parcourir la grille du bas vers le haut
+//        for (int i = grid.length - 1; i >= 0; i--) {
+//            if (isRowComplete(grid[i])) {
+//                ScoreWidget.addScore(1000);
+//                // Si une ligne est complète, déplacer toutes les lignes au-dessus vers le bas
+//                shiftRowsDown(grid, i);
+//                i = i - 1;  // ILLEGAL décrémentation de la boucle for 
+//            }
+//        }
+//    }
 
 // Vérifier si une ligne est complète
     private boolean isRowComplete(int[] row) {
         for (int cell : row) {
-            if (cell != getBlockIndex("block_poser")) {
+            if (cell != BLOCK_POSER) {
                 return false;
             }
         }
@@ -406,14 +424,14 @@ public class GridGame {
 
         // Créer une nouvelle ligne vide en haut
         for (int j = 0; j < grid[0].length; j++) {
-            grid[0][j] = getBlockIndex("vide");
+            grid[0][j] = VIDE;
         }
     }
 
     // Function to clear a specific row and shift rows above it down
     private void clearRow(int[][] grid, int rowIndex) {
         for (int i = rowIndex; i > 0; i--) {
-            grid[i] = grid[getBlockIndex("vide")]; // Shift the row above down
+            grid[i] = grid[VIDE]; // Shift the row above down
         }
         grid[0] = new int[grid[0].length]; // Clear the top row
     }
@@ -438,7 +456,7 @@ public class GridGame {
                 }
 
                 // Vérifier la collision avec des blocs existants
-                if (copyGrid[gridY][gridX] == getBlockIndex("block_poser")) {
+                if (copyGrid[gridY][gridX] == BLOCK_POSER) {
                     return false;
                 }
             }
@@ -499,8 +517,8 @@ public class GridGame {
 
         for (int i = 0; i < gridGame.length; i++) {
             for (int j = 0; j < gridGame[0].length; j++) {
-                if (gridGame[i][j] == 3 || gridGame[i][j] == 2) {
-                    gridGame[i][j] = 4;                                 // Si le slot = collision ou slot = block player alors il est transformer en block poser
+                if (gridGame[i][j] == COLLISION || gridGame[i][j] == BLOCK_PLAYER) {
+                    gridGame[i][j] = BLOCK_POSER;                                 // Si le slot = collision ou slot = block player alors il est transformer en block poser
                 }
             }
 
@@ -512,7 +530,7 @@ public class GridGame {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == 4) {
+                if (grid[i][j] == COLLISION) {
                     return true;
                 }
             }
@@ -523,8 +541,8 @@ public class GridGame {
     public int[][] clearBlockInGrid(int[][] grid) {
         for (int[] grid1 : grid) {
             for (int j = 0; j < grid1.length; j++) {
-                if (grid1[j] == getBlockIndex("block_player")) {
-                    grid1[j] = getBlockIndex("vide");
+                if (grid1[j] == BLOCK_PLAYER) {
+                    grid1[j] = VIDE;
                 }
             }
         }
@@ -545,7 +563,9 @@ public class GridGame {
     private int[][] copyGrid(int[][] grid) {
         int[][] newGrid = new int[grid.length][grid[0].length];
         for (int i = 0; i < grid.length; i++) {
-            System.arraycopy(grid[i], 0, newGrid[i], 0, grid[i].length);
+            for (int j = 0; j < grid[0].length; j++) {
+                newGrid[i][j]= grid[i][j];
+            }
         }
         return newGrid;
     }
@@ -564,7 +584,7 @@ public class GridGame {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
                 if (indexOffset_x + i < gridGame.length && indexOffset_y + j < gridGame[0].length) {
                     if (blockShape[i][j] == 1) {
-                        gridGame[indexOffset_x + i][indexOffset_y + j] = getBlockIndex("block_player"); // Placer le bloc dans la grille
+                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER; // Placer le bloc dans la grille
                     }
 
                 }
@@ -587,7 +607,7 @@ public class GridGame {
                         && gridX >= 0 && gridX < copyGrid[0].length) {
                     // Ne placer que les parties non vides du bloc
                     if (currentShape[i][j] != 0) {
-                        copyGrid[gridY][gridX] = getBlockIndex("block_player");
+                        copyGrid[gridY][gridX] = BLOCK_PLAYER;
                     }
                 }
             }
