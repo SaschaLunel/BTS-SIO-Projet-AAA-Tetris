@@ -31,7 +31,7 @@ public class GridGame {
     public int indexOffset_x;
     public int indexOffset_y;
     public AbstractBlock new_block;
-    
+
     private boolean isGameOver = false;
     private Timer dropTimer; // Ajoutez cette variable pour stocker le Timer
 
@@ -48,18 +48,12 @@ public class GridGame {
         new IBlock(),
         new TBlock()
     };
-    
 
-    
-    
     final private int NONE = 0;
     final private int VIDE = 1;
     final private int BLOCK_PLAYER = 2;
     final private int COLLISION = 3;
     final private int BLOCK_POSER = 4;
-    
-
-   
 
     public GridGame() {
     }
@@ -190,12 +184,30 @@ public class GridGame {
             return false; // Le mouvement n'a pas été effectué
         }
     }
-
+    /**
+ * Rotates the current block in the grid.
+ * <p>
+ * This method updates the block's rotation by computing its new shape and checking for collisions.
+ * If the rotation is valid, the grid is updated; otherwise, the rotation is canceled.
+ * </p>
+ *
+ * Preconditions:
+ * - `new_block` must contain valid block shape rotations.
+ * - `gridGame` must be initialized and contain the current game state.
+ *
+ * Postconditions:
+ * - `gridGame` is updated with the new block rotation if no collision occurs.
+ * - `index_rotation` is updated accordingly.
+ *
+ * Collision Handling:
+ * - If a collision is detected, the rotation is not applied.
+ *
+ * Grid Boundaries:
+ * - Ensures that the rotated block remains within the grid's bounds.
+ */
     public void rotationGrid() {
 
         int copy_index_rotation = (index_rotation + 1) % 4;
-        
-        
 
         int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
 
@@ -212,27 +224,23 @@ public class GridGame {
             }
         }
 
-        if (hasCollision(copyGridGame)) {
+        if (hasCollision(copyGridGame) && isBlockOutOfBounds(newBlockShape, indexOffset_x, indexOffset_y, copyGridGame[0].length, copyGridGame.length)) {
             System.out.println("collision detected");
             return;
+        } else {
         }
         index_rotation = copy_index_rotation;
         gridGame = copyGridGame;
     }
 
     ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
-        // Ajoutez ces attributs pour gérer l'état du jeu
+    // Ajoutez ces attributs pour gérer l'état du jeu
     ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
-        // Ajoutez ces attributs pour gérer l'état du jeu
-
-        
-
-        // Méthode pour initialiser le Timer
-        public void setDropTimer(Timer timer) {
-            this.dropTimer = timer;
-        }
+    // Ajoutez ces attributs pour gérer l'état du jeu
+    // Méthode pour initialiser le Timer
+    public void setDropTimer(Timer timer) {
+        this.dropTimer = timer;
+    }
     // Modifiez la méthode endGame pour arrêter le Timer
     // Ajoutez un getter pour vérifier l'état du jeu
     // Modifiez handleBlockLock pour utiliser la nouvelle logique
@@ -240,55 +248,48 @@ public class GridGame {
     // Ajoutez un getter pour vérifier l'état du jeu
     // Modifiez handleBlockLock pour utiliser la nouvelle logique
 
+    // Renommez l'ancienne méthode isGameOver en checkGameOver pour plus de clarté
+    private boolean checkGameOver() {
+        int initialX = 0;
+        int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
 
+        int savedX = indexOffset_x;
+        int savedY = indexOffset_y;
 
+        indexOffset_x = initialX;
+        indexOffset_y = initialY;
 
-       
+        int[][] testGrid = copyGrid(gridGame);
+        boolean canPlace = CanAddBlockToGrid(testGrid);
 
-        // Renommez l'ancienne méthode isGameOver en checkGameOver pour plus de clarté
-        private boolean checkGameOver() {
-            int initialX = 0;
-            int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+        indexOffset_x = savedX;
+        indexOffset_y = savedY;
 
-            int savedX = indexOffset_x;
-            int savedY = indexOffset_y;
-
-            indexOffset_x = initialX;
-            indexOffset_y = initialY;
-
-            int[][] testGrid = copyGrid(gridGame);
-            boolean canPlace = CanAddBlockToGrid(testGrid);
-
-            indexOffset_x = savedX;
-            indexOffset_y = savedY;
-
-            return !canPlace;
-        }
+        return !canPlace;
+    }
     // Ici vous pouvez ajouter du code pour:
     // 1. Afficher un écran de game over
     // 2. Jouer un son de game over
     // 3. Sauvegarder le score
     // 4. etc.
 
-
-        // Méthode pour réinitialiser le jeu si nécessaire
-        public void resetGame() {
-            isGameOver = false;
-            // Réinitialiser la grille
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < column; j++) {
-                    gridGame[i][j] = VIDE;
-                }
+    // Méthode pour réinitialiser le jeu si nécessaire
+    public void resetGame() {
+        isGameOver = false;
+        // Réinitialiser la grille
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                gridGame[i][j] = VIDE;
             }
-            // Réinitialiser les autres variables
-            indexOffset_x = 0;
-            indexOffset_y = 0;
-            index_rotation = 0;
-
-            // Créer un nouveau bloc
-            CreateNewBlock();
         }
-    
+        // Réinitialiser les autres variables
+        indexOffset_x = 0;
+        indexOffset_y = 0;
+        index_rotation = 0;
+
+        // Créer un nouveau bloc
+        CreateNewBlock();
+    }
 
     public int[] calculateBlockWidth(int[][] blockShape) {
         int startColumn = blockShape[0].length;
@@ -370,24 +371,22 @@ public class GridGame {
 
     // Vérifier et effacer les lignes complètes
     private void clearCompletedRows(int[][] grid) {
-       
+
         int i = grid.length - 1;
-        
-        
+
         // Parcourir la grille du bas vers le haut
         while (i >= 0) {
             if (isRowComplete(grid[i])) {
                 ScoreWidget.addScore(1000);
                 // Si une ligne est complète, déplacer toutes les lignes au-dessus vers le bas
                 shiftRowsDown(grid, i);
-                 
-            }
-            else {
+
+            } else {
                 i -= 1;
             }
         }
-    } 
-    
+    }
+
 //    // Vérifier et effacer les lignes complètes
 //    private void clearCompletedRows(int[][] grid) {
 //
@@ -401,7 +400,6 @@ public class GridGame {
 //            }
 //        }
 //    }
-
 // Vérifier si une ligne est complète
     private boolean isRowComplete(int[] row) {
         for (int cell : row) {
@@ -564,7 +562,7 @@ public class GridGame {
         int[][] newGrid = new int[grid.length][grid[0].length];
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                newGrid[i][j]= grid[i][j];
+                newGrid[i][j] = grid[i][j];
             }
         }
         return newGrid;
@@ -615,6 +613,38 @@ public class GridGame {
         return copyGrid;
     }
 
+    /**
+     * Vérifie si un bloc dépasse de la grille de jeu
+     *
+     * @param blockShape La forme du bloc (tableau 2D)
+     * @param posX Position X du bloc dans la grille
+     * @param posY Position Y du bloc dans la grille
+     * @param gridWidth Largeur de la grille
+     * @param gridHeight Hauteur de la grille
+     * @return true si le bloc dépasse de la grille, false sinon
+     */
+    public boolean isBlockOutOfBounds(int[][] blockShape, int posX, int posY, int gridWidth, int gridHeight) {
+        // Parcourir chaque cellule du bloc
+        for (int y = 0; y < blockShape.length; y++) {
+            for (int x = 0; x < blockShape[y].length; x++) {
+                // Vérifier uniquement les cellules non vides (valeur différente de 0)
+                if (blockShape[y][x] != 0) {
+                    // Calculer la position absolue dans la grille
+                    int gridX = posX + x;
+                    int gridY = posY + y;
+
+                    // Vérifier si cette position est en dehors de la grille
+                    if (gridX < 0 || gridX >= gridWidth || gridY < 0 || gridY >= gridHeight) {
+                        return true; // Le bloc dépasse de la grille
+                    }
+                }
+            }
+        }
+
+        // Si on arrive ici, aucune cellule ne dépasse
+        return false;
+    }
+
     ////////////////////////////FONCTION GETTER ET SETTER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public int getStart_x() {
         return indexOffset_x;
@@ -648,5 +678,4 @@ public class GridGame {
         return isGameOver;
     }
 
-    
 }
