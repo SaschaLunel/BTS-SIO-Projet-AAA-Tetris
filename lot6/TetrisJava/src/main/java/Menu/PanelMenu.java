@@ -11,21 +11,22 @@ import javax.imageio.ImageIO;
 public class PanelMenu extends JPanel implements EventListener {
 
     // Chemin absolu du projet
-    private String directoryProject = System.getProperty("user.dir");
+    final private String DIRECTORYPROJECT = System.getProperty("user.dir");
     private ButtonMenu btnLogin;
     private ButtonMenu btnGuest;
     private BufferedImage background;
+    private JFrame frame;
 
     public PanelMenu(JFrame frame) {
         // Définition du layout
         this.setLayout(null);
-
+        this.frame = frame;
         // Largeur de la frame
-        int frameWidth = frame.getWidth();
-        
+        int frameWidth = this.frame.getWidth();
+       
         BufferedImage originalImage = null;
         try {
-            originalImage = ImageIO.read(new File(directoryProject + "\\src\\main\\java\\Ressources\\background\\background2.png"));
+            originalImage = ImageIO.read(new File(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\background\\background2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,10 +48,10 @@ public class PanelMenu extends JPanel implements EventListener {
         }
 
         // Instance des boutons
-        btnLogin = new ButtonMenu(directoryProject + "\\src\\main\\java\\Ressources\\Menu\\buttonLogin.png",
+        btnLogin = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonLogin.png",
                 e -> System.out.println("Connexion"), 4, frame.getWidth(), frame.getHeight(), -50);
 
-        btnGuest = new ButtonMenu(directoryProject + "\\src\\main\\java\\Ressources\\Menu\\buttonGuest.png",
+        btnGuest = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonGuest.png",
                 e -> System.out.println("Mode Invité"), 4, frame.getWidth(), frame.getHeight(), 50);
 
         // Ajout des boutons au panel

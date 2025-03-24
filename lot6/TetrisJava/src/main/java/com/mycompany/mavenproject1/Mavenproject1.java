@@ -36,9 +36,12 @@ public class Mavenproject1 implements InterfaceMain {
         // Créer le panel de transition avec notre instance unique
         PanelTransition panel = new PanelTransition(mainInstance);
         
+        //Instance du panel de menu principal
+        PanelMenu panelMenu = new PanelMenu(frame);
+        
         // Configurer la fenêtre avec une taille par défaut
         frame.setSize(800, 600);
-        frame.add(panel);
+        frame.add(panelMenu);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         
@@ -64,4 +67,13 @@ public class Mavenproject1 implements InterfaceMain {
         myPanel.setFocusable(true);
         myPanel.requestFocusInWindow();
     }
+
+    public static int getSizeWidth() {
+        return sizeWidth;
+    }
+
+    public static int getSizeHeight() {
+        return sizeHeight;
+    }
+    
 }
