@@ -1,5 +1,7 @@
-package Menu;
+package Panel;
 
+import Components.ButtonMenu;
+import com.mycompany.mavenproject1.CMyFrame;
 import com.mycompany.mavenproject1.Mavenproject1;
 import events.EventListener;
 import javax.swing.*;
@@ -19,7 +21,7 @@ public class PanelMenu extends JPanel implements EventListener {
     private JFrame frame;
     private int frameWidth;
 
-    public PanelMenu(JFrame frame) {
+    public PanelMenu(Mavenproject1 mainInstance, CMyFrame frame) {
         
         this.frame = frame;
         // Largeur de la frame
@@ -59,10 +61,10 @@ public class PanelMenu extends JPanel implements EventListener {
 
         // Instance des boutons
         btnLogin = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonLogin.png",
-                e -> System.out.println("Connexion"), 4, frame.getWidth(), frame.getHeight(), -50);
+                e -> frame.addNewPanelLogin(), 4, frame.getWidth(), frame.getHeight(), -50);
 
         btnGuest = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonGuest.png",
-                e -> System.out.println("Mode Invité"), 4, frame.getWidth(), frame.getHeight(), 50);
+                e -> frame.addNewPanelGame(), 4, frame.getWidth(), frame.getHeight(), 50);
 
         // Ajout des boutons au panel
         this.add(btnLogin, gbc);
