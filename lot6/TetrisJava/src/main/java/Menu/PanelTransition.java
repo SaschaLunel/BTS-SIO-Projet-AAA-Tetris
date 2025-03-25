@@ -17,14 +17,15 @@ public class PanelTransition extends JPanel {
         "Almost there... Just one more bug to fix.",
         "Finding your data... Don't panic."
     };
-    private JPanel nextPanel;
+    
     private int progress = 0;
     private Image backgroundImage;
-    private InterfaceMain interfaceMain;
+    private JFrame frame;
+    
 
-    public PanelTransition(InterfaceMain interfaceMain) {
-        this.nextPanel = nextPanel;
-        this.interfaceMain = interfaceMain;
+    public PanelTransition(JFrame frame) {
+        this.frame = frame;
+        
         String directoryProject = System.getProperty("user.dir");
         String backgroundPath = directoryProject + "\\src\\main\\java\\Ressources\\background\\background3.png";
         setLayout(new BorderLayout());
@@ -53,7 +54,7 @@ public class PanelTransition extends JPanel {
             if (progress >= 100) {
                 ((Timer) e.getSource()).stop();
                 messageTimer.stop();
-                interfaceMain.addNewPanelGame();
+                frame.addNewPanelGame();
             }
         });
         progressTimer.start();

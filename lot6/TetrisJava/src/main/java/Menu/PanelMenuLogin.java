@@ -1,26 +1,36 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Menu;
 
 import com.mycompany.mavenproject1.Mavenproject1;
-import events.EventListener;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class PanelMenu extends JPanel implements EventListener {
+/**
+ *
+ * @author SIO
+ */
+public class PanelMenuLogin extends JPanel {
 
-    // Chemin absolu du projet
     final private String DIRECTORYPROJECT = System.getProperty("user.dir");
-    private ButtonMenu btnLogin;
-    private ButtonMenu btnGuest;
-    private BufferedImage background;
     private JFrame frame;
     private int frameWidth;
-
-    public PanelMenu(JFrame frame) {
-        
+    private ButtonMenu btnBack;
+    
+    private BufferedImage background;
+    
+    public PanelMenuLogin(JFrame frame) {
         this.frame = frame;
         // Largeur de la frame
         frameWidth = Mavenproject1.getSizeWidth();
@@ -55,33 +65,7 @@ public class PanelMenu extends JPanel implements EventListener {
             Graphics g = background.getGraphics();
             g.drawImage(originalImage.getScaledInstance(frameWidth, newHeight, Image.SCALE_SMOOTH), 0, 0, null);
             g.dispose();
+    
         }
-
-        // Instance des boutons
-        btnLogin = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonLogin.png",
-                e -> System.out.println("Connexion"), 4, frame.getWidth(), frame.getHeight(), -50);
-
-        btnGuest = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonGuest.png",
-                e -> System.out.println("Mode Invité"), 4, frame.getWidth(), frame.getHeight(), 50);
-
-        // Ajout des boutons au panel
-        this.add(btnLogin, gbc);
-        this.add(btnGuest, gbc);
-    }
-
-    // Redéfinir paintComponent pour dessiner l'image de fond
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (background != null) {
-            // Dessiner l'image de fond
-            g.drawImage(background, 0, 0, this);
-        }
-    }
-
-    @Override
-    public void onEvent(String eventName, Object data) {
-        // Gestion des événements (ajoute ta logique ici)
-        System.out.println("Événement reçu : " + eventName);
-    }
+    
 }
