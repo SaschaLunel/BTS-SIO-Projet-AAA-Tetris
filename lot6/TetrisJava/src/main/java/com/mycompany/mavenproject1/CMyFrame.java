@@ -4,6 +4,8 @@
  */
 package com.mycompany.mavenproject1;
 
+import Panel.PanelGameAI;
+import Panel.PanelGame;
 import Panel.PanelMenu;
 import Panel.PanelMenuLogin;
 import Panel.PanelSignUp;
@@ -46,6 +48,18 @@ public class CMyFrame extends JFrame {
     
     public void addNewPanelMenu() {
         currentPanel = new PanelMenu(mainInstance, this);
+        getContentPane().removeAll();
+        add(currentPanel);
+        revalidate();
+        repaint();
+        
+        // Très important : donner le focus au nouveau panel
+        currentPanel.setFocusable(true);
+        currentPanel.requestFocusInWindow();
+    }
+    
+    public void addNewPanelAI() {
+        currentPanel = new PanelGameAI();
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();

@@ -4,7 +4,7 @@
  */
 package connect;
 
-import com.mycompany.mavenproject1.PanelGame;
+import Panel.PanelGame;
 
 /**
  *

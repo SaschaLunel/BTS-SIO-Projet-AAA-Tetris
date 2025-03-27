@@ -1,11 +1,15 @@
 events\EventListener.class
 BlockFolder\JBlock.class
+com\mycompany\mavenproject1\PanelGameAI$1.class
 Gameplay\GridGame.class
 Components\MyFormulaire.class
+BOT\Config.class
+BOT\OpenAIBot.class
 BDD\baseDeDonnees.class
 Scripts\PlayerController.class
 Gameplay\Grid.class
 Panel\PanelTransition.class
+com\mycompany\mavenproject1\PanelGameAI.class
 Panel\PanelMenu.class
 connect\Panel_Login$1.class
 Gameplay\TimerWidget.class

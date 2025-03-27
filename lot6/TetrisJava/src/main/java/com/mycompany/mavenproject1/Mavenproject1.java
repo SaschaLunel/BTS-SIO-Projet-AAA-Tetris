@@ -5,7 +5,12 @@ package com.mycompany.mavenproject1;
 
 
 import BDD.baseDeDonnees;
+import BOT.Config;
+import BOT.OpenAIBot;
 import events.InterfaceMain;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 
 /**
@@ -50,11 +55,10 @@ public class Mavenproject1 implements InterfaceMain {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
-     public static void main(String[] args) {
+     public static void main(String[] args) throws IOException {
         // Créer UNE SEULE instance de Mavenproject1
         mainInstance = new Mavenproject1();
         
         
-
-    }
+}
 }

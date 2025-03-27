@@ -2,11 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.mavenproject1;
+package Panel;
 
-import Gameplay.GridGame;
-import Gameplay.ScoreWidget;
-import Gameplay.TimerWidget;
+import BOT.Config;
+import BOT.OpenAIBot;
+import Components.Gameplay.GridGame;
+import Components.Gameplay.ScoreWidget;
+import Components.Gameplay.TimerWidget;
 import Scripts.PlayerController;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -29,7 +31,7 @@ import java.awt.Color;
  *
  * @author SIO
  */
-public class PanelGame extends JPanel implements EventListener {
+public class PanelGameAI extends JPanel {
 
     //Chemin absolu du projet 
     private String directoryProject = System.getProperty("user.dir");
@@ -64,9 +66,19 @@ public class PanelGame extends JPanel implements EventListener {
     private EventDispatcher dispatcher;  // Déclaration de l'instance d'EventDispatcher
     //Player COntroller
     PlayerController pcGame;
+    
+    private OpenAIBot bot;
+    
+    private int indexInstruction = 0;
 
     //COnstructeur
-    public PanelGame() {
+    public PanelGameAI() throws IOException {
+        
+        String token = new Config().getTokenOpenAI();
+        
+         System.err.println(token);
+        
+         bot = new OpenAIBot(token);
 
         row = 15;
         column = 15;
@@ -77,11 +89,8 @@ public class PanelGame extends JPanel implements EventListener {
         gridGameInstance.CreateGrid();
         gridGame = gridGameInstance.getGridGame();
 
-        //event DIspatcher
-        dispatcher = new EventDispatcher();
-        dispatcher.addListener(this); // S'inscrire en tant qu'écouteur d'événements
+        
 
-        pcGame = new PlayerController(dispatcher);
 
         this.addKeyListener(pcGame);
         this.setFocusable(true);
@@ -97,10 +106,16 @@ public class PanelGame extends JPanel implements EventListener {
                     swingTimer.stop();
                 }
                 secondes++;
+                MoveBlockByIA();
+                
+                
                 gridGameInstance.dropBlock();
+                
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }
+
+            
         });
         swingTimer.start(); // Démarrer le timer
 
@@ -215,13 +230,12 @@ public class PanelGame extends JPanel implements EventListener {
     
      ////////////////////////////FONCTION TRIGGER INPUT //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Implémentation de la méthode onEvent de l'interface EventListener
-    @Override
-    public void onEvent(String eventName, Object data) {
-        if ("KEY_PRESS".equals(eventName) && ! gridGameInstance.getIsGameOver()) {
+    
+    public void onEventInput(String eventName) {
+        if (! gridGameInstance.getIsGameOver()) {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
-            String key = (String) data;
-            switch (key) {
+            
+            switch (eventName) {
                 case "Gauche" -> {
                     
                     gridGameInstance.movePiece(-1);
@@ -253,6 +267,12 @@ public class PanelGame extends JPanel implements EventListener {
     public void triggerEvent() {
         dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
     }
+    
+    private void MoveBlockByIA() {
+              for (String instruction : bot.getInstruction()){
+                  onEventInput(instruction);
+              }
+    }
 
      ////////////////////////////FONCTION GETTER ET SETTER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int getRow() {
@@ -270,5 +290,7 @@ public class PanelGame extends JPanel implements EventListener {
     public int getSizeWidth() {
         return sizeWidth;
     }
+
+    
 
 }

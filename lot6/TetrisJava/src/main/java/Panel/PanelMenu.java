@@ -17,6 +17,7 @@ public class PanelMenu extends JPanel implements EventListener {
     final private String DIRECTORYPROJECT = System.getProperty("user.dir");
     private ButtonMenu btnLogin;
     private ButtonMenu btnGuest;
+    private ButtonMenu btnAI;
     private BufferedImage background;
     private JFrame frame;
     private int frameWidth;
@@ -65,10 +66,14 @@ public class PanelMenu extends JPanel implements EventListener {
 
         btnGuest = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonGuest.png",
                 e -> frame.addNewPanelGame(), 4, frame.getWidth(), frame.getHeight(), 50);
+        
+        btnAI = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonIA.png",
+                e -> frame.addNewPanelAI(), 4, frame.getWidth(), frame.getHeight(), 150);
 
         // Ajout des boutons au panel
         this.add(btnLogin, gbc);
         this.add(btnGuest, gbc);
+        this.add(btnAI, gbc);
     }
 
     // Redéfinir paintComponent pour dessiner l'image de fond
