@@ -12,14 +12,20 @@ import BlockFolder.SBlock;
 import BlockFolder.JBlock;
 import BlockFolder.IBlock;
 import BlockFolder.TBlock;
+import Interfaces.GameActions;
+import Panel.PanelGameAI;
 import java.util.Random;
+import javax.swing.JPanel;
 import javax.swing.Timer;
+
 
 /**
  *
  * @author SIO
  */
 public class GridGame {
+
+    private GameActions gameActions;
 
     private int[][][] blockShape;
     private int[][] gridGame;
@@ -54,11 +60,14 @@ public class GridGame {
     final private int BLOCK_PLAYER = 2;
     final private int COLLISION = 3;
     final private int BLOCK_POSER = 4;
+    
+    private PanelGameAI panel;
 
     public GridGame() {
     }
 
-    public GridGame(int row, int column) {
+    public GridGame(PanelGameAI panel, int row, int column) {
+        this.panel = panel;
         this.column = column;
         this.row = row;
         gridGame = new int[row][column];
@@ -75,6 +84,18 @@ public class GridGame {
         Random random = new Random();
         int randomIndex = random.nextInt(blocks.length); // Génère un index aléatoire
         return blocks[randomIndex]; // Retourne le bloc à cet index
+    }
+
+    public GridGame(int row, int column) {
+        this.column = column;
+        this.row = row;
+        gridGame = new int[row][column];
+        // Initialisation de chaque élément à 1
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
+                gridGame[i][j] = VIDE; // Set each element to 1
+            }
+        }
     }
 
     public void setIndex_rotation(int index_rotation) {
@@ -107,9 +128,12 @@ public class GridGame {
                 }
             }
         }
-
+        
+        
         return gridGame;
     }
+    
+    
 
     ////////////////////////////FONCTION PRIMAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void movePiece(int direction) {
@@ -184,27 +208,27 @@ public class GridGame {
             return false; // Le mouvement n'a pas été effectué
         }
     }
+
     /**
- * Rotates the current block in the grid.
- * <p>
- * This method updates the block's rotation by computing its new shape and checking for collisions.
- * If the rotation is valid, the grid is updated; otherwise, the rotation is canceled.
- * </p>
- *
- * Preconditions:
- * - `new_block` must contain valid block shape rotations.
- * - `gridGame` must be initialized and contain the current game state.
- *
- * Postconditions:
- * - `gridGame` is updated with the new block rotation if no collision occurs.
- * - `index_rotation` is updated accordingly.
- *
- * Collision Handling:
- * - If a collision is detected, the rotation is not applied.
- *
- * Grid Boundaries:
- * - Ensures that the rotated block remains within the grid's bounds.
- */
+     * Rotates the current block in the grid.
+     * <p>
+     * This method updates the block's rotation by computing its new shape and
+     * checking for collisions. If the rotation is valid, the grid is updated;
+     * otherwise, the rotation is canceled.
+     * </p>
+     *
+     * Preconditions: - `new_block` must contain valid block shape rotations. -
+     * `gridGame` must be initialized and contain the current game state.
+     *
+     * Postconditions: - `gridGame` is updated with the new block rotation if no
+     * collision occurs. - `index_rotation` is updated accordingly.
+     *
+     * Collision Handling: - If a collision is detected, the rotation is not
+     * applied.
+     *
+     * Grid Boundaries: - Ensures that the rotated block remains within the
+     * grid's bounds.
+     */
     public void rotationGrid() {
 
         int copy_index_rotation = (index_rotation + 1) % 4;

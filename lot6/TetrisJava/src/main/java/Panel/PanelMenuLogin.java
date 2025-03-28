@@ -60,6 +60,7 @@ public class PanelMenuLogin extends JPanel {
         btnRegister = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonRegister.png",
                 e -> frame.addNewPanelSignUp(), 4, frame.getWidth(), frame.getHeight(), -50);
         gbc.gridy = 0;
+        
         this.add(btnRegister, gbc);
 
         // Create input field for pseudo (username)

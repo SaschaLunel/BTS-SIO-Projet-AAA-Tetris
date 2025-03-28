@@ -11,6 +11,7 @@ import Panel.PanelMenuLogin;
 import Panel.PanelSignUp;
 import Panel.PanelTransition;
 import java.awt.GraphicsConfiguration;
+import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -58,7 +59,7 @@ public class CMyFrame extends JFrame {
         currentPanel.requestFocusInWindow();
     }
     
-    public void addNewPanelAI() {
+    public void addNewPanelAI() throws IOException, InterruptedException {
         currentPanel = new PanelGameAI();
         getContentPane().removeAll();
         add(currentPanel);

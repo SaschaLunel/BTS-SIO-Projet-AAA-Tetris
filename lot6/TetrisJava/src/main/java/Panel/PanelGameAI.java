@@ -9,6 +9,8 @@ import BOT.OpenAIBot;
 import Components.Gameplay.GridGame;
 import Components.Gameplay.ScoreWidget;
 import Components.Gameplay.TimerWidget;
+import Interfaces.GameActions;
+
 import Scripts.PlayerController;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -25,13 +27,16 @@ import javax.swing.Timer;
 import events.EventListener;    //event dispatcher
 import events.EventDispatcher;   //event dispatcher
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static kotlin.concurrent.ThreadsKt.thread;
 
 
 /**
  *
  * @author SIO
  */
-public class PanelGameAI extends JPanel {
+public class PanelGameAI extends JPanel implements GameActions {
 
     //Chemin absolu du projet 
     private String directoryProject = System.getProperty("user.dir");
@@ -72,22 +77,36 @@ public class PanelGameAI extends JPanel {
     private int indexInstruction = 0;
 
     //COnstructeur
-    public PanelGameAI() throws IOException {
+
+    /**
+     *
+     * @throws IOException
+     */
+    public PanelGameAI() throws IOException, InterruptedException   {
         
         String token = new Config().getTokenOpenAI();
         
-         System.err.println(token);
         
          bot = new OpenAIBot(token);
+         
+         
 
         row = 15;
         column = 15;
         sizeHeight = 720;
         sizeWidth = 1080;
         
-        gridGameInstance = new GridGame(row, column);
-        gridGameInstance.CreateGrid();
-        gridGame = gridGameInstance.getGridGame();
+        gridGameInstance = new GridGame(this, row, column);
+        
+        System.err.println("coc"+gridGame);
+        
+         gridGame = gridGameInstance.CreateGrid();
+         
+         createBlockPlayer();
+         
+         
+        
+        System.err.println("coca"+gridGame);
 
         
 
@@ -110,6 +129,7 @@ public class PanelGameAI extends JPanel {
                 
                 
                 gridGameInstance.dropBlock();
+                System.err.println("tototo");
                 
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
@@ -130,6 +150,9 @@ public class PanelGameAI extends JPanel {
             System.err.println("Error loading background: " + e.getMessage());
 
         }
+        
+        
+         
     }
     
     
@@ -269,6 +292,7 @@ public class PanelGameAI extends JPanel {
     }
     
     private void MoveBlockByIA() {
+        if (bot.getInstruction()==null){return;}
               for (String instruction : bot.getInstruction()){
                   onEventInput(instruction);
               }
@@ -289,6 +313,19 @@ public class PanelGameAI extends JPanel {
 
     public int getSizeWidth() {
         return sizeWidth;
+    }
+
+    
+     ////////////////////////////FONCTION BIND ////////////////////////////////////////////////////////////////////////////////////////
+    
+    public void createBlockPlayer() {
+        System.err.println(gridGame);
+        try {
+            bot.createNewInstructions(gridGame);
+            System.err.println(gridGame);
+        } catch (IOException ex) {
+            System.err.println(gridGame);
+        }
     }
 
     

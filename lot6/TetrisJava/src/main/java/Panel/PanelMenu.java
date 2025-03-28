@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 public class PanelMenu extends JPanel implements EventListener {
@@ -68,7 +70,15 @@ public class PanelMenu extends JPanel implements EventListener {
                 e -> frame.addNewPanelGame(), 4, frame.getWidth(), frame.getHeight(), 50);
         
         btnAI = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonIA.png",
-                e -> frame.addNewPanelAI(), 4, frame.getWidth(), frame.getHeight(), 150);
+                e -> {
+            try {
+                frame.addNewPanelAI();
+            } catch (IOException ex) {
+                Logger.getLogger(PanelMenu.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PanelMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, 4, frame.getWidth(), frame.getHeight(), 150);
 
         // Ajout des boutons au panel
         this.add(btnLogin, gbc);
