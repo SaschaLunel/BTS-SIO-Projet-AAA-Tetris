@@ -20,6 +20,7 @@ Panel\PanelGame$1.class
 BlockFolder\ITetronimo.class
 com\mycompany\mavenproject1\DebugFunction.class
 Panel\PanelGameAI$1.class
+BDD\BCrypt.class
 events\EventDispatcher.class
 Components\Gameplay\GridGame.class
 Interfaces\GameActions.class
