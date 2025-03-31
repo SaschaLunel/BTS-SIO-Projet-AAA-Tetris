@@ -1,13 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BOT;
 
 import okhttp3.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycompany.mavenproject1.DebugFunction;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class OpenAIBot {
 
@@ -15,13 +13,14 @@ public class OpenAIBot {
     private final String apiKey;
     private final OkHttpClient client;
     private final ObjectMapper objectMapper;
-    private String[] instructions;
+    private ArrayList<String> instructions;
 
     // Constructor
     public OpenAIBot(String apiKey) {
         this.apiKey = apiKey;
         this.client = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
+        this.instructions = new ArrayList<>(); // Initialize the ArrayList
     }
 
     /**
@@ -58,17 +57,22 @@ public class OpenAIBot {
     public void sendMessageGame(String toString) {
     }
 
-    public String[] getInstruction() {
-        return instructions;
+    // Changed return type to ArrayList<String> instead of String[]
+    public String getInstruction() {
+        if (instructions.isEmpty()) {
+            return null; // ou une valeur par défaut appropriée
+        }
+        return instructions.get(0);
     }
 
     public String convertGrilleToString(int[][] grille) {
+        DebugFunction.printArray2D(grille);
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < grille.length; i++) {
             for (int j = 0; j < grille[i].length; j++) {
                 result.append(grille[i][j]);
             }
-            result.append("\n");  // Ajoute un saut de ligne à la fin de chaque ligne de la grille
+            result.append("a la ligne.");  // Ajoute un saut de ligne à la fin de chaque ligne de la grille
         }
         return result.toString();  // Convertit StringBuilder en String avant de le retourner
     }
@@ -76,11 +80,10 @@ public class OpenAIBot {
     public void createNewInstructions(int[][] grille) throws IOException {
 
         String strGrille = convertGrilleToString(grille);
-        String megaPrompt = "Voici la grille :" + strGrille + "\n"
-                + "Voici les règles : " + Prompt.getPromptGame() + "\n"
+        String megaPrompt = "Voici la grille :" + strGrille + "Voici les règles : " + Prompt.getPromptGame()
                 + Prompt.getPromptGrille();
 
-        String testPrompt = "renvoie juste 'coucou, coucou'";
+        String testPrompt = "comment tu t'appelle ?";
 
         String jsonRequest = createJsonRequest(megaPrompt);
 
@@ -104,17 +107,24 @@ public class OpenAIBot {
                 JsonNode choice = choicesNode.get(0);
                 JsonNode messageNode = choice.path("message");
                 String content = messageNode.path("content").asText("");
-                instructions = convertStringToArray(content);
-                System.err.println(instructions[0]);
+                System.err.println("content : " + content + "fin");
+
+                // Parse the content string into separate instruction items and add them to the ArrayList
+                String[] instructionItems = convertStringToArray(content);
+                for (String item : instructionItems) {
+                         instructions.add(item);
+                    }
+                
+                System.err.print("First instruction: " + (!instructions.isEmpty() ? instructions.get(0) : "No instructions"));
             } else {
-                System.err.println("Invalid response format");
+                System.err.print("Invalid response format");
             }
         }
     }
 
     private String[] convertStringToArray(String message) {
         // Utiliser une expression régulière pour trouver les mots entre virgules
-        String[] words = message.split(",");  // Séparer la chaîne par les virgules
+        String[] words = message.split(" ");  // Séparer la chaîne par les virgules
         // Retirer les espaces inutiles avant et après chaque mot
         for (int i = 0; i < words.length; i++) {
             words[i] = words[i].trim();  // Supprimer les espaces avant et après
@@ -128,5 +138,19 @@ public class OpenAIBot {
                 + "\"messages\": [{\"role\": \"user\", \"content\": \"%s\"}],"
                 + "\"max_tokens\": 150"
                 + "}", prompt.replace("\"", "\\\""));
+    }
+
+    
+
+//    // Method to remove the first instruction
+//    public void removeInstruction() {
+//        if (!instructions.isEmpty()) {
+//            instructions.remove(0);
+//        }
+//    }
+
+    // Method to remove all instructions
+    public void clearInstructions() {
+        instructions.clear();
     }
 }

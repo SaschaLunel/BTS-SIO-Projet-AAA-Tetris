@@ -18,14 +18,15 @@ public class Prompt {
             + "Si aucune action n'est nécessaire, renvoie une liste vide. "
             + "Chaque action doit être claire, concise, sans explication ni texte supplémentaire.";
 
-private final static String promptGrille = "Tu es un assistant pour un jeu Tetris. Voici les règles du jeu :\n"
-            + "- Le bloc tourne dans le sens horaire.\n"
-            + "- Le bloc en mouvement est caractérisé par le chiffre 2.\n"
-            + "- Les espaces disponibles pour déplacer les blocs sont caractérisés par le chiffre 1.\n"
-            + "- Les blocs déjà posés sont caractérisés par le chiffre 4.\n"
-            + "À chaque fois qu'un nouveau bloc apparaît sur la grille, renvoie une liste des actions à exécuter pour le déplacer.\n"
-            + "La liste des actions peut contenir \"Gauche\", \"Droite\", ou \"Tourner\", selon la situation du jeu.\n"
-            + "Ne renvoie aucune explication, seulement les actions sous forme de liste.";
+private final static String promptGrille = "Tu es un assistant pour un jeu Tetris. Voici les règles du jeu :"
+            + "- Le bloc tourne dans le sens horaire."
+            + "- Le bloc en mouvement est caractérisé par le chiffre 2."
+            + "- Les espaces disponibles pour déplacer les blocs sont caractérisés par le chiffre 1."
+            + "- Les blocs déjà posés sont caractérisés par le chiffre 4."
+            + "À chaque fois qu'un nouveau bloc apparaît sur la grille, renvoie une liste des actions à exécuter pour le déplacer."
+            + "La liste des actions peut contenir \"Gauche\", \"Droite\", ou \"Tourner\", selon la situation du jeu."
+            + "Ne renvoie aucune explication, seulement les actions sous forme de liste."
+            + "Lorsque l'IA s'est déplacée de 3 cases, le bloc descend d'une ligne vers le bas automatiquement.";
 
     public static String getPromptGame() {
         return promptGame;

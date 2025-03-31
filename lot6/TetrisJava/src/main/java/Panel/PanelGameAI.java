@@ -125,11 +125,14 @@ public class PanelGameAI extends JPanel implements GameActions {
                     swingTimer.stop();
                 }
                 secondes++;
+                
+                
                 MoveBlockByIA();
                 
                 
+                
                 gridGameInstance.dropBlock();
-                System.err.println("tototo");
+                System.err.println("ça dessends ! ");
                 
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
@@ -257,7 +260,7 @@ public class PanelGameAI extends JPanel implements GameActions {
     public void onEventInput(String eventName) {
         if (! gridGameInstance.getIsGameOver()) {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
-            
+            System.err.println(eventName);
             switch (eventName) {
                 case "Gauche" -> {
                     
@@ -292,10 +295,13 @@ public class PanelGameAI extends JPanel implements GameActions {
     }
     
     private void MoveBlockByIA() {
+        System.err.print(bot.getInstruction());
         if (bot.getInstruction()==null){return;}
-              for (String instruction : bot.getInstruction()){
-                  onEventInput(instruction);
-              }
+              
+                  
+                  onEventInput(bot.getInstruction());
+//                  bot.removeInstruction();
+              
     }
 
      ////////////////////////////FONCTION GETTER ET SETTER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@ package com.mycompany.mavenproject1;
  */
 public class DebugFunction {
     
-    static public void printArray2D(Object[][] array2D){
+    static public void printArray2D(int [][] array2D){
         for (int i = 0; i < array2D.length; i++) {
                 // Loop through each element in the row
                 for (int j = 0; j < array2D[i].length; j++) {
