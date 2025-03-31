@@ -79,6 +79,8 @@ public class OpenAIBot {
 
     public void createNewInstructions(int[][] grille) throws IOException {
 
+        instructions.clear();
+        
         String strGrille = convertGrilleToString(grille);
         String megaPrompt = "Voici la grille :" + strGrille + "Voici les règles : " + Prompt.getPromptGame()
                 + Prompt.getPromptGrille();
@@ -124,7 +126,7 @@ public class OpenAIBot {
 
     private String[] convertStringToArray(String message) {
         // Utiliser une expression régulière pour trouver les mots entre virgules
-        String[] words = message.split(" ");  // Séparer la chaîne par les virgules
+        String[] words = message.split("_");  // Séparer la chaîne par les virgules
         // Retirer les espaces inutiles avant et après chaque mot
         for (int i = 0; i < words.length; i++) {
             words[i] = words[i].trim();  // Supprimer les espaces avant et après
@@ -142,12 +144,12 @@ public class OpenAIBot {
 
     
 
-//    // Method to remove the first instruction
-//    public void removeInstruction() {
-//        if (!instructions.isEmpty()) {
-//            instructions.remove(0);
-//        }
-//    }
+    // Method to remove the first instruction
+    public void removeInstruction() {
+        if (!instructions.isEmpty()) {
+         instructions.remove(0);
+        }
+    }
 
     // Method to remove all instructions
     public void clearInstructions() {

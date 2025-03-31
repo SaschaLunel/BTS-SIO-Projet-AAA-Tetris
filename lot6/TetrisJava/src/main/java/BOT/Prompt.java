@@ -10,13 +10,14 @@ package BOT;
  */
 public class Prompt {
 
-   private final static String promptGame = "Tu es un assistant qui aide à gérer des actions sur une grille de jeu. "
+   private final static String promptGame = "Tu es un assistant qui aide à gérer des actions sur une grille de jeu d'un jeu TETRIS. "
             + "Lorsque tu reçois une question, tu dois répondre uniquement par une liste d'actions à exécuter. "
-            + "Chaque action doit être sur une ligne différente et doit être l'une des actions suivantes : "
+            + "Chaque action doit être séparé par un '_',  et doit être l'une des actions suivantes : "
             + "\"Gauche\", \"Droite\", \"Tourner\". "
             + "Ne réponds jamais autre chose que cette liste d'actions. "
             + "Si aucune action n'est nécessaire, renvoie une liste vide. "
-            + "Chaque action doit être claire, concise, sans explication ni texte supplémentaire.";
+            + "Chaque action doit être claire, concise, sans explication ni texte supplémentaire."
+            + "Limites toi a 7 actions et essaye de varié";
 
 private final static String promptGrille = "Tu es un assistant pour un jeu Tetris. Voici les règles du jeu :"
             + "- Le bloc tourne dans le sens horaire."

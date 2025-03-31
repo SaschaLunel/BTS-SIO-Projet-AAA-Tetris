@@ -23,6 +23,8 @@ import javax.swing.Timer;
 import events.EventListener;    //event dispatcher
 import events.EventDispatcher;   //event dispatcher
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -97,7 +99,11 @@ public class PanelGame extends JPanel implements EventListener {
                     swingTimer.stop();
                 }
                 secondes++;
-                gridGameInstance.dropBlock();
+                try {
+                    gridGameInstance.dropBlock();
+                } catch (IOException ex) {
+                    Logger.getLogger(PanelGame.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }

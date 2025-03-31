@@ -14,6 +14,7 @@ import BlockFolder.IBlock;
 import BlockFolder.TBlock;
 import Interfaces.GameActions;
 import Panel.PanelGameAI;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -161,7 +162,7 @@ public class GridGame {
         }
     }
 
-    public void dropBlock() {
+    public void dropBlock() throws IOException {
         // Créer une copie de la grille
         int[][] copyGridGame = copyGrid(gridGame);
 
@@ -231,9 +232,23 @@ public class GridGame {
      */
     public void rotationGrid() {
 
-        int copy_index_rotation = (index_rotation + 1) % 4;
+        // Vérifier si le bloc existe
+    if (new_block == null) {
+        return;
+    }
+    
+    // Obtenir le nombre réel de rotations pour ce bloc
+    int maxRotations = new_block.getShape().length;
+    
+    // Si le bloc n'a qu'une seule rotation, ne rien faire
+    if (maxRotations <= 1) {
+        return;
+    }
+    
+    // Calculer la prochaine rotation de manière sûre
+    int copy_index_rotation = (index_rotation + 1) % maxRotations;
 
-        int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
+    int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
 
         int[][] copyGridGame = copyGrid(gridGame);
 
@@ -341,7 +356,7 @@ public class GridGame {
     }
 
     // Modifiez la méthode handleBlockLock pour utiliser la nouvelle vérification
-    private void handleBlockLock() {
+    private void handleBlockLock() throws IOException {
         ScoreWidget.addScore(20);
         System.out.println("Block locked in place!");
 
@@ -356,12 +371,19 @@ public class GridGame {
         // Vérifier et supprimer les lignes complètes
         clearCompletedRows(gridGame);
 
-        // Générer un nouveau bloc
-        new_block = getRandomBlock();
-        indexOffset_x = 0;
-        indexOffset_y = (gridGame[0].length - new_block.getShape()[0].length) / 2;
-        index_rotation = 0;
+//        // Générer un nouveau bloc
+//        new_block = getRandomBlock();
+//        indexOffset_x = 0;
+//        indexOffset_y = (gridGame[0].length - new_block.getShape()[0].length) / 2;
+//        index_rotation = 0;
 
+        CreateNewBlock();
+        
+
+        if (panel != null && panel.getBot()!= null){
+          panel.getBot().createNewInstructions(gridGame); 
+        }
+        
         // Vérifier le game over avec la nouvelle méthode
         if (isGameOver()) {
             System.out.println("Game Over! Le nouveau bloc ne peut pas être placé!");
@@ -459,6 +481,16 @@ public class GridGame {
     }
 
     public boolean CanAddBlockToGrid(int[][] copyGrid) {
+         // Vérifier si new_block est null
+    if (new_block == null) {
+        return false;
+    }
+    
+    // Vérifier si index_rotation est valide
+    int rotationCount = new_block.getShape().length;
+    if (index_rotation < 0 || index_rotation >= rotationCount) {
+        index_rotation = 0; // Réinitialiser à une valeur valide
+    }
         int[][] currentShape = new_block.getShape()[index_rotation];
 
         // Parcourir la forme du bloc actuel

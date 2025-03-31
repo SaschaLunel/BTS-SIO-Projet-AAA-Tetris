@@ -118,7 +118,7 @@ public class PanelGameAI extends JPanel implements GameActions {
         //Timer: Définir la chaine de caractere écrivant l'heure 
         JTextArea textArea = new JTextArea(GetTimer());
 
-        swingTimer = new Timer(1000, new ActionListener() {
+        swingTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (gridGameInstance.getIsGameOver()){
@@ -131,7 +131,11 @@ public class PanelGameAI extends JPanel implements GameActions {
                 
                 
                 
-                gridGameInstance.dropBlock();
+                try {
+                    gridGameInstance.dropBlock();
+                } catch (IOException ex) {
+                    Logger.getLogger(PanelGameAI.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 System.err.println("ça dessends ! ");
                 
                 timer.removeTime();
@@ -300,7 +304,7 @@ public class PanelGameAI extends JPanel implements GameActions {
               
                   
                   onEventInput(bot.getInstruction());
-//                  bot.removeInstruction();
+                  bot.removeInstruction();
               
     }
 
@@ -319,6 +323,10 @@ public class PanelGameAI extends JPanel implements GameActions {
 
     public int getSizeWidth() {
         return sizeWidth;
+    }
+
+    public OpenAIBot getBot() {
+        return bot;
     }
 
     
