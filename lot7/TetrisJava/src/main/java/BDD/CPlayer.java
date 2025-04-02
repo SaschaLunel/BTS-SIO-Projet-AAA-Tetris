@@ -10,14 +10,14 @@ package BDD;
  */
 public class CPlayer {
     
-    String id;
+    int  id;
     String prenom;
     String nom;
     String pseudo;
     String mail;
     
 
-    public CPlayer(String prenom, String nom, String pseudo, String mail ,String id) {
+    public CPlayer(String prenom, String nom, String pseudo, String mail ,int id) {
         this.prenom = prenom;
         this.nom = nom;
         this.pseudo = pseudo;

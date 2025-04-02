@@ -14,12 +14,12 @@ public class baseDeDonnees {
 
     static private String login;
     static private String mdp;
-    static final String DB_URL = "jdbc:mysql://localhost/bddtest"; // URL de la BDD
-    static final String USER = "username"; // nom d'utilisateur
-    static final String PASS = "password"; // mot de passe
+    static final String DB_URL = "jdbc:mysql://localhost/tetris_db"; // URL de la BDD
+    static final String USER = "root"; // nom d'utilisateur
+    static final String PASS = ""; // mot de passe
     Connection conn = null;
     Statement stmt = null;
-    CPLayer player;
+    CPlayer player;
 
     public baseDeDonnees(String login, String mdp) {
         this.login = login;
@@ -31,48 +31,39 @@ public class baseDeDonnees {
         }
     }
 
+    public baseDeDonnees() {
+        insertNewScore(20, 1);
+    }
+    
+    
+
     private boolean ConnecterBDD(String login, String mdp) {
         boolean Succes = false;
         return Succes;
     }
 
-    public void insertNewScore(int score, String email) {
+    public void insertNewScore(int score, int id) {
         try {
             OpenSession();
             String sql;
-            sql = "INSERT INTO score {"+score+", idUser_User}";
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) { // Etape 3: Extraction des données depuis le ResultSet
-                int id = rs.getInt("id");
-                int age = rs.getInt("age");
-                String nom = rs.getString("nom");
-                String prenom = rs.getString("prenom");
-                System.out.print("ID: " + id);
-                System.out.print(", Age: " + age);
-                System.out.print(", Nom: " + nom);
-                System.out.println(",Prenom: " + prenom);
-            }
-            rs.close(); // Etape 4 : Nettoyage du contexte
-            CloseSession();
-        } catch (SQLException se) { // Gestion des exceptions
-            se.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+            sql = "INSERT INTO score (score, id) VALUES (" + score + ", " + id + ")";
             try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException se2) {
+                int result = stmt.executeUpdate(sql);
+            } catch (Exception e) {
+                System.err.println(e);
             }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se) {
-                se.printStackTrace();
+            
+            
             }
+        catch (Exception ex) {
+            
         }
+            try {
+            CloseSession();
+        } catch (Exception e) {
+        }
+            
+        
     }
 
     public boolean OpenSession() {
@@ -100,11 +91,25 @@ public class baseDeDonnees {
     }
     
     public void InitPLayer(ResultSet rs){
-        String prenom = rs.getString("prenom");
+        try {
+            String prenom = rs.getString("prenom");
         String nom = rs.getString("nom");
         String pseudo = rs.getString("pseudo");
-        String mail = rs.getString("mail");
-        String id = rs.getString("id");
-        player = new CPlayer(prenom, nom, pseudo, mail, id);
+        String mail = rs.getString("email");
+            int id = rs.getInt("iduser");
+                player = new CPlayer(prenom, nom, pseudo, mail, id);
+
+            
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        
+        
+    
+    }
+    public static void main(String[] args) {
+        
+        new baseDeDonnees();
+        
     }
 }

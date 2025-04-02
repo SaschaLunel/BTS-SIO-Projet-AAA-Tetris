@@ -3,6 +3,7 @@ BlockFolder\JBlock.class
 Components\Gameplay\ScoreWidget.class
 Components\MyFormulaire.class
 BOT\Config.class
+BDD\CPlayer.class
 BOT\OpenAIBot.class
 BDD\baseDeDonnees.class
 Scripts\PlayerController.class
