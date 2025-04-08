@@ -29,6 +29,7 @@ import events.EventDispatcher;   //event dispatcher
 import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import static kotlin.concurrent.ThreadsKt.thread;
 
 
@@ -36,7 +37,7 @@ import static kotlin.concurrent.ThreadsKt.thread;
  *
  * @author SIO
  */
-public class PanelGameAI extends JPanel implements GameActions {
+public class PanelGameAI extends PanelGame implements GameActions {
 
     //Chemin absolu du projet 
     private String directoryProject = System.getProperty("user.dir");
@@ -82,7 +83,9 @@ public class PanelGameAI extends JPanel implements GameActions {
      *
      * @throws IOException
      */
-    public PanelGameAI() throws IOException, InterruptedException   {
+    public PanelGameAI(JFrame frame) throws IOException, InterruptedException   {
+        
+        super(frame);
         
         String token = new Config().getTokenOpenAI();
         
@@ -340,6 +343,10 @@ public class PanelGameAI extends JPanel implements GameActions {
         } catch (IOException ex) {
             System.err.println(gridGame);
         }
+    }
+
+    public void endGame() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     

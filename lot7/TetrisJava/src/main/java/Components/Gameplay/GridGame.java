@@ -13,12 +13,15 @@ import BlockFolder.JBlock;
 import BlockFolder.IBlock;
 import BlockFolder.TBlock;
 import Interfaces.GameActions;
+
+import Panel.PanelGame;
 import Panel.PanelGameAI;
+
 import java.io.IOException;
 import java.util.Random;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.JOptionPane;
 
+import javax.swing.Timer;
 
 /**
  *
@@ -61,13 +64,13 @@ public class GridGame {
     final private int BLOCK_PLAYER = 2;
     final private int COLLISION = 3;
     final private int BLOCK_POSER = 4;
-    
-    private PanelGameAI panel;
+
+    private PanelGame panel;
 
     public GridGame() {
     }
 
-    public GridGame(PanelGameAI panel, int row, int column) {
+    public GridGame(PanelGame panel, int row, int column) {
         this.panel = panel;
         this.column = column;
         this.row = row;
@@ -129,12 +132,9 @@ public class GridGame {
                 }
             }
         }
-        
-        
+
         return gridGame;
     }
-    
-    
 
     ////////////////////////////FONCTION PRIMAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void movePiece(int direction) {
@@ -233,22 +233,22 @@ public class GridGame {
     public void rotationGrid() {
 
         // Vérifier si le bloc existe
-    if (new_block == null) {
-        return;
-    }
-    
-    // Obtenir le nombre réel de rotations pour ce bloc
-    int maxRotations = new_block.getShape().length;
-    
-    // Si le bloc n'a qu'une seule rotation, ne rien faire
-    if (maxRotations <= 1) {
-        return;
-    }
-    
-    // Calculer la prochaine rotation de manière sûre
-    int copy_index_rotation = (index_rotation + 1) % maxRotations;
+        if (new_block == null) {
+            return;
+        }
 
-    int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
+        // Obtenir le nombre réel de rotations pour ce bloc
+        int maxRotations = new_block.getShape().length;
+
+        // Si le bloc n'a qu'une seule rotation, ne rien faire
+        if (maxRotations <= 1) {
+            return;
+        }
+
+        // Calculer la prochaine rotation de manière sûre
+        int copy_index_rotation = (index_rotation + 1) % maxRotations;
+
+        int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
 
         int[][] copyGridGame = copyGrid(gridGame);
 
@@ -306,11 +306,6 @@ public class GridGame {
 
         return !canPlace;
     }
-    // Ici vous pouvez ajouter du code pour:
-    // 1. Afficher un écran de game over
-    // 2. Jouer un son de game over
-    // 3. Sauvegarder le score
-    // 4. etc.
 
     // Méthode pour réinitialiser le jeu si nécessaire
     public void resetGame() {
@@ -376,14 +371,15 @@ public class GridGame {
 //        indexOffset_x = 0;
 //        indexOffset_y = (gridGame[0].length - new_block.getShape()[0].length) / 2;
 //        index_rotation = 0;
-
         CreateNewBlock();
-        
 
-        if (panel != null && panel.getBot()!= null){
-          panel.getBot().createNewInstructions(gridGame); 
+        if (panel instanceof PanelGameAI) {
+            PanelGameAI panelAI = (PanelGameAI) panel;
+            if (panelAI != null && panelAI.getBot() != null) {
+                panelAI.getBot().createNewInstructions(gridGame);
+            }
         }
-        
+
         // Vérifier le game over avec la nouvelle méthode
         if (isGameOver()) {
             System.out.println("Game Over! Le nouveau bloc ne peut pas être placé!");
@@ -481,16 +477,16 @@ public class GridGame {
     }
 
     public boolean CanAddBlockToGrid(int[][] copyGrid) {
-         // Vérifier si new_block est null
-    if (new_block == null) {
-        return false;
-    }
-    
-    // Vérifier si index_rotation est valide
-    int rotationCount = new_block.getShape().length;
-    if (index_rotation < 0 || index_rotation >= rotationCount) {
-        index_rotation = 0; // Réinitialiser à une valeur valide
-    }
+        // Vérifier si new_block est null
+        if (new_block == null) {
+            return false;
+        }
+
+        // Vérifier si index_rotation est valide
+        int rotationCount = new_block.getShape().length;
+        if (index_rotation < 0 || index_rotation >= rotationCount) {
+            index_rotation = 0; // Réinitialiser à une valeur valide
+        }
         int[][] currentShape = new_block.getShape()[index_rotation];
 
         // Parcourir la forme du bloc actuel
@@ -516,6 +512,27 @@ public class GridGame {
             }
         }
 
+        return true;
+    }
+
+    public boolean canSpawn(int[][] blockShape, int[][] gridGame, int indexOffset_x, int indexOffset_y) {
+        // Check if the block can be placed at the initial spawn position
+        for (int i = 0; i < blockShape.length; i++) {
+            for (int j = 0; j < blockShape[i].length; j++) {
+                if (blockShape[i][j] == 1) {
+                    int x = indexOffset_x + i;
+                    int y = indexOffset_y + j;
+                    // Check if the position is inside the grid
+                    if (x >= gridGame.length || y >= gridGame[0].length || y < 0) {
+                        return false; // Outside grid bounds
+                    }
+                    // Check for collision with existing blocks
+                    if (gridGame[x][y] != VIDE) {
+                        return false; // Block already present, cannot spawn
+                    }
+                }
+            }
+        }
         return true;
     }
 
@@ -547,24 +564,9 @@ public class GridGame {
 
 // Modifiez la méthode endGame pour la rendre non-statique et plus complète
     private void endGame() {
-        System.out.println("Game Over! Score final: " + ScoreWidget.getScore());
         isGameOver = true;
-        // Vous pouvez ajouter ici du code pour :
-        // 1. Sauvegarder le score
-        // 2. Afficher un écran de game over
-        // 3. Proposer de recommencer
-        // 4. Retourner au menu principal
+        panel.endGame();
 
-        // Par exemple, vous pourriez vouloir notifier d'autres parties de votre jeu
-        // que la partie est terminée
-        notifyGameOver();
-    }
-
-// Ajoutez cette méthode pour notifier le game over
-    private void notifyGameOver() {
-        // Ici, vous pouvez implémenter la logique pour notifier
-        // d'autres parties de votre application que le jeu est terminé
-        // Par exemple, afficher un panneau de game over, etc.
     }
 
     private void convertBlockOnGrid(int[][] gridGame) {
@@ -632,17 +634,18 @@ public class GridGame {
         // Récupérer la forme du blocc pour l'orientation 0 (première orientation)
         int[][] blockShape = new_block.getShape()[0];
 
-        // Placer le bloc dans la grille
-        for (int i = 0; i < blockShape.length; i++) {
-            for (int j = 0; j < blockShape[i].length; j++) {
-                // Vérifier si la position du bloc est valide (dans les limites de la grille)
-                if (indexOffset_x + i < gridGame.length && indexOffset_y + j < gridGame[0].length) {
+        if (canSpawn(blockShape, gridGame, indexOffset_x, indexOffset_y)) {
+            for (int i = 0; i < blockShape.length; i++) {
+                for (int j = 0; j < blockShape[i].length; j++) {
                     if (blockShape[i][j] == 1) {
-                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER; // Placer le bloc dans la grille
+                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;
                     }
-
                 }
             }
+        } else {
+            // GAME OVER
+            System.out.println("Game Over !");
+            panel.endGame();
         }
     }
 

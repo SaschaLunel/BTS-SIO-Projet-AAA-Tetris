@@ -34,5 +34,10 @@ public class ScoreWidget {
     public String getTextScore() {
         return "Score : " + currentScore;
     }
+
+    public static void setCurrentScore(int currentScore) {
+        ScoreWidget.currentScore = currentScore;
+    }
+    
     
 }

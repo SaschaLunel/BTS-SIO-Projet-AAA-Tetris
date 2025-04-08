@@ -25,13 +25,17 @@ import events.EventDispatcher;   //event dispatcher
 import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 /**
  *
  * @author SIO
  */
-public class PanelGame extends JPanel implements EventListener {
+public class PanelGame extends JPanel implements EventListener, IPanel {
+    
+    private JFrame frame;
 
     //Chemin absolu du projet 
     private String directoryProject = System.getProperty("user.dir");
@@ -54,7 +58,7 @@ public class PanelGame extends JPanel implements EventListener {
     private TimerWidget timer = new TimerWidget();
     
     //Gestion du score 
-    private ScoreWidget scoreWB = new ScoreWidget();
+     ScoreWidget scoreWB = new ScoreWidget();
 
     //image 
     private static BufferedImage img_background;
@@ -68,14 +72,16 @@ public class PanelGame extends JPanel implements EventListener {
     PlayerController pcGame;
 
     //COnstructeur
-    public PanelGame() {
+    public PanelGame(JFrame frame) {
 
+        this.frame = frame;
+        
         row = 15;
         column = 15;
         sizeHeight = 720;
         sizeWidth = 1080;
         
-        gridGameInstance = new GridGame(row, column);
+        gridGameInstance = new GridGame(this, row, column);
         gridGameInstance.CreateGrid();
         gridGame = gridGameInstance.getGridGame();
 
@@ -275,6 +281,30 @@ public class PanelGame extends JPanel implements EventListener {
 
     public int getSizeWidth() {
         return sizeWidth;
+    }
+
+    public ScoreWidget getScoreWB() {
+        return scoreWB;
+    }
+    
+    
+
+    @Override
+    public void endGame() {
+        stopTimer();
+        int choice = JOptionPane.showConfirmDialog(frame, "GameOver ! Rejouer ?", "Fin de jeu", JOptionPane.YES_NO_OPTION);
+
+if (choice == JOptionPane.YES_OPTION) {
+    gridGameInstance = new GridGame(this, row, column); // Ta fonction pour redémarrer
+    gridGameInstance.CreateGrid();
+    swingTimer.restart();
+    scoreWB.setCurrentScore(0);
+    restartTimer();
+} else {
+    
+}
+        
+        
     }
 
 }

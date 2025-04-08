@@ -60,7 +60,7 @@ public class CMyFrame extends JFrame {
     }
     
     public void addNewPanelAI() throws IOException, InterruptedException {
-        currentPanel = new PanelGameAI();
+        currentPanel = new PanelGameAI(this);
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();
@@ -72,7 +72,7 @@ public class CMyFrame extends JFrame {
     }
     
         public void addNewPanelGame() {
-        currentPanel = new PanelGame();
+        currentPanel = new PanelGame(this);
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();

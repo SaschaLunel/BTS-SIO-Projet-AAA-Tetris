@@ -12,7 +12,6 @@ Panel\PanelGame.class
 Panel\PanelMenu.class
 connect\Panel_Login$1.class
 Components\ButtonMenu.class
-Components\Gameplay\Grid.class
 BlockFolder\ZBlock.class
 Components\Gameplay\TimerWidget.class
 com\mycompany\mavenproject1\Mavenproject1.class
@@ -25,10 +24,10 @@ BDD\BCrypt.class
 events\EventDispatcher.class
 Components\Gameplay\GridGame.class
 Interfaces\GameActions.class
-Panel\Panel.class
 BlockFolder\SBlock.class
 BlockFolder\OBlock.class
 com\mycompany\mavenproject1\CMyFrame.class
+Panel\IPanel.class
 Panel\PanelMenuLogin.class
 Panel\PanelGameAI.class
 BlockFolder\AbstractBlock.class
