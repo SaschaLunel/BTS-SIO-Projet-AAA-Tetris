@@ -4,6 +4,8 @@
  */
 package com.mycompany.mavenproject1;
 
+import BDD.CPlayer;
+import BDD.baseDeDonnees;
 import Panel.PanelGameAI;
 import Panel.PanelGame;
 import Panel.PanelMenu;
@@ -12,6 +14,8 @@ import Panel.PanelSignUp;
 import Panel.PanelTransition;
 import java.awt.GraphicsConfiguration;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -23,6 +27,7 @@ public class CMyFrame extends JFrame {
     
     Mavenproject1 mainInstance;
     private JPanel currentPanel;
+    private CPlayer player;
     
     static int sizeWindowsWidth = 1080;
     static int sizeWindowsHeight = 720;
@@ -119,9 +124,13 @@ public class CMyFrame extends JFrame {
         currentPanel.requestFocusInWindow();
     }
     
-    public boolean createNewAccount(String email, String pseudo, String password){
+    public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, LocalDate dBirth) throws SQLException{
         
-        return false;
+        baseDeDonnees bdd = new baseDeDonnees();
+        
+        bdd.createUser(email, password, prenom, nom, pseudo, dBirth);
+        
+        player = new CPlayer(prenom, nom, pseudo, email, bdd.getIdUser(pseudo));
         
     }
 }

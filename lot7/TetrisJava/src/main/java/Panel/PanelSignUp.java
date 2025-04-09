@@ -1,5 +1,6 @@
 package Panel;
 
+import BDD.baseDeDonnees;
 import Components.ButtonMenu;
 import Components.MyFormulaire;
 import com.mycompany.mavenproject1.CMyFrame;
@@ -8,6 +9,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -71,7 +77,13 @@ public class PanelSignUp extends JPanel {
 
         // Create "Validate" button (for account creation)
         btnValidate = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonValidate.png",
-                e -> createAccount(), 4, frame.getWidth(), frame.getHeight(), -50);
+                e -> {
+            try {
+                createAccount();
+            } catch (SQLException ex) {
+                Logger.getLogger(PanelSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, 4, frame.getWidth(), frame.getHeight(), -50);
         gbc.gridy = 2;
         this.add(btnValidate, gbc);
         
@@ -82,7 +94,7 @@ public class PanelSignUp extends JPanel {
         
     }
 
-    private void createAccount() {
+    private void createAccount() throws SQLException {
         // Get user input from the form
         String nom = formulaire.getNom();
         String prenom = formulaire.getPrenom();
@@ -90,6 +102,8 @@ public class PanelSignUp extends JPanel {
         String pseudo = formulaire.getPseudo();
         String password = formulaire.getPassword();
         String confirmPassword = formulaire.getConfirmPassword();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+        LocalDate dBirth = LocalDate.parse(formulaire.getDateNaissance(), formatter);
 
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
@@ -97,10 +111,14 @@ public class PanelSignUp extends JPanel {
             return;
         }
 
-        // Call the method to create a new account
-        boolean succes = frame.createNewAccount( email, pseudo, password);
-
-        if (!succes) {
+        baseDeDonnees bdd = new baseDeDonnees();
+        boolean succes = bdd.verifExistUser(pseudo);
+        if(succes){
+            frame.createNewAccount(email, pseudo, password, prenom, nom, dBirth);
+        }
+        
+        
+else {
             impossibleNewAccount();
         }
     }

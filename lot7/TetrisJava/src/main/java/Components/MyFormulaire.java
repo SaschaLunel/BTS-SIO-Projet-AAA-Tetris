@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Components;
 
 import javax.swing.*;
@@ -11,9 +7,10 @@ import java.awt.*;
  * MyFormulaire class - Represents a form with multiple input fields.
  */
 public class MyFormulaire extends JPanel {
-    
+
     private JTextField fieldNom;
     private JTextField fieldPrenom;
+    private JTextField fieldDateNaissance;
     private JTextField fieldEmail;
     private JTextField fieldPseudo;
     private JPasswordField fieldPassword;
@@ -41,9 +38,17 @@ public class MyFormulaire extends JPanel {
         fieldPrenom = new JTextField(20);
         this.add(fieldPrenom, gbc);
 
-        // Add "Email" field
+        // Add "Date de naissance" field
         gbc.gridx = 0;
         gbc.gridy = 2;
+        this.add(new JLabel("Date de naissance (jj/mm/aaaa) :"), gbc);
+        gbc.gridx = 1;
+        fieldDateNaissance = new JTextField(20);
+        this.add(fieldDateNaissance, gbc);
+
+        // Add "Email" field
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         this.add(new JLabel("Email :"), gbc);
         gbc.gridx = 1;
         fieldEmail = new JTextField(20);
@@ -51,7 +56,7 @@ public class MyFormulaire extends JPanel {
 
         // Add "Pseudo" field
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         this.add(new JLabel("Pseudo :"), gbc);
         gbc.gridx = 1;
         fieldPseudo = new JTextField(20);
@@ -59,7 +64,7 @@ public class MyFormulaire extends JPanel {
 
         // Add "Mot de passe" field
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         this.add(new JLabel("Mot de passe :"), gbc);
         gbc.gridx = 1;
         fieldPassword = new JPasswordField(20);
@@ -67,7 +72,7 @@ public class MyFormulaire extends JPanel {
 
         // Add "Confirmation de mot de passe" field
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         this.add(new JLabel("Confirmer le mot de passe :"), gbc);
         gbc.gridx = 1;
         fieldConfirmPassword = new JPasswordField(20);
@@ -77,9 +82,9 @@ public class MyFormulaire extends JPanel {
     // Getters to retrieve user input
     public String getNom() { return fieldNom.getText(); }
     public String getPrenom() { return fieldPrenom.getText(); }
+    public String getDateNaissance() { return fieldDateNaissance.getText(); }
     public String getEmail() { return fieldEmail.getText(); }
     public String getPseudo() { return fieldPseudo.getText(); }
     public String getPassword() { return new String(fieldPassword.getPassword()); }
     public String getConfirmPassword() { return new String(fieldConfirmPassword.getPassword()); }
 }
-
