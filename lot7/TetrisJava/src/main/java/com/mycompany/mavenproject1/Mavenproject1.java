@@ -34,10 +34,7 @@ public class Mavenproject1 implements InterfaceMain {
     
    
 
-    @Override
-    public void SeconnecterBDD(String login, String mdp) {
-        bdd = new baseDeDonnees(login, mdp);
-    }
+    
 
     
     

@@ -6,8 +6,9 @@ package com.mycompany.mavenproject1;
 
 import BDD.CPlayer;
 import BDD.baseDeDonnees;
-import Panel.PanelGameAI;
+import Panel.PanelGameOpenAI;
 import Panel.PanelGame;
+import Panel.PanelGameAI;
 import Panel.PanelMenu;
 import Panel.PanelMenuLogin;
 import Panel.PanelSignUp;
@@ -16,7 +17,10 @@ import java.awt.GraphicsConfiguration;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -65,7 +69,9 @@ public class CMyFrame extends JFrame {
     }
     
     public void addNewPanelAI() throws IOException, InterruptedException {
+        
         currentPanel = new PanelGameAI(this);
+        
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();
@@ -124,13 +130,26 @@ public class CMyFrame extends JFrame {
         currentPanel.requestFocusInWindow();
     }
     
-    public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, LocalDate dBirth) throws SQLException{
-        
-        baseDeDonnees bdd = new baseDeDonnees();
-        
-        bdd.createUser(email, password, prenom, nom, pseudo, dBirth);
-        
-        player = new CPlayer(prenom, nom, pseudo, email, bdd.getIdUser(pseudo));
-        
+ public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, LocalDate dBirth) throws SQLException, InterruptedException, ExecutionException {
+    // Add the login panel
+    addNewPanelLogin();
+
+    // Create database instance
+    baseDeDonnees bdd = new baseDeDonnees();
+
+    try {
+        // Launch asynchronous user creation and wait for it to finish
+        CompletableFuture<Void> future = bdd.createUser(email, password, prenom, nom, pseudo, dBirth);
+        future.get(); // blocks until the user is created
+        System.out.println("Tâche terminée !");
+    } catch (ExecutionException e) {
+        throw new RuntimeException("Erreur lors de la création de l'utilisateur", e);
     }
+
+    // Get user ID asynchronously and wait for the result
+        CompletableFuture<Integer> futureId = bdd.getIdUser(pseudo);
+        int id = futureId.get(); // wait for the user ID
+    player = new CPlayer(prenom, nom, pseudo, email, id);
+}
+
 }

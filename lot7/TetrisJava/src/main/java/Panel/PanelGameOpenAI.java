@@ -4,10 +4,13 @@
  */
 package Panel;
 
-import BlockFolder.AbstractBlock;
+import BOT.Config;
+import BOT.OpenAIBot;
 import Components.Gameplay.GridGame;
 import Components.Gameplay.ScoreWidget;
 import Components.Gameplay.TimerWidget;
+import Interfaces.GameActions;
+
 import Controllers.PlayerController;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -27,16 +30,14 @@ import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import static kotlin.concurrent.ThreadsKt.thread;
 
 
 /**
  *
  * @author SIO
  */
-public class PanelGame extends JPanel implements EventListener, IPanel {
-    
-    private JFrame frame;
+public class PanelGameOpenAI extends PanelGame implements GameActions {
 
     //Chemin absolu du projet 
     private String directoryProject = System.getProperty("user.dir");
@@ -59,7 +60,7 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
     private TimerWidget timer = new TimerWidget();
     
     //Gestion du score 
-     ScoreWidget scoreWB = new ScoreWidget();
+    private ScoreWidget scoreWB = new ScoreWidget();
 
     //image 
     private static BufferedImage img_background;
@@ -71,26 +72,47 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
     private EventDispatcher dispatcher;  // Déclaration de l'instance d'EventDispatcher
     //Player COntroller
     PlayerController pcGame;
+    
+    private OpenAIBot bot;
+    
+    private int indexInstruction = 0;
 
     //COnstructeur
-    public PanelGame(JFrame frame) {
 
-        this.frame = frame;
+    /**
+     *
+     * @throws IOException
+     */
+    public PanelGameOpenAI(JFrame frame) throws IOException, InterruptedException   {
         
+        super(frame);
+        
+        String token = new Config().getTokenOpenAI();
+        
+        
+         bot = new OpenAIBot(token);
+         
+         
+
         row = 15;
         column = 15;
         sizeHeight = 720;
         sizeWidth = 1080;
         
         gridGameInstance = new GridGame(this, row, column);
-        gridGameInstance.CreateGrid();
-        gridGame = gridGameInstance.getGridGame();
+        
+        System.err.println("coc"+gridGame);
+        
+         gridGame = gridGameInstance.CreateGrid();
+         
+         createBlockPlayer();
+         
+         
+        
+        System.err.println("coca"+gridGame);
 
-        //event DIspatcher
-        dispatcher = new EventDispatcher();
-        dispatcher.addListener(this); // S'inscrire en tant qu'écouteur d'événements
+        
 
-        pcGame = new PlayerController(dispatcher);
 
         this.addKeyListener(pcGame);
         this.setFocusable(true);
@@ -99,21 +121,31 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
         //Timer: Définir la chaine de caractere écrivant l'heure 
         JTextArea textArea = new JTextArea(GetTimer());
 
-        swingTimer = new Timer(1000, new ActionListener() {
+        swingTimer = new Timer(700, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (gridGameInstance.getIsGameOver()){
                     swingTimer.stop();
                 }
                 secondes++;
+                
+                
+                MoveBlockByIA();
+                
+                
+                
                 try {
                     gridGameInstance.dropBlock();
                 } catch (IOException ex) {
-                    Logger.getLogger(PanelGame.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PanelGameOpenAI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                System.err.println("ça dessends ! ");
+                
                 timer.removeTime();
                 repaint(); // Rafraîchir l'affichage
             }
+
+            
         });
         swingTimer.start(); // Démarrer le timer
 
@@ -128,6 +160,9 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
             System.err.println("Error loading background: " + e.getMessage());
 
         }
+        
+        
+         
     }
     
     
@@ -228,13 +263,12 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
     
      ////////////////////////////FONCTION TRIGGER INPUT //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Implémentation de la méthode onEvent de l'interface EventListener
-    @Override
-    public void onEvent(String eventName, Object data) {
-        if ("KEY_PRESS".equals(eventName) && ! gridGameInstance.getIsGameOver()) {
+    
+    public void onEventInput(String eventName) {
+        if (! gridGameInstance.getIsGameOver()) {
             // Vérifiez quel événement a été déclenché et affichez la touche pressée
-            String key = (String) data;
-            switch (key) {
+            System.err.println(eventName);
+            switch (eventName) {
                 case "Gauche" -> {
                     
                     gridGameInstance.movePiece(-1);
@@ -266,6 +300,16 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
     public void triggerEvent() {
         dispatcher.dispatchEvent("SOME_EVENT", "Données d'exemple");
     }
+    
+    private void MoveBlockByIA() {
+        System.err.print(bot.getInstruction());
+        if (bot.getInstruction()==null){return;}
+              
+                  
+                  onEventInput(bot.getInstruction());
+                  bot.removeInstruction();
+              
+    }
 
      ////////////////////////////FONCTION GETTER ET SETTER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static int getRow() {
@@ -284,31 +328,27 @@ public class PanelGame extends JPanel implements EventListener, IPanel {
         return sizeWidth;
     }
 
-    public ScoreWidget getScoreWB() {
-        return scoreWB;
+    public OpenAIBot getBot() {
+        return bot;
     }
-    
-    
 
-    @Override
+    
+     ////////////////////////////FONCTION BIND ////////////////////////////////////////////////////////////////////////////////////////
+    
+    public void createBlockPlayer() {
+        System.err.println(gridGame);
+        try {
+            bot.createNewInstructions(gridGame);
+            System.err.println(gridGame);
+        } catch (IOException ex) {
+            System.err.println(gridGame);
+        }
+    }
+
     public void endGame() {
-        stopTimer();
-        int choice = JOptionPane.showConfirmDialog(frame, "GameOver ! Rejouer ?", "Fin de jeu", JOptionPane.YES_NO_OPTION);
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
-if (choice == JOptionPane.YES_OPTION) {
-    gridGameInstance = new GridGame(this, row, column); // Ta fonction pour redémarrer
-    gridGameInstance.CreateGrid();
-    swingTimer.restart();
-    scoreWB.setCurrentScore(0);
-    restartTimer();
-} else {
     
-}
-        
-        
-    }
-
-    public void IANewPiece(AbstractBlock currentPiece) {
-    }
 
 }

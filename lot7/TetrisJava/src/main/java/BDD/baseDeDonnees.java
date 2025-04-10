@@ -6,6 +6,7 @@ package BDD;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
 
 /**
  *
@@ -21,15 +22,7 @@ public class baseDeDonnees {
     
     CPlayer player;
 
-    public baseDeDonnees(String login, String mdp) {
-        this.login = login;
-        this.mdp = mdp;
-        if (ConnecterBDD(login, mdp)) {
-            System.err.println("connecter a la bdd");
-        } else {
-            System.err.println("Erreur de connection a la bdd");
-        }
-    }
+   
 
     public baseDeDonnees() {
 
@@ -117,48 +110,73 @@ public class baseDeDonnees {
 }
 
 
-    public void createUser(String email, String mdp, String prenom, String nom, String pseudo, LocalDate dBirth) {
-    try {
-        // Open a connection/session
-        Connection conn = OpenSession();
-        
-        
+    public CompletableFuture<Void> createUser(String email, String password, String prenom, String nom, String pseudo, LocalDate dBirth) {
+    return CompletableFuture.runAsync(() -> {
+        try {
+            String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            // Open database connection
+            Connection conn = OpenSession();
 
-        // Prepare SQL INSERT statement
-        String sql = "INSERT INTO User (email, mdp, prenom, nom, pseudo, dBirth) VALUES (?, ?, ?, ?, ?, ?)";
-        
-       
-        
-        // Use the connection from bdd to create a prepared statement
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        
-        stmt.setString(1, email);
-        stmt.setString(2, mdp);
-        stmt.setString(3, prenom);
-        stmt.setString(4, nom);
-        stmt.setString(5, pseudo);
-        stmt.setDate(6, java.sql.Date.valueOf(dBirth));
+            // Prepare the SQL insert
+            String sql = "INSERT INTO users (email, mdp, prenom, nom, pseudo, dBirth) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setString(2, hashPassword);
+            stmt.setString(3, prenom);
+            stmt.setString(4, nom);
+            stmt.setString(5, pseudo);
+            stmt.setDate(6, Date.valueOf(dBirth));
 
+            // Execute update
+            stmt.executeUpdate();
 
-        // Execute the update
-        stmt.executeUpdate();
-
-        // Close the statement
-        stmt.close();
-
-    } catch (SQLException e) {
-        // Handle SQL exceptions
-        e.printStackTrace();
-    }
+            // Close resources
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    });
 }
-    public int getIdUser(String pseudo) throws SQLException{
-        Connection conn = OpenSession();
-        String sql = "SELECT iduser from users where pseudo = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, pseudo);
-        ResultSet result = stmt.executeQuery();
-        return result.getInt(1);
-    }
+
+    public CompletableFuture<Integer> getIdUser(String pseudo) {
+    return CompletableFuture.supplyAsync(() -> {
+        try {
+            // Open a connection
+            Connection conn = OpenSession();
+
+            // Prepare SQL query
+            String sql = "SELECT iduser FROM users WHERE pseudo = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, pseudo);
+
+            // Execute query
+            ResultSet result = stmt.executeQuery();
+
+            // Check if user exists
+            if (result.next()) {
+                int id = result.getInt("iduser"); // Use correct column name
+
+                // Clean up resources
+                result.close();
+                stmt.close();
+                conn.close();
+
+                return id;
+            } else {
+                // Clean up resources
+                result.close();
+                stmt.close();
+                conn.close();
+
+                return -1; // Or throw an exception if needed
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la récupération de l'id utilisateur", e);
+        }
+    });
+}
+
 
     
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -82,6 +83,10 @@ public class PanelSignUp extends JPanel {
                 createAccount();
             } catch (SQLException ex) {
                 Logger.getLogger(PanelSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PanelSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(PanelSignUp.class.getName()).log(Level.SEVERE, null, ex);
             }
         }, 4, frame.getWidth(), frame.getHeight(), -50);
         gbc.gridy = 2;
@@ -94,7 +99,7 @@ public class PanelSignUp extends JPanel {
         
     }
 
-    private void createAccount() throws SQLException {
+    private void createAccount() throws SQLException, InterruptedException, ExecutionException {
         // Get user input from the form
         String nom = formulaire.getNom();
         String prenom = formulaire.getPrenom();
@@ -110,9 +115,13 @@ public class PanelSignUp extends JPanel {
             JOptionPane.showMessageDialog(this, "Les mots de passe ne correspondent pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        
+        if (!VerifCNILPassword(password)){
+            JOptionPane.showMessageDialog(this, "Le mot de passe ne respecte pas les regles de conditions.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
 
         baseDeDonnees bdd = new baseDeDonnees();
-        boolean succes = bdd.verifExistUser(pseudo);
+        boolean succes = !bdd.verifExistUser(pseudo);
         if(succes){
             frame.createNewAccount(email, pseudo, password, prenom, nom, dBirth);
         }
@@ -134,4 +143,33 @@ else {
             g.drawImage(background, 0, 0, this);
         }
     }
+
+    private boolean VerifCNILPassword(String password) {
+    // Check password length
+    if (password.length() < 6 || password.length() > 24) {
+        return false;
+    }
+
+    int uppercaseCount = 0;
+    int lowercaseCount = 0;
+    int digitCount = 0;
+    int specialCharCount = 0;
+
+    // Loop through each character to count types
+    for (char c : password.toCharArray()) {
+        if (Character.isUpperCase(c)) {
+            uppercaseCount++;
+        } else if (Character.isLowerCase(c)) {
+            lowercaseCount++;
+        } else if (Character.isDigit(c)) {
+            digitCount++;
+        } else if (!Character.isLetterOrDigit(c)) {
+            specialCharCount++;
+        }
+    }
+
+    // Verify all conditions
+    return uppercaseCount >= 1 && lowercaseCount >= 3 && digitCount >= 1 && specialCharCount >= 1;
+}
+
 }

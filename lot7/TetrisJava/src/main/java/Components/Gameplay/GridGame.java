@@ -12,14 +12,15 @@ import BlockFolder.SBlock;
 import BlockFolder.JBlock;
 import BlockFolder.IBlock;
 import BlockFolder.TBlock;
+import Controllers.AIController;
 import Interfaces.GameActions;
 
 import Panel.PanelGame;
-import Panel.PanelGameAI;
+import Panel.PanelGameOpenAI;
 
 import java.io.IOException;
 import java.util.Random;
-import javax.swing.JOptionPane;
+
 
 import javax.swing.Timer;
 
@@ -30,9 +31,11 @@ import javax.swing.Timer;
 public class GridGame {
 
     private GameActions gameActions;
+    
+    
 
-    private int[][][] blockShape;
-    private int[][] gridGame;
+    private int[][] blockShape;
+    private int[][] grid;
     private int row;
     private int column;
     private int index_color;
@@ -40,7 +43,7 @@ public class GridGame {
 
     public int indexOffset_x;
     public int indexOffset_y;
-    public AbstractBlock new_block;
+    public AbstractBlock currentPiece;
 
     private boolean isGameOver = false;
     private Timer dropTimer; // Ajoutez cette variable pour stocker le Timer
@@ -74,11 +77,11 @@ public class GridGame {
         this.panel = panel;
         this.column = column;
         this.row = row;
-        gridGame = new int[row][column];
+        grid = new int[row][column];
         // Initialisation de chaque élément à 1
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                gridGame[i][j] = VIDE; // Set each element to 1
+                grid[i][j] = VIDE; // Set each element to 1
             }
         }
     }
@@ -93,11 +96,11 @@ public class GridGame {
     public GridGame(int row, int column) {
         this.column = column;
         this.row = row;
-        gridGame = new int[row][column];
+        grid = new int[row][column];
         // Initialisation de chaque élément à 1
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                gridGame[i][j] = VIDE; // Set each element to 1
+                grid[i][j] = VIDE; // Set each element to 1
             }
         }
     }
@@ -110,44 +113,54 @@ public class GridGame {
     public int[][] CreateGrid() {
 
         // Récupérer un bloc aléatoire
-        new_block = getRandomBlock();
-        blockShape = new_block.getShape();
+        currentPiece = getRandomBlock();
+        blockShape = currentPiece.getRotation(0);
+       
+        panel.IANewPiece(currentPiece); 
+
 
         // Définir la position de départ du bloc, centré dans la grille en haut
-        indexOffset_y = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+        indexOffset_y = (int) (grid[0].length * 0.5f - currentPiece.getRotation(0).length * 0.5f);
         indexOffset_x = 0;
 
         // Récupérer la forme du bloc pour l'orientation 0 (première orientation)
-        int[][] blockShape = new_block.getShape()[0];
+        int[][] blockShape = currentPiece.getRotation(0);
 
         // Placer le bloc dans la grille
         for (int i = 0; i < blockShape.length; i++) {
             for (int j = 0; j < blockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
-                if (indexOffset_x + i < gridGame.length && indexOffset_y + j < gridGame[0].length) {
+                if (indexOffset_x + i < grid.length && indexOffset_y + j < grid[0].length) {
                     if (blockShape[i][j] != 0) {
-                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;   // Placer le bloc dans la grille
+                        grid[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;   // Placer le bloc dans la grille
                     }
 
                 }
             }
         }
 
-        return gridGame;
+        return grid;
     }
 
     ////////////////////////////FONCTION PRIMAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void movePiece(int direction) {
         int newY = indexOffset_y + direction;
+        int[][] currentShape;
 
-        int[][] currentShape = new_block.getShape()[index_rotation];
+        // Vérification que l'indice est dans les limites
+if (index_rotation >= 0 && index_rotation < currentPiece.getRotationCount()) {
+    currentShape = currentPiece.getRotation(index_rotation);
+} else {
+    throw new IllegalArgumentException("Index de rotation invalide : " + index_rotation);
+}
+
 
         // Vérifier les limites horizontales de manière plus permissive
         if (newY < 0 || newY + currentShape[0].length > column) {
             return; // Ne pas permettre le mouvement si cela causerait un débordement
         }
 
-        int[][] copyGridGame = copyGrid(gridGame);
+        int[][] copyGridGame = copyGrid(grid);
         copyGridGame = clearBlockInGrid(copyGridGame);
 
         // Mettre à jour temporairement la position pour le test
@@ -155,7 +168,7 @@ public class GridGame {
 
         // Vérifier si le bloc peut être placé à la nouvelle position
         if (CanAddBlockToGrid(copyGridGame)) {
-            gridGame = addBlockToGrid(copyGridGame);
+            grid = addBlockToGrid(copyGridGame);
         } else {
             // Si le mouvement n'est pas possible, restaurer l'ancienne position
             indexOffset_y = newY - direction;
@@ -164,7 +177,7 @@ public class GridGame {
 
     public void dropBlock() throws IOException {
         // Créer une copie de la grille
-        int[][] copyGridGame = copyGrid(gridGame);
+        int[][] copyGridGame = copyGrid(grid);
 
         // Effacer l'ancien bloc (mettre les cases à "vide")
         copyGridGame = clearBlockInGrid(copyGridGame);
@@ -174,7 +187,7 @@ public class GridGame {
 
         if (CanAddBlockToGrid(copyGridGame)) {
             // Si le bloc peut être placé, mettre à jour la grille
-            gridGame = addBlockToGrid(copyGridGame);
+            grid = addBlockToGrid(copyGridGame);
             System.err.println("oui");
         } else {
             System.err.println("non");
@@ -196,13 +209,13 @@ public class GridGame {
         lastSoftDropTime = currentTime;
 
         // Créer une copie de la grille et tester le mouvement
-        int[][] gridCopy = copyGrid(gridGame);
+        int[][] gridCopy = copyGrid(grid);
         gridCopy = clearBlockInGrid(gridCopy);
 
         indexOffset_x += 1;
 
         if (CanAddBlockToGrid(gridCopy)) {
-            gridGame = addBlockToGrid(gridCopy);
+            grid = addBlockToGrid(gridCopy);
             return true; // Le mouvement a été effectué
         } else {
             indexOffset_x -= 1;
@@ -217,28 +230,29 @@ public class GridGame {
      * checking for collisions. If the rotation is valid, the grid is updated;
      * otherwise, the rotation is canceled.
      * </p>
-     *
-     * Preconditions: - `new_block` must contain valid block shape rotations. -
-     * `gridGame` must be initialized and contain the current game state.
-     *
-     * Postconditions: - `gridGame` is updated with the new block rotation if no
-     * collision occurs. - `index_rotation` is updated accordingly.
-     *
-     * Collision Handling: - If a collision is detected, the rotation is not
-     * applied.
-     *
-     * Grid Boundaries: - Ensures that the rotated block remains within the
-     * grid's bounds.
+
+ Preconditions: - `currentPiece` must contain valid block shape rotations. -
+ `grid` must be initialized and contain the current game state.
+
+ Postconditions: - `grid` is updated with the new block rotation if no
+ collision occurs. - `index_rotation` is updated accordingly.
+
+ Collision Handling: - If a collision is detected, the rotation is not
+ applied.
+
+ Grid Boundaries: - Ensures that the rotated block remains within the
+ grid's bounds.
      */
     public void rotationGrid() {
 
         // Vérifier si le bloc existe
-        if (new_block == null) {
+        if (currentPiece == null) {
             return;
         }
 
         // Obtenir le nombre réel de rotations pour ce bloc
-        int maxRotations = new_block.getShape().length;
+        int maxRotations = currentPiece.getRotationCount();
+
 
         // Si le bloc n'a qu'une seule rotation, ne rien faire
         if (maxRotations <= 1) {
@@ -248,16 +262,17 @@ public class GridGame {
         // Calculer la prochaine rotation de manière sûre
         int copy_index_rotation = (index_rotation + 1) % maxRotations;
 
-        int[][] newBlockShape = copyGrid(new_block.getShape()[copy_index_rotation]);
+        int[][] newBlockShape = copyGrid(currentPiece.getRotation(copy_index_rotation));
 
-        int[][] copyGridGame = copyGrid(gridGame);
+
+        int[][] copyGridGame = copyGrid(grid);
 
         copyGridGame = clearBlockInGrid(copyGridGame);
 
         for (int i = 0; i < newBlockShape.length; i++) {
             for (int j = 0; j < newBlockShape[i].length; j++) {
                 // Vérifier si la position du bloc est valide (dans les limites de la grille)
-                if (indexOffset_x + i < copyGridGame.length && indexOffset_y + j < gridGame[0].length) {
+                if (indexOffset_x + i < copyGridGame.length && indexOffset_y + j < grid[0].length) {
                     copyGridGame[indexOffset_x + i][indexOffset_y + j] = newBlockShape[i][j] + copyGridGame[indexOffset_x + i][indexOffset_y + j]; // Placer le bloc dans la grille
                 }
             }
@@ -269,8 +284,83 @@ public class GridGame {
         } else {
         }
         index_rotation = copy_index_rotation;
-        gridGame = copyGridGame;
+        grid = copyGridGame;
     }
+    
+     // Fonction pour vérifier si une pièce peut être placée à une position donnée
+    public boolean canPlace(AbstractBlock piece, int rotation, int col) {
+        int[][] rotationGrid = piece.getRotation(rotation);
+        
+        // Vérifie si la pièce peut être placée dans la grille
+        for (int row = 0; row < rotationGrid.length; row++) {
+            for (int c = 0; c < rotationGrid[row].length; c++) {
+                if (rotationGrid[row][c] != 0) {
+                    if (row >= grid.length || col + c >= grid[row].length || grid[row][col + c] != VIDE) {
+                        return false;  // Impossible de placer la pièce (collision ou dépassement de la grille)
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    // Fonction pour placer la pièce dans la grille
+    public void place(AbstractBlock piece, int rotation, int col) {
+        int[][] rotationGrid = piece.getRotation(rotation);
+        
+        // Place la pièce dans la grille
+        for (int row = 0; row < rotationGrid.length; row++) {
+            for (int c = 0; c < rotationGrid[row].length; c++) {
+                if (rotationGrid[row][c] != 0) {
+                    grid[row][col + c] = BLOCK_PLAYER;  // Bloc du joueur
+                }
+            }
+        }
+    }
+    
+    // Clone la grille pour ne pas modifier la grille originale lors des simulations
+    public GridGame clone() {
+        GridGame clonedGrid = new GridGame(grid[0].length, grid.length);
+        for (int i = 0; i < grid.length; i++) {
+            System.arraycopy(grid[i], 0, clonedGrid.grid[i], 0, grid[i].length);
+        }
+        return clonedGrid;
+    }
+    
+    // Calculer le nombre de trous
+    public int getHoles() {
+        int holes = 0;
+        for (int col = 0; col < grid[0].length; col++) {
+            boolean blockFound = false;
+            for (int row = 0; row < grid.length; row++) {
+                if (grid[row][col] != NONE) {
+                    blockFound = true;
+                } else if (blockFound) {
+                    holes++;  // Trou trouvé
+                }
+            }
+        }
+        return holes;
+    }
+    
+     // Nombre de lignes complètes
+    public int getCompletedLines() {
+        int lines = 0;
+        for (int i = 0; i < grid.length; i++) {
+            boolean isComplete = true;
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == NONE) {
+                    isComplete = false;
+                    break;
+                }
+            }
+            if (isComplete) {
+                lines++;
+            }
+        }
+        return lines;
+    }
+
 
     ////////////////////////////FONCTION SECONDAIRE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Ajoutez ces attributs pour gérer l'état du jeu
@@ -290,7 +380,7 @@ public class GridGame {
     // Renommez l'ancienne méthode isGameOver en checkGameOver pour plus de clarté
     private boolean checkGameOver() {
         int initialX = 0;
-        int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+        int initialY = (int) (grid[0].length * 0.5f - currentPiece.getRotation(index_rotation).length * 0.5f);
 
         int savedX = indexOffset_x;
         int savedY = indexOffset_y;
@@ -298,7 +388,7 @@ public class GridGame {
         indexOffset_x = initialX;
         indexOffset_y = initialY;
 
-        int[][] testGrid = copyGrid(gridGame);
+        int[][] testGrid = copyGrid(grid);
         boolean canPlace = CanAddBlockToGrid(testGrid);
 
         indexOffset_x = savedX;
@@ -313,7 +403,7 @@ public class GridGame {
         // Réinitialiser la grille
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < column; j++) {
-                gridGame[i][j] = VIDE;
+                grid[i][j] = VIDE;
             }
         }
         // Réinitialiser les autres variables
@@ -355,28 +445,28 @@ public class GridGame {
         ScoreWidget.addScore(20);
         System.out.println("Block locked in place!");
 
-        if (new_block == null) {
+        if (currentPiece == null) {
             System.err.println("Erreur: Aucun bloc actif à verrouiller.");
             return;
         }
 
         // Convertir le bloc en position verrouillée
-        convertBlockOnGrid(gridGame);
+        convertBlockOnGrid(grid);
 
         // Vérifier et supprimer les lignes complètes
-        clearCompletedRows(gridGame);
+        clearCompletedRows(grid);
 
 //        // Générer un nouveau bloc
-//        new_block = getRandomBlock();
+//        currentPiece = getRandomBlock();
 //        indexOffset_x = 0;
-//        indexOffset_y = (gridGame[0].length - new_block.getShape()[0].length) / 2;
+//        indexOffset_y = (grid[0].length - currentPiece.getShape()[0].length) / 2;
 //        index_rotation = 0;
         CreateNewBlock();
 
-        if (panel instanceof PanelGameAI) {
-            PanelGameAI panelAI = (PanelGameAI) panel;
+        if (panel instanceof PanelGameOpenAI) {
+            PanelGameOpenAI panelAI = (PanelGameOpenAI) panel;
             if (panelAI != null && panelAI.getBot() != null) {
-                panelAI.getBot().createNewInstructions(gridGame);
+                panelAI.getBot().createNewInstructions(grid);
             }
         }
 
@@ -393,7 +483,7 @@ public class GridGame {
 
         // Vérifier les limites de la grille
         int newPosX = indexOffset_x + direction;
-        if (newPosX < 0 || newPosX + width > gridGame[0].length) {
+        if (newPosX < 0 || newPosX + width > grid[0].length) {
             return false;
         }
 
@@ -401,7 +491,7 @@ public class GridGame {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (piece[y][x] == 3) {
-                    int gridCell = gridGame[indexOffset_y + y][newPosX + x];
+                    int gridCell = grid[indexOffset_y + y][newPosX + x];
                     if (gridCell == 4 || gridCell == 3) {
                         return false;
                     }
@@ -477,17 +567,17 @@ public class GridGame {
     }
 
     public boolean CanAddBlockToGrid(int[][] copyGrid) {
-        // Vérifier si new_block est null
-        if (new_block == null) {
+        // Vérifier si currentPiece est null
+        if (currentPiece == null) {
             return false;
         }
 
         // Vérifier si index_rotation est valide
-        int rotationCount = new_block.getShape().length;
+        int rotationCount = currentPiece.getRotation(index_rotation).length;
         if (index_rotation < 0 || index_rotation >= rotationCount) {
             index_rotation = 0; // Réinitialiser à une valeur valide
         }
-        int[][] currentShape = new_block.getShape()[index_rotation];
+        int[][] currentShape = currentPiece.getRotation(index_rotation);
 
         // Parcourir la forme du bloc actuel
         for (int i = 0; i < currentShape.length; i++) {
@@ -539,7 +629,7 @@ public class GridGame {
     private boolean isGameOver() {
         // Position initiale pour un nouveau bloc
         int initialX = 0;
-        int initialY = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+        int initialY = (int) (grid[0].length * 0.5f - currentPiece.getRotation(index_rotation).length * 0.5f);
 
         // Sauvegarder la position actuelle
         int savedX = indexOffset_x;
@@ -550,7 +640,7 @@ public class GridGame {
         indexOffset_y = initialY;
 
         // Créer une copie de la grille pour le test
-        int[][] testGrid = copyGrid(gridGame);
+        int[][] testGrid = copyGrid(grid);
 
         // Vérifier si le bloc peut être placé à la position initiale
         boolean canPlace = CanAddBlockToGrid(testGrid);
@@ -605,7 +695,7 @@ public class GridGame {
         return grid;
     }
 
-// Helper method to print the gridGame (for debugging purposes)
+// Helper method to print the grid (for debugging purposes)
     public void printGrid(int[][] grid) {
         for (int[] grid1 : grid) {
             for (int j = 0; j < grid1.length; j++) {
@@ -615,7 +705,7 @@ public class GridGame {
         }
     }
 
-// Helper method to create a copy of the gridGame
+// Helper method to create a copy of the grid
     private int[][] copyGrid(int[][] grid) {
         int[][] newGrid = new int[grid.length][grid[0].length];
         for (int i = 0; i < grid.length; i++) {
@@ -627,18 +717,18 @@ public class GridGame {
     }
 
     public void CreateNewBlock() {
-        new_block = getRandomBlock();
+        currentPiece = getRandomBlock();
         // Définir la position de départ du bloc, centré dans la grille en haut
-        indexOffset_y = (int) (gridGame[0].length * 0.5f - new_block.getShape()[0].length * 0.5f);
+        indexOffset_y = (int) (grid[0].length * 0.5f - currentPiece.getRotation(index_rotation).length * 0.5f);
         indexOffset_x = 0;
         // Récupérer la forme du blocc pour l'orientation 0 (première orientation)
-        int[][] blockShape = new_block.getShape()[0];
+        int[][] blockShape = currentPiece.getRotation(index_rotation);
 
-        if (canSpawn(blockShape, gridGame, indexOffset_x, indexOffset_y)) {
+        if (canSpawn(blockShape, grid, indexOffset_x, indexOffset_y)) {
             for (int i = 0; i < blockShape.length; i++) {
                 for (int j = 0; j < blockShape[i].length; j++) {
                     if (blockShape[i][j] == 1) {
-                        gridGame[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;
+                        grid[indexOffset_x + i][indexOffset_y + j] = BLOCK_PLAYER;
                     }
                 }
             }
@@ -650,7 +740,7 @@ public class GridGame {
     }
 
     private int[][] addBlockToGrid(int[][] copyGrid) {
-        int[][] currentShape = new_block.getShape()[index_rotation];
+        int[][] currentShape = currentPiece.getRotation(index_rotation);
 
         // Parcourir la forme du bloc actuel
         for (int i = 0; i < currentShape.length; i++) {
@@ -722,7 +812,7 @@ public class GridGame {
     }
 
     public AbstractBlock getNewBlock() {
-        return new_block;
+        return currentPiece;
     }
 
     public int getIndex_rotation() {
@@ -730,11 +820,27 @@ public class GridGame {
     }
 
     public int[][] getGridGame() {
-        return gridGame;
+        return grid;
     }
 
     public boolean getIsGameOver() {
         return isGameOver;
     }
 
+    public int getWidth() {
+        return grid[0].length;
+    }
+    
+    // Getters pour évaluer la grille
+    public int getHeight() {
+        int height = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] != NONE) {
+                    height = Math.max(height, i + 1);
+                }
+            }
+        }
+        return height;
+    }
 }

@@ -1,37 +1,31 @@
 package BlockFolder;
 
-/**
- *
- * @author SIO
- */
-public abstract class AbstractBlock implements ITetronimo {
-    protected int[][][] shape; // Les différentes formes du bloc (rotations)
-    protected int length;      // La taille du bloc (par exemple, pour une grille 3x3)
+public abstract class AbstractBlock {
+    private int[][][] rotations;  // Tableau 3D représentant les rotations de la pièce
 
-    // Constructeur
-    public AbstractBlock(int[][][] shape) {
-        this.shape = shape;
-        this.length = shape[0].length; // Longueur d'une des dimensions (par défaut, la taille des rotations)
+    // Constructeur qui initialise les rotations
+    public AbstractBlock(int[][][] rotations) {
+        this.rotations = rotations;
     }
 
-    // Implémentation de getShape() depuis ITetronimo
-    @Override
-    public int[][][] getShape() {
-        return shape;
+    // Fonction pour obtenir une rotation spécifique
+    public int[][] getRotation(int rotation) {
+        if (rotation < 0 || rotation >= rotations.length) {
+            throw new IllegalArgumentException("Rotation invalide");
+        }
+        return rotations[rotation];  // Retourne la matrice correspondant à la rotation
     }
 
-    // Méthode abstraite pour obtenir le nom du bloc (à implémenter dans les sous-classes)
-    @Override
+    // Fonction pour obtenir le nombre de rotations possibles
+    public int getRotationCount() {
+        return rotations.length;  // Retourne le nombre de rotations
+    }
+
+    // Méthode abstraite pour obtenir le nom de la pièce
     public abstract String getName();
-
-    // Implémentation de la méthode length() depuis ITetronimo
-    @Override
-    public int length() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
     
+    // Méthode pour définir la longueur (à titre d'exemple)
+    public void setLength(int length) {
+        // Logique de gestion de la longueur (si nécessaire)
+    }
 }

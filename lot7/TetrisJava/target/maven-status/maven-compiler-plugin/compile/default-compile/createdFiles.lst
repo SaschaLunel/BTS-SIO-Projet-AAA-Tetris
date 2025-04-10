@@ -6,9 +6,9 @@ BOT\Config.class
 BDD\CPlayer.class
 BOT\OpenAIBot.class
 BDD\baseDeDonnees.class
-Scripts\PlayerController.class
 Panel\PanelTransition.class
 Panel\PanelGame.class
+Panel\PanelGameOpenAI$1.class
 Panel\PanelMenu.class
 connect\Panel_Login$1.class
 Components\ButtonMenu.class
@@ -16,14 +16,16 @@ BlockFolder\ZBlock.class
 Components\Gameplay\TimerWidget.class
 com\mycompany\mavenproject1\Mavenproject1.class
 BOT\Prompt.class
+Panel\PanelGameOpenAI.class
 Panel\PanelGame$1.class
 BlockFolder\ITetronimo.class
 com\mycompany\mavenproject1\DebugFunction.class
-Panel\PanelGameAI$1.class
 BDD\BCrypt.class
 events\EventDispatcher.class
 Components\Gameplay\GridGame.class
+Controllers\AIController.class
 Interfaces\GameActions.class
+Controllers\Move.class
 BlockFolder\SBlock.class
 BlockFolder\OBlock.class
 com\mycompany\mavenproject1\CMyFrame.class
@@ -33,6 +35,7 @@ Panel\PanelGameAI.class
 BlockFolder\AbstractBlock.class
 events\InterfaceMain.class
 connect\JF_Jeux.class
+Controllers\PlayerController.class
 BlockFolder\IBlock.class
 BlockFolder\TBlock.class
 connect\JF_Jeux$1.class

@@ -3,7 +3,9 @@ C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\connect\JF_Jeu
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Components\Gameplay\GridGame.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\PanelGameAI.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\PanelSignUp.java
+C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\PanelGameOpenAI.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\PanelMenuLogin.java
+C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Controllers\AIController.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\events\EventDispatcher.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Components\Gameplay\TimerWidget.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BOT\Prompt.java
@@ -15,6 +17,7 @@ C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\IPanel.j
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\ZBlock.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\IBlock.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BDD\baseDeDonnees.java
+C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Controllers\PlayerController.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\LBlock.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BDD\CPlayer.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\AbstractBlock.java
@@ -25,10 +28,10 @@ C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\com\mycompany\
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Panel\PanelTransition.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\com\mycompany\mavenproject1\CMyFrame.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\SBlock.java
-C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Scripts\PlayerController.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\connect\Panel_Login.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\com\mycompany\mavenproject1\Mavenproject1.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\com\mycompany\mavenproject1\DebugFunction.java
+C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Controllers\Move.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\btn\ButtonMenu.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\BlockFolder\JBlock.java
 C:\Users\SIO\OneDrive\Bureau\tetris\lot7\TetrisJava\src\main\java\Components\MyFormulaire.java

@@ -10,7 +10,7 @@ package events;
  */
 public interface InterfaceMain {
     
-    void SeconnecterBDD(String login, String mdp);
+    
     
     void addNewPanelGame();
 }
