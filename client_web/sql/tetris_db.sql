@@ -29,6 +29,13 @@ CREATE TABLE IF NOT EXISTS score (
     dScore DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date du score
     FOREIGN KEY (iduser) REFERENCES users(iduser)  -- Relation avec la table 'users'
 );
+
 -- Insertion d'un compte admin pour tests 
 INSERT INTO users (email, mdp, verifemail, prenom, nom, pseudo, dBirth)
 VALUES ('admin@admin.com', 'admin', TRUE, 'Admin', 'Admin', 'admin', '1990-01-01');
+
+-- Insertion de scores de test pour l'utilisateur admin
+INSERT INTO score (iduser, score, dScore) VALUES
+(1, 1000, NOW()), -- Score de 1000 pour l'utilisateur admin
+(1, 1500, NOW()), -- Score de 1500 pour l'utilisateur admin
+(1, 2000, NOW()); -- Score de 2000 pour l'utilisateur admin

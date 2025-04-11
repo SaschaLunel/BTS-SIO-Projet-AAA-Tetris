@@ -2,7 +2,7 @@
 session_start(); // Démarre la session
 
 // Vérifiez si l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['iduser'])) {
     header("Location: login.php");
     exit();
 }
@@ -20,7 +20,7 @@ if ($conn->connect_error) {
     die("Connexion échouée : " . $conn->connect_error);
 }
 
-$user_id = $_SESSION['user_id']; // Récupère l'ID utilisateur de la session
+$user_id = $_SESSION['iduser']; // Récupère l'ID utilisateur de la session
 
 // Récupérer les informations de l'utilisateur
 $sql = "SELECT email, prenom, nom, pseudo, dBirth FROM users WHERE iduser = ?";
@@ -44,8 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
     $password = !empty($_POST['password']) ? password_hash($_POST['password'], PASSWORD_DEFAULT) : null;
 
     $sql = $password 
-        ? "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ?, password = ? WHERE id = ?" 
-        : "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ? WHERE id = ?";
+        ? "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ?, password = ? WHERE iduser = ?" 
+        : "UPDATE users SET email = ?, prenom = ?, nom = ?, pseudo = ? WHERE iduser = ?";
     $stmt = $conn->prepare($sql);
 
     if ($password) {
@@ -112,17 +112,18 @@ $conn->close();
         <input type="date" name="date_de_naissance" value="<?= htmlspecialchars($user['dBirth']) ?>" required>
         <br>
 
-        <label>New password:</label>
+        <label>New password:</label> --
         <input type="password" name="password">
         <br>
 
         <button type="submit" name="update">Update</button>
         <button type="submit" name="delete" onclick="return confirm('Voulez-vous vraiment supprimer votre compte ?');">Delete account</button>
+    </form>
     
     <!-- Boutons à droite du menu pour jouer ou quitter le jeu -->
     <div id="right_buttons">
-    <button onclick="window.location.href='game.php';">Play</button>
-    <button onclick="window.location.href='index.php';">Quit</button>
+    <button onclick="window.location.href='game.php'">Play</button>
+    <button onclick="window.location.href='index.php'">Quit</button>
 </div>
 
 <script src="../js/script_constversion.js"></script> 

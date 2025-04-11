@@ -1,7 +1,7 @@
 <?php
 session_start(); // Démarre la session
 //Vérifie si l'utilisateur est déjà connecté
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['iduser'])) {
     header("Location: my_account.php");
     exit();
 }
@@ -34,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Vérifie si un utilisateur a été trouvé et si le mot de passe est correct
         if ($user && password_verify($inputPassword, $user['mdp'])) {
             // Stocke l'utilisateur dans la session
-            $_SESSION['user_id'] = $user['iduser'];
+            $_SESSION['iduser'] = $user['iduser'];
             $_SESSION['username'] = $user['pseudo'];
+            $_SESSION['pseudo'] = $user['pseudo']; // Ajoutez cette ligne
 
             // Redirige vers my_account.php
             header("Location: my_account.php");

@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer un compte</title>
+    <title>Create New Account</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
@@ -97,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!-- Section centrale pour les autres boutons -->
     <div class="conpage-buttons">
-        <button id="loginButton">Login</button>
-        <button id="GuestButton">Guest</button>
+        <button onclick="window.location.href='login.php'" id="loginButton">Login</button>
+        <button onclick="window.location.href='index.php'" id="GuestButton">Guest</button>
     </div>
 
     <!-- Lien vers le script JavaScript -->

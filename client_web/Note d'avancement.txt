@@ -1,0 +1,14 @@
+Notes d'avancement 
+
+Bugs actuels
+
+❌
+
+Progrès réalisés
+
+✅passage de la definition des tetrominos en matrices en dur dans le code
+✅input test fixed 
+✅changement css, border-radius: 5px; partout ( ou presque cf tableau scores)
+✅score bien envoyer dans la bdd
+✅grille non traversable et bug vers le coté gauche fixé
+✅statut login bien affiché même en jeu 

@@ -2,7 +2,7 @@
 session_start(); // Démarre la session
 
 // Vérifie si un utilisateur est connecté
-$isUserLoggedIn = isset($_SESSION['username']);
+$isUserLoggedIn = isset($_SESSION['iduser']);
 $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
 ?>  
 
@@ -11,17 +11,15 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lets Play Tetriscraft !</title>
+    <title>Lets Play Тетрис !</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
 
 <body>
-    
 
-
-<h1 id="page_title"> Tetriscraft</h1>
+<h1 id="page_title"> Тетрис</h1>
     <!-- Section pour les boutons en haut à droite -->
     <div class="header-buttons">
         <?php if ($isUserLoggedIn): ?>
@@ -39,9 +37,9 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
     <!-- Section centrale pour les boutons principaux -->
     <div class="center-buttons">
         <button id="playButton">Play</button>
-        <button id="statsButton">Stats</button>
-        <button id="settingsButton">Settings</button>
-        <button id="quitButton">Quit</button>
+        <button id="statsButton" onclick="window.location.href='stats.php'">Stats</button>
+        <button id="settingsButton" onclick="window.location.href='settings.php'">Settings</button>
+        <button id="quitButton" onclick="window.location.href='LoginGuest.php'">Quit</button>
     </div>
 
     <!-- Section pour le timer de test en haut à gauche -->
@@ -54,18 +52,16 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
         </div>
     </div>
 
-    <div id="inputTest">Appuyez sur une flèche pour voir l'action</div>
+    <div id="inputTest">Press arrow key to see action</div>
     
     <!-- Lien vers le script JavaScript -->
 <script src="../js/script_constversion.js"></script> 
 
-    <!-- Lien vers le script JavaScript bug++-->
     <script>
         // Vérifie si l'utilisateur est connecté
         const isUserLoggedIn = <?php echo json_encode($isUserLoggedIn); ?>;
 
         // Gestion du clic sur le bouton userButton
-        
         if (isUserLoggedIn) {
             const userButton = document.getElementById('userButton');
             userButton.addEventListener('click', () => {
@@ -76,6 +72,6 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
             });
         }
     </script>
-    
+
 </body>
 </html>

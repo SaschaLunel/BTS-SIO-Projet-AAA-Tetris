@@ -1,23 +1,61 @@
+/* Empêcher le curseur de texte sur les éléments non-formulaires */
+body, div, span, h1, h2, h3, h4, h5, h6, p, a, 
+section, header, footer, main, aside, nav, 
+.game-container, .side-panel, .stats-container, .stat-item, 
+.player-info, .button-container, .menu-button, .control-btn,
+.game-over-overlay, .game-over-content, .header-container, 
+.settings-gear, .settings-dropdown {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+}
+
+/* Permettre la sélection de texte uniquement dans les formulaires */
+input, textarea, [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    cursor: text;
+}
+
+/* Définir le bon curseur pour les éléments interactifs */
+button, a, .menu-button, .control-btn, .settings-gear {
+    cursor: pointer;
+}
 /* Appliquer une taille pour s'assurer que tout prend l'écran */
 html, body {
     height: 100%;
     margin: 0;
-    padding: 0;
+    padding: 0  ;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 /* Image de fond couvrant tout l'écran */
 body {
-    background-image: url('../images/autumn.png'); /* Remplace par le chemin de ton image */
+    background: url('../images/river.gif') no-repeat center center fixed; /* Remplace par le chemin de ton vidéo */
+    background-size: cover;
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     display: flex;
     flex-direction: column;
 }
 
+/* test Déclaration des variables de couleurs */
+:root {
+    --moss: #507555;  /* Couleur principale */
+    --sarcelle: #167B76;  /* Couleur secondaire */
+    --sarcelle_hover: #1D8A83;  /* Couleur secondaire */
+    --ambre: #E9CB64;  /* Couleur de fond */
+    --ambre_hover: #EADD56;  /* Couleur de fond */
+}
 /* Style des boutons login/guest en haut à droite de la page index.php*/
 .header-buttons {
     position: absolute;
@@ -29,7 +67,7 @@ body {
 }
 
 .header-buttons button {
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px;
@@ -39,10 +77,12 @@ body {
     cursor: pointer;
     text-transform: uppercase;
     transition: 0.3s ease;
+    border-radius: 5px;
+
 }
 
 .header-buttons button:hover {
-    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    background-color: #EADD56; /* Couleur marron légèrement plus sombre */
     transform: scale(1.05);
     transform: translateY(-2px);
 }
@@ -57,7 +97,7 @@ body {
     gap: 20px;
 }
 .LG-center-buttons button {
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 50px;
@@ -67,9 +107,10 @@ body {
     cursor: pointer;
     text-transform: uppercase;
     transition: 0.3s ease;
+    border-radius: 5px;
 }
 .LG-center-buttons button:hover {
-    background-color: #a79483; /* Couleur marron légèrement plus sombre */
+    background-color: #EADD56; /* Couleur marron légèrement plus sombre */
     transform: scale(1.05);
     transform: translateY(-2px);
 }
@@ -81,6 +122,8 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    width: 300px; 
+    margin: 20px auto;
 }
 .conpage-buttons button {
     width: 100%;
@@ -88,7 +131,7 @@ body {
     font-size: 16px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     color: #1a1a1a; /* Texte noir profond */
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     border: 2px solid #1a1a1a; /* Bordure noire */
     border-radius: 5px;
     cursor: pointer;
@@ -112,7 +155,7 @@ body {
 }
 
 .center-buttons button {
-    background-color: #4B606E  ; /* bleu pixel */
+    background-color: #167B76 ; /* bleu pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art, vous pouvez la remplacer par une police similaire */
     font-size: 18px;
@@ -123,10 +166,11 @@ body {
     text-transform: uppercase;
     width: 200px;
     transition: 0.3s ease;
+    border-radius: 5px;
 }
 
 .center-buttons button:hover {
-    background-color: #455763; /* Couleur bleu plus sombre */
+    background-color: #1D8A83; /* Couleur bleu plus sombre */
     transform: scale(1.05);
     transform: translateY(-2px);
 }
@@ -138,7 +182,7 @@ body {
     top: 20px; 
     left: 20px;
     background-color: rgba(242, 233, 208, 0.8); /* Un fond semi-transparent */
-    border: 4px solid #C9B19D; /* Bordure sombre */
+    border: 4px solid #E9CB64; /* Bordure sombre */
     border-radius: 5px; /* Coins arrondis */
     padding: 10px; /* Espace interne */
     color: white; /* Couleur du texte */
@@ -160,7 +204,7 @@ body {
     left: 50%;       /* Centre horizontalement */
     transform: translateX(-50%); /* Centre parfaitement l'élément */
     
-    background-color: #D5833A ; /* Couleur de fond similaire aux boutons */
+    background-color: #507555 ; /* Couleur de fond similaire aux boutons */
     border: 4px solid #1a1a1a; /* Bordure foncée pour l'encadré */
     color: #000; /* Couleur du texte */
     font-family: 'Press Start 2P', cursive; /* Police pour le style rétro */
@@ -188,7 +232,7 @@ body {
 }
 
 .side-buttons button {
-    background-color: #4B606E; /* Rouge pixel */
+    background-color: #167B76; /* Rouge pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px;
@@ -199,6 +243,7 @@ body {
     text-transform: uppercase;
     width: 200px; /* Ajustez si nécessaire */
     transition: 0.3s ease;
+    border-radius: 5px;
 }
 
 .side-buttons button:hover {
@@ -213,7 +258,7 @@ body {
 }
 
 .timer-buttons button {
-    background-color: #D5833A ; /* Rouge pixel */
+    background-color: #507555 ; /* Rouge pixel */
     color: #1a1a1a; /* Noir profond pour le texte */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 14px;
@@ -222,10 +267,11 @@ body {
     cursor: pointer;
     text-transform: uppercase;
     transition: 0.3s ease;
+    border-radius: 5px;
 }
 
 .timer-buttons button:hover {
-    background-color: #bf7635; /* Couleur rouge plus sombre */
+    background-color: #216E4E; /* Couleur rouge plus sombre */
     transform: scale(1.05);
     transform: translateY(-2px);
 }
@@ -233,45 +279,40 @@ body {
 /* Style pour la grille de jeu */
 #gameGrid {
     display: grid;
-    grid-template-columns: repeat(10, 30px); /* 10 colonnes de 30px */
-    grid-template-rows: repeat(20, 30px); /* 20 lignes de 30px */
-    gap: 1px; /* Espacement entre les cellules */
-    margin: 20px auto; /* Centrer la grille horizontalement */
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(20, 30px);
+    gap: 1px;
+    margin: 20px auto;
     padding: 10px;
-    background-color: #222; /* Couleur de fond pour la grille */
-    border: 4px solid #1a1a1a; /* Bordure autour de la grille */
-    box-shadow: 4px 4px 0 #1a1a1a;
+    background-color: rgba(234, 219, 178, 0.8); /* Fond Stardew */
+    border: 4px solid #6D4A33; /* Bordure bois */
+    box-shadow: 4px 4px 0 #6D4A33;
+    border-radius: 5px;
 }
 
+/* Styles des cellules */
 .cell {
     width: 30px;
     height: 30px;
-    background-color: #333; /* Couleur de base pour les cellules */
-    border: 1px solid #111;
+    background-color: rgba(255, 248, 225, 0.9);
+    border: 1px solid #AD8669;
 }
 
-/* Styles pour les cellules de la grille */
-.cell {
-    width: 30px;
-    height: 30px;
-    background-color: #222; /* Couleur par défaut des cellules vides */
-}
-
-/* Styles pour les tétrominos */
+/* Styles des Tétraminos */
 .tetromino {
-    background-color: #8da198; /* Couleur des tétraminos actifs */
+    background-color: #A2C48D; /* Vert Stardew */
 }
 
-/* Styles pour les tétrominos fixés */
+/* Styles pour les tétraminos fixés */
 .fixed {
-    background-color: #455763; /* Couleur pour les tétraminos fixés */
+    background-color: #E6C48D;
 }
 
 /* Style du formulaire de connexion */
 .login-form {
     background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent pour laisser l'image en arrière-plan */
     padding: 30px;
-    border: 3px solid #C9B19D; /* Bordure dorée */
+    border: 3px solid #E9CB64; /* Bordure dorée */
     border-radius: 10px;
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
     width: 320px;
@@ -283,7 +324,7 @@ body {
 .login-form label {
     display: block;
     font-size: 14px;
-    color: #C9B19D; /* Marron doré */
+    color: #E9CB64; /* Marron doré */
     margin-bottom: 10px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
 }
@@ -296,10 +337,10 @@ body {
     width: 90%;
     padding: 12px;
     margin: 0 auto 15px auto;
-    border: 2px solid #C9B19D; /* Bordure dorée */
+    border: 2px solid #E9CB64; /* Bordure dorée */
     border-radius: 5px;
     background-color: #1a1a1a; /* Fond noir profond */
-    color: #C9B19D; /* Texte doré */
+    color: #E9CB64; /* Texte doré */
     font-size: 14px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     box-shadow: inset 2px 2px 4px #333;
@@ -312,7 +353,7 @@ body {
     font-size: 16px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     color: #1a1a1a; /* Texte noir profond */
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     border: 2px solid #1a1a1a; /* Bordure noire */
     border-radius: 5px;
     cursor: pointer;
@@ -344,7 +385,7 @@ body > form {
 .logout-form button {
     all: unset; /* Supprime tous les styles par défaut du bouton dans le formulaire */
     display: inline-block; /* Rend le bouton inline-block pour éviter un écart */
-    background-color: #C9B19D; /* Couleur identique à celle du bouton Guest */
+    background-color: #E9CB64; /* Couleur identique à celle du bouton Guest */
     color: #1a1a1a; /* Texte noir profond */
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px; /* Taille de texte similaire */
@@ -354,10 +395,11 @@ body > form {
     cursor: pointer;
     text-transform: uppercase;
     transition: 0.3s ease;
+    border-radius: 5px; /* Coins arrondis pour le bouton */
 }
 
 .logout-form button:hover {
-    background-color: #a79483; /* Même couleur de survol */
+    background-color: #EADD56; /* Même couleur de survol */
     transform: scale(1.05);
     transform: translateY(-2px);
 }
@@ -369,7 +411,7 @@ body > form {
 #createaccount_form {
     background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
     padding: 30px;
-    border: 3px solid #C9B19D; /* Bordure dorée */
+    border: 3px solid #E9CB64; /* Bordure dorée */
     border-radius: 10px;
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
     width: 320px;
@@ -381,7 +423,7 @@ body > form {
 #createaccount_form label {
     display: block;
     font-size: 14px;
-    color: #C9B19D; /* Marron doré */
+    color: #E9CB64; /* Marron doré */
     margin-bottom: 10px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
 }
@@ -394,10 +436,10 @@ body > form {
     width: 90%;
     padding: 12px;
     margin: 0 auto 15px auto;
-    border: 2px solid #C9B19D; /* Bordure dorée */
+    border: 2px solid #E9CB64; /* Bordure dorée */
     border-radius: 5px;
     background-color: #1a1a1a; /* Fond noir profond */
-    color: #C9B19D; /* Texte doré */
+    color: #E9CB64; /* Texte doré */
     font-size: 14px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     box-shadow: inset 2px 2px 4px #333;
@@ -410,7 +452,7 @@ body > form {
     font-size: 16px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     color: #1a1a1a; /* Texte noir profond */
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     border: 2px solid #1a1a1a; /* Bordure noire */
     border-radius: 5px;
     cursor: pointer;
@@ -430,19 +472,19 @@ body > form {
 #my_account_form {
     background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
     padding: 30px;
-    border: 3px solid #C9B19D; /* Bordure dorée */
+    border: 3px solid #E9CB64; /* Bordure dorée */
     border-radius: 10px;
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
     width: 320px;
     text-align: center;
-    margin: 20px auto; /* Centrer le formulaire sur la page */
+    margin: 20px auto -105px auto; /* Centrer le formulaire sur la page */
 }
 
 /* Style des labels */
 #my_account_form label {
     display: block;
     font-size: 14px;
-    color: #C9B19D; /* Marron doré */
+    color: #E9CB64; /* Marron doré */
     margin-bottom: 10px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
 }
@@ -455,10 +497,10 @@ body > form {
     width: 90%;
     padding: 12px;
     margin: 0 auto 15px auto;
-    border: 2px solid #C9B19D; /* Bordure dorée */
+    border: 2px solid #E9CB64; /* Bordure dorée */
     border-radius: 5px;
     background-color: #1a1a1a; /* Fond noir profond */
-    color: #C9B19D; /* Texte doré */
+    color: #E9CB64; /* Texte doré */
     font-size: 14px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     box-shadow: inset 2px 2px 4px #333;
@@ -471,7 +513,7 @@ body > form {
     font-size: 16px;
     font-family: 'Press Start 2P', cursive; /* Police pixel art */
     color: #1a1a1a; /* Texte noir profond */
-    background-color: #C9B19D; /* Marron doré */
+    background-color: #E9CB64; /* Marron doré */
     border: 2px solid #1a1a1a; /* Bordure noire */
     border-radius: 5px;
     cursor: pointer;
@@ -482,7 +524,7 @@ body > form {
 
 /* Effet de survol pour le bouton de soumission */
 #my_account_form button[type="submit"]:hover {
-    background-color: #a79483; /* Doré plus sombre */
+    background-color: #EADD56; /* Doré plus sombre */
     transform: scale(1.05);
 }
 
@@ -492,7 +534,7 @@ body > form {
     font-size: 48px; /* Taille assez grande pour être central */
     text-align: center; /* Centrer le texte */
     color: #ffffff; /* Texte blanc pour contraster avec le fond */
-    background-color: #D5833A; /* Couleur de fond, ici un orange/marron */
+    background-color: #507555; /* Couleur de fond, ici un orange/marron */
     border: 5px solid #1a1a1a; /* Bordure noire épaisse */
     padding: 20px; /* Espacement interne pour donner un effet d'encadré */
     margin: 20px auto; /* Espacement externe et centrage horizontal */
@@ -500,6 +542,8 @@ body > form {
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet 3D rétro */
     text-transform: uppercase; /* Texte en majuscules */
     transition: 0.3s ease; /* Animation de transition pour survol */
+    border-radius: 5px;
+
 }
 
 /*Style pour les boutons à droite du menu central sur la page my_account.php*/
@@ -525,6 +569,7 @@ body > form {
     text-transform: uppercase;
     width: 200px; /* Ajustez si nécessaire */
     transition: 0.3s ease;
+    border-radius: 5px;
 }
 #right_buttons button:hover {
     transform: scale(1.05);
@@ -537,7 +582,7 @@ body > form {
     top: 50%;
     transform: translateY(-50%);
     background-color: rgba(242, 233, 208, 0.8); /* Fond semi-transparent */
-    border: 4px solid #C9B19D; /* Bordure dorée */
+    border: 4px solid #E9CB64; /* Bordure dorée */
     border-radius: 5px; /* Coins arrondis */
     padding: 15px;
     color: white; /* Couleur du texte */
@@ -568,7 +613,7 @@ body > form {
     z-index: 10; /* Donne la priorité d'affichage sur d'autres éléments */
     background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
-    border: 3px solid #C9B19D;
+    border: 3px solid #E9CB64;
     border-radius: 10px;
     box-shadow: 4px 4px 0 #1a1a1a;
     text-align: center;
@@ -598,7 +643,208 @@ body > form {
 }
 
 .center-buttons button:hover {
-    background-color: #455763;
+    background-color: #1D8A83;
     transform: scale(1.05);
     transform: translateY(-2px);
+}
+
+
+/* Conteneur des filtres */
+#filters {
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    padding: 20px;
+    border: 3px solid #E9CB64; /* Bordure dorée */
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
+    width: 320px;
+    text-align: center;
+    margin: 20px auto; /* Centrer le conteneur sur la page */
+}
+
+/* Style des labels des filtres */
+#filters label {
+    display: block;
+    font-size: 14px;
+    color: #E9CB64; /* Marron doré */
+    margin-bottom: 10px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+}
+
+/* Style du menu déroulant des filtres */
+#filters select {
+    width: 100%;
+    padding: 12px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #E9CB64; /* Bordure dorée */
+    border-radius: 5px;
+    background-color: #1a1a1a; /* Fond noir profond */
+    color: #E9CB64; /* Texte doré */
+    font-size: 14px;
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    box-shadow: inset 2px 2px 4px #333;
+    cursor: pointer;
+}
+
+/* Style du tableau des scores */
+#scores_table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    border: 3px solid #E9CB64; /* Bordure dorée */
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
+}
+
+/* Style des en-têtes du tableau */
+#scores_table th {
+    background-color: #507555; /* Couleur de fond des en-têtes */
+    color: #1a1a1a; /* Texte noir profond */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 16px;
+    padding: 15px;
+    text-transform: uppercase;
+}
+
+/* Style des cellules du tableau */
+#scores_table td {
+    color: #E9CB64; /* Texte doré */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 14px;
+    padding: 12px;
+    text-align: center;
+    border-bottom: 2px solid #E9CB64; /* Bordure entre les lignes */
+}
+
+/* Style des boutons à droite du menu */
+#right_buttons {
+    position: absolute;
+    right: 180px; /* Ajustez pour définir la marge droite */
+    top: 50%; /* Ajustez pour la hauteur */
+    transform: translateY(-50%); /* Centrer verticalement */
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Espace entre les boutons */
+}
+
+#right_buttons button {
+    background-color: #167b76; /* Bleu pixel */
+    color: #1a1a1a; /* Noir profond pour le texte */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
+    font-size: 18px;
+    border: 3px solid #1a1a1a; /* Bordure noire */
+    padding: 15px 20px;
+    text-align: center;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 200px; /* Ajustez si nécessaire */
+    transition: 0.3s ease;
+}
+
+#right_buttons button:hover {
+    background-color: #1D8A83; /* Couleur bleu plus sombre */
+    transform: scale(1.05);
+    transform: translateY(-2px);
+}
+ /* Style du formulaire des paramètres */
+ .settings-form {
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    padding: 30px;
+    border: 3px solid #E9CB64; /* Bordure dorée */
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet rétro */
+    width: 320px;
+    text-align: center;
+    margin: 20px auto; /* Centrer le formulaire sur la page */
+}
+
+.settings-form h2 {
+    margin-bottom: 30px;
+    font-size: 18px;
+    color: #E9CB64;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.settings-form label {
+    display: block;
+    font-size: 14px;
+    color: #E9CB64;
+    margin-bottom: 10px;
+    font-family: 'Press Start 2P', cursive;
+}
+
+.settings-form input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.settings-form input[type="range"] {
+    width: 90%;
+    padding: 5px;
+    border: 2px solid #E9CB64;
+    border-radius: 5px;
+    background-color: #1a1a1a;
+    color: #E9CB64;
+    font-size: 14px;
+    font-family: 'Press Start 2P', cursive;
+    box-shadow: inset 2px 2px 4px #333;
+}
+
+.settings-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive;
+    color: #1a1a1a;
+    background-color: #E9CB64;
+    border: 2px solid #1a1a1a;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    box-shadow: 4px 4px 0 #1a1a1a;
+    text-transform: uppercase;
+}
+
+.settings-form button:hover {
+    background-color: #EADD56;
+    transform: scale(1.05);
+}
+
+.message {
+    color: #0f0;
+    margin-top: 15px;
+    font-size: 12px;
+}
+
+.conpage-buttons {
+    margin-top: 40px;
+}
+
+.conpage-buttons button {
+    margin: 10px;
+    font-size: 10px;
+}
+/* Footer collé en bas */
+.site-footer {
+    background-color: #111;
+    color: #fff;
+    text-align: center;
+    padding: 15px 10px;
+    font-size: 10px;
+    border-top: 2px solid #444;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-nav a {
+    color: #8EB7C3;
+    text-decoration: none;
+    margin: 0 6px;
+}
+
+.footer-nav a:hover {
+    text-decoration: underline;
 }

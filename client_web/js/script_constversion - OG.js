@@ -46,7 +46,7 @@ function formatTime(seconds) {
 
 // Fonction pour démarrer le timer 
 function startTimer() {
-    if (!timerInterval && timerElement) {
+    if (!timerInterval) {
         timerInterval = setInterval(() => {
             seconds++;
             timerElement.textContent = 'Time: ' + formatTime(seconds);
@@ -64,9 +64,7 @@ function stopTimer() {
 function resetTimer() {
     stopTimer();
     seconds = 0;
-    if (timerElement) {
-        timerElement.textContent = 'Time: 00:00';
-    }
+    timerElement.textContent = 'Time: 00:00';
 }
 
 // Ecouteur d'événements pour les boutons du timer 
@@ -97,11 +95,6 @@ const GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 // Fonction pour créer la grille de jeu 
 function createGrid() {
     let gameGrid = document.getElementById('gameGrid');
-    if (!gameGrid) {
-        console.error("❌ ERREUR : L'élément gameGrid n'existe pas !");
-        return false;
-    }
-    
     gameGrid.innerHTML = ''; // Vide le contenu de la grille
     for (let i = 0; i < GRID_SIZE; i++) {
         let cell = document.createElement('div');
@@ -109,7 +102,6 @@ function createGrid() {
         gameGrid.appendChild(cell);
     }
     gameGrid.classList.remove('hidden'); // Affiche la grille après création
-    return true;
 }
 
 // Écouteur d'événements pour le bouton Play de index.php
@@ -149,196 +141,93 @@ if (quitGameButton) {
 let inputTest = document.getElementById('inputTest');
 let resetMessageTimeout;
 function showTemporaryMessage(message) {
-    if (inputTest) {
-        inputTest.textContent = message;
-        clearTimeout(resetMessageTimeout);
-        resetMessageTimeout = setTimeout(() => {
-            inputTest.textContent = 'Press arrow key to see action';
-        }, 1000);
-    }
+    inputTest.textContent = message;
+    clearTimeout(resetMessageTimeout);
+    resetMessageTimeout = setTimeout(() => {
+        inputTest.textContent = 'Appuyez sur une flèche pour voir l\'action';
+    }, 1000);
 }
 
+// Définir les formes des tétraminos
 const tetrominos = {
     I: [
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 1, 2, 3],  // Forme "I" en position verticale
+        [0, GRID_WIDTH, GRID_WIDTH * 2, GRID_WIDTH * 3]  // Forme "I" en position horizontale
     ],
     O: [
-        [1, 1, 0, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 1, GRID_WIDTH, GRID_WIDTH + 1]  // Forme "O" (ne change pas de rotation)
     ],
     T: [
-        [0, 1, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    S: [
-        [0, 1, 1, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    Z: [
-        [1, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    J: [
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [1, GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2],   // Forme "T" position de base
+        [1, GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1],
+        [GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH * 2 + 1],
+        [1, GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH * 2 + 1]
     ],
     L: [
-        [0, 0, 1, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+        [0, 1, 2, GRID_WIDTH],                // ┗━ (Position de départ)
+        [1, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1, 2], // ┃ (Rotation 90°)
+        [GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2, 2 ], // ┛━ (Rotation 180°)
+        [0, GRID_WIDTH, GRID_WIDTH * 2, GRID_WIDTH * 2 + 1]  // ┃ inversé (Rotation 270°)
     ],
-    // Ajout de nouveaux tétrominos
-    P: [
-        [1, 1, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
+    J: [
+        [1, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1, GRID_WIDTH * 2],   // Forme "J" position de base
+        [GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH * 2 + 2],
+        [1, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1, 2],
+        [0, GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2]
     ],
-    W: [
-        [1, 0, 0, 0],
-        [1, 1, 0, 0],
-        [0, 1, 1, 0],
-        [0, 0, 0, 0]
+    S: [
+        [1, 2, GRID_WIDTH, GRID_WIDTH + 1],    // Forme "S" position de base
+        [0, GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1]
     ],
-    U: [
-        [1, 0, 1, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    F: [
-        [0, 1, 1, 0],
-        [0, 1, 0, 0],
-        [1, 1, 0, 0],
-        [0, 0, 0, 0]
-    ],
-    V: [
-        [1, 0, 0, 0],
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
-        [0, 0, 0, 0]
-    ],
-    Y: [
-        [0, 1, 0, 0],
-        [1, 1, 1, 0],
-        [0, 1, 0, 0],
-        [0, 0, 0, 0]
+    Z: [
+        [0, 1, GRID_WIDTH + 1, GRID_WIDTH + 2],    // Forme "Z" position de base
+        [1, GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH * 2]
     ]
 };
 
-// CORRECTION: La classe tetromino a été supprimée car elle causait des conflits avec l'objet tetrominos
-// La variable currentTetromino contient directement la matrice du tetromino actuel
-
 //Fonctionnalité pour faire apparaître un tétrominos
 let currentTetromino;
+let currentRotation = 0;
 let currentPosition = Math.floor(GRID_WIDTH / 2) - 1; // Position de départ au centre de la grille
 
 function spawnTetromino() {
     console.log("🚀 Tentative de spawn d'un nouveau tétraminos");
 
-    // Vérifier si la grille existe avant d'essayer d'y accéder
-    const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) {
-        console.error("❌ ERREUR : Impossible de spawner un tétromino, la grille n'existe pas !");
-        return false;
-    }
-
-    // Vérifier le Game Over seulement si des cellules fixes existent
-    const fixedCells = document.querySelectorAll('.fixed');
-    if (fixedCells.length > 0 && isGameOver()) {
+    // On ne vérifie le Game Over QUE si des blocs sont déjà fixés
+    if (document.querySelectorAll('.fixed').length > 0 && isGameOver()) {
         stopAutoDrop();
-        console.log("💀 GAME OVER - Plus d'espace pour spawner un nouveau tétromino !");
-        localStorage.setItem("lastScore", score);
-        setTimeout(() => {
-            window.location.href = 'gameover.php';
-        }, 1000);
-        return false;
+        console.log("💀 GAME OVER - Plus d’espace pour spawner un nouveau tétromino !");
+        return;
     }
 
     const tetrominoKeys = Object.keys(tetrominos);
     const randomKey = tetrominoKeys[Math.floor(Math.random() * tetrominoKeys.length)];
     currentTetromino = tetrominos[randomKey];
-    
-    // Calculer la position de départ pour centrer le tetromino
-    // Le offset est la moitié de la largeur de la grille moins la moitié de la largeur du tetromino
-    const tetrominoWidth = currentTetromino[0].length;
-    currentPosition = Math.floor((GRID_WIDTH - tetrominoWidth) / 2);
-    
-    return drawTetromino();
+    currentRotation = 0;
+    currentPosition = 4; // Position de départ
+
+    drawTetromino();
 }
 
-// Modifions la fonction drawTetromino pour qu'elle fonctionne avec des matrices 2D
+
+
 function drawTetromino() {
     console.log("drawTetro OK");
     const cells = document.querySelectorAll('.cell');
-    
-    if (cells.length === 0) {
-        console.error("❌ ERREUR : Impossible de dessiner le tétromino, la grille n'existe pas !");
-        return false;
-    }
-    
-    if (!currentTetromino) {
-        console.error("❌ ERREUR : Aucun tétromino actif !");
-        return false;
-    }
-    
-    // Parcours de la matrice du tetromino actuel
-    for (let y = 0; y < currentTetromino.length; y++) {
-        for (let x = 0; x < currentTetromino[y].length; x++) {
-            // Si la cellule contient un 1, on la dessine
-            if (currentTetromino[y][x] === 1) {
-                const cellIndex = currentPosition + (y * GRID_WIDTH) + x;
-                if (cellIndex >= 0 && cellIndex < GRID_SIZE) {
-                    cells[cellIndex].classList.add('tetromino');
-                }
-            }
-        }
-    }
-    return true;
+    currentTetromino[currentRotation].forEach(index => {
+        cells[currentPosition + index].classList.add('tetromino');
+    });
 }
 
-// De même pour undrawTetromino
 function undrawTetromino() {
     const cells = document.querySelectorAll('.cell');
-    
-    if (cells.length === 0) {
-        console.error("❌ ERREUR : Impossible d'effacer le tétromino, la grille n'existe pas !");
-        return false;
-    }
-    
-    if (!currentTetromino) {
-        console.error("❌ ERREUR : Aucun tétromino actif à effacer !");
-        return false;
-    }
-    
-    for (let y = 0; y < currentTetromino.length; y++) {
-        for (let x = 0; x < currentTetromino[y].length; x++) {
-            if (currentTetromino[y][x] === 1) {
-                const cellIndex = currentPosition + (y * GRID_WIDTH) + x;
-                if (cellIndex >= 0 && cellIndex < GRID_SIZE) {
-                    cells[cellIndex].classList.remove('tetromino');
-                }
-            }
-        }
-    }
-    return true;
+    currentTetromino[currentRotation].forEach(index => {
+         cells[currentPosition + index].classList.remove('tetromino');
+    });
 }
 
 //Mouvement automatique vers le bas
+
 let dropInterval;
 
 function startAutoDrop() {
@@ -350,12 +239,9 @@ function stopAutoDrop() {
 }
 
 function moveDown() {
-    if (!undrawTetromino()) return;
-    
+    undrawTetromino();
     currentPosition += GRID_WIDTH; // Avance d'une ligne
-    
-    if (!drawTetromino()) return;
-    
+    drawTetromino();
     if (isAtBottom()) {
         fixTetromino();
         spawnTetromino();
@@ -364,167 +250,79 @@ function moveDown() {
 
 //Gestion du mouvement avec les flèches
 function canMove(offset) {
-    if (!currentTetromino) return false;
-    
-    for (let y = 0; y < currentTetromino.length; y++) {
-        for (let x = 0; x < currentTetromino[y].length; x++) {
-            if (currentTetromino[y][x] === 1) {
-                const currentIndex = currentPosition + (y * GRID_WIDTH) + x;
-                const newIndex = currentIndex + offset;
-                
-                // Vérifiez les limites horizontales
-                const currentCol = (currentIndex % GRID_WIDTH);
-                const newCol = newIndex % GRID_WIDTH;
-                
-                // Si on essaie de déplacer à gauche et ça fait un wrap-around
-                if (offset === -1 && newCol === GRID_WIDTH - 1) {
-                    return false;
-                }
-                
-                // Si on essaie de déplacer à droite et ça fait un wrap-around
-                if (offset === 1 && newCol === 0) {
-                    return false;
-                }
-                
-                // Vérifier si la nouvelle position est dans la grille et pas sur une cellule fixée
-                if (newIndex < 0 || newIndex >= GRID_SIZE) {
-                    return false;
-                }
-                
-                const cells = document.querySelectorAll('.cell');
-                if (cells.length === 0) return false;
-                
-                if (cells[newIndex].classList.contains('fixed')) {
-                    return false;
-                }
-            }
+    return currentTetromino[currentRotation].every(index => {
+        let newPos = currentPosition + index + offset;
+
+        // Vérifie si la nouvelle position est hors de la grille horizontalement
+        const currentCol = (currentPosition + index) % GRID_WIDTH;
+        const newCol = newPos % GRID_WIDTH;
+
+        if (offset === -1 && newCol > currentCol) {
+            // Déplacement vers la gauche : empêche de passer de la colonne 0 à la dernière colonne
+            return false;
         }
-    }
-    return true;
+        if (offset === 1 && newCol < currentCol) {
+            // Déplacement vers la droite : empêche de passer de la dernière colonne à la colonne 0
+            return false;
+        }
+
+        // Vérifie si la nouvelle position est valide (dans la grille et pas sur une cellule fixée)
+        return newPos >= 0 && newPos < GRID_SIZE && !document.querySelectorAll('.cell')[newPos].classList.contains('fixed');
+    });
 }
 
 function canRotate() {
-    if (!currentTetromino) return false;
-    
-    // Créer une matrice temporaire pour la rotation
-    const rotated = [];
-    const size = currentTetromino.length;
-    
-    for (let y = 0; y < size; y++) {
-        rotated[y] = [];
-        for (let x = 0; x < size; x++) {
-            rotated[y][x] = currentTetromino[size - 1 - x][y];
-        }
-    }
-    
-    const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) return false;
-    
-    // Vérifier si la rotation est possible
-    for (let y = 0; y < size; y++) {
-        for (let x = 0; x < size; x++) {
-            if (rotated[y][x] === 1) {
-                const cellIndex = currentPosition + (y * GRID_WIDTH) + x;
-                const colPosition = (currentPosition % GRID_WIDTH) + x;
-                
-                // Vérifier si la position est valide
-                if (
-                    cellIndex < 0 || 
-                    cellIndex >= GRID_SIZE || 
-                    colPosition < 0 || 
-                    colPosition >= GRID_WIDTH ||
-                    cells[cellIndex].classList.contains('fixed')
-                ) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
+    let nextRotation = (currentRotation + 1) % currentTetromino.length;
+    return currentTetromino[nextRotation].every(index => {
+        let newPos = currentPosition + index;
+        return newPos >= 0 && newPos < GRID_SIZE && !document.querySelectorAll('.cell')[newPos].classList.contains('fixed');
+    });
 }
 
 function rotateTetromino() {
-    if (!currentTetromino) return false;
-    
     if (canRotate()) {
         undrawTetromino();
-        // Créer une nouvelle matrice pour la rotation
-        const rotated = [];
-        const size = currentTetromino.length;
-        
-        for (let y = 0; y < size; y++) {
-            rotated[y] = [];
-            for (let x = 0; x < size; x++) {
-                rotated[y][x] = currentTetromino[size - 1 - x][y];
-            }
-        }
-        
-        currentTetromino = rotated;
+        currentRotation = (currentRotation + 1) % currentTetromino.length;
         drawTetromino();
-        return true;
     }
-    return false;
 }
 
 //Fixer le tétrominos en bas et faire apparaître un nouveau
 function isAtBottom() {
-    if (!currentTetromino) return false;
-    
-    const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) return false;
-    
-    for (let y = 0; y < currentTetromino.length; y++) {
-        for (let x = 0; x < currentTetromino[y].length; x++) {
-            if (currentTetromino[y][x] === 1) {
-                const cellIndex = currentPosition + (y * GRID_WIDTH) + x;
-                const nextRowIndex = cellIndex + GRID_WIDTH;
-                
-                // Si on est au bas de la grille ou si la cellule en dessous est occupée
-                if (nextRowIndex >= GRID_SIZE || 
-                    (nextRowIndex < GRID_SIZE && cells[nextRowIndex].classList.contains('fixed'))) {
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
+    return currentTetromino[currentRotation].some(index => {
+        let newPos = currentPosition + index + GRID_WIDTH;
+        return newPos >= GRID_SIZE || document.querySelectorAll('.cell')[newPos].classList.contains('fixed');
+    });
 }
-
 //Fonction pour fixer le tétrominos
 function fixTetromino() {
-    if (!currentTetromino) {
-        console.error("❌ ERREUR : Impossible de fixer le tétromino, aucun tétromino actif !");
-        return false;
-    }
-    
-    const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) {
-        console.error("❌ ERREUR : Impossible de fixer le tétromino, la grille n'existe pas !");
-        return false;
-    }
-    
-    for (let y = 0; y < currentTetromino.length; y++) {
-        for (let x = 0; x < currentTetromino[y].length; x++) {
-            if (currentTetromino[y][x] === 1) {
-                const cellIndex = currentPosition + (y * GRID_WIDTH) + x;
-                if (cellIndex >= 0 && cellIndex < GRID_SIZE) {
-                    cells[cellIndex].classList.add('fixed');
-                }
-            }
+    currentTetromino[currentRotation].forEach(index => {
+        let cellIndex = currentPosition + index;
+        let cells = document.querySelectorAll('.cell');
+
+        if (!cells[cellIndex]) {
+            console.error("❌ ERREUR : Cellule hors de la grille !");
+            return;
         }
-    }
-    
-    checkCompletedRows();
+        cells[cellIndex].classList.add('fixed');
+    });
+
+    checkCompletedRows(); // Vérifie et nettoie les lignes complètes
+
     if (isGameOver()) {
         stopAutoDrop();
+        console.log("💀 GAME OVER - Redirection vers gameover.php !");
+        
+        // ✅ **Stocker le score avant de rediriger**
         localStorage.setItem("lastScore", score);
+
         setTimeout(() => {
             window.location.href = 'gameover.php';
-        }, 1000);
-        return false;
+        }, 500);
+        return;
     }
-    
-    return spawnTetromino();
+
+    spawnTetromino(); // Apparition d'un nouveau tétromino
 }
 
 //Gestion du score
@@ -533,10 +331,8 @@ let scoreElement = document.getElementById('score');
 
 //Vérification et effacement des lignes complètes
 function checkCompletedRows() {
-    const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) return;
-    
     let completedRows = 0;
+    const cells = document.querySelectorAll('.cell');
     let rowsToRemove = [];
 
     for (let row = 0; row < GRID_HEIGHT; row++) {
@@ -576,9 +372,9 @@ function checkCompletedRows() {
     }
 }
 
+
 function refreshGrid() {
     const cells = document.querySelectorAll('.cell');
-    if (cells.length === 0) return;
 
     // 1️⃣ D'abord, on enlève TOUS les affichages de tétrominos
     cells.forEach(cell => cell.classList.remove('tetromino'));
@@ -589,12 +385,14 @@ function refreshGrid() {
             cell.classList.add('tetromino'); // ✅ Affiche uniquement les blocs qui doivent être là
         }
     });
-    
-    // Redessiner le tétromino actif
-    if (currentTetromino) {
-        drawTetromino();
-    }
 }
+let completedRows = 0; // ✅ On initialise la variable pour éviter l'erreur
+
+// Mise à jour du score en fonction du nombre de lignes complétées
+    if (completedRows > 0) {
+        score += completedRows * 100; // 100 points par ligne
+        updateScoreDisplay();
+    }
 
 //Mise à jour de l'affichage du score
 function updateScoreDisplay() {
@@ -610,34 +408,24 @@ const MAX_LATERAL_MOVES = 3; // Nombre maximum de déplacements latéraux avant 
 //Lancement du jeu 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ DOM chargé, script actif !");
-    
-    // Vérifier si on est sur la page de jeu en cherchant l'élément gameGrid
-    let gameGrid = document.getElementById('gameGrid');
-    if (gameGrid) {
-        initGame();
-    }
+    initGame();
 });
 
 // Vérifier si la grille est bien créée avant de l'utiliser
 function initGame() {
     console.log("🎮 Initialisation du jeu...");
     
-    if (!createGrid()) {
-        console.error("❌ ERREUR : Impossible d'initialiser le jeu, problème avec la création de la grille !");
-        return;
-    }
-    
+    createGrid(); // Crée la grille
     resetTimer(); // Réinitialise le timer
     startTimer(); // Démarre le timer
 
-    score = 0;
-    updateScoreDisplay();
-    
-    if (spawnTetromino()) {
-        startAutoDrop(); // Lance la descente automatique
-    } else {
-        console.error("❌ ERREUR : Impossible de faire apparaître un tétromino !");
+    if (!document.querySelectorAll('.cell').length) {
+        console.error("❌ ERREUR : La grille n'a pas été générée !");
+        return;
     }
+
+    spawnTetromino(); // Fait apparaître le premier tétraminos
+    startAutoDrop(); // Lance la descente automatique
 }
 
 //Gestion de fin de jeu 
@@ -649,14 +437,10 @@ function isGameOver() {
         return false;
     }
 
-    // Vérifier si la deuxième ligne (ligne de spawn) contient des blocs fixés
-    let spawnZone = Array.from(cells).slice(0, GRID_WIDTH * 2);
+    let spawnZone = Array.from(cells).slice(GRID_WIDTH, GRID_WIDTH * 2); // Vérifie uniquement la 2e ligne
     let gameOver = spawnZone.some(cell => cell.classList.contains('fixed'));
 
-    if (gameOver) {
-        console.log("🔍 GAME OVER détecté - La zone de spawn est occupée !");
-    }
-    
+    console.log("🔍 Vérification ligne de spawn :", gameOver);
     return gameOver;
 }
 
@@ -665,18 +449,17 @@ let dropFastInterval = null; // Intervalle pour la descente rapide
 let moveLeftInterval = null; // Intervalle pour le déplacement à gauche
 let moveRightInterval = null; // Intervalle pour le déplacement à droite
 
+
 document.addEventListener('keydown', (event) => {
-    // Vérifier si on a un tétromino actif et si on est sur la page de jeu
-    if (!currentTetromino || document.querySelectorAll('.cell').length === 0) return;
-    
     console.log("Touche appuyée :", event.key); // 🔍 Vérification des entrées clavier
     if (event.repeat) return; // Évite les déclenchements multiples immédiats
 
-    if (!undrawTetromino()) return;
+    undrawTetromino();
 
     if (event.key === 'ArrowLeft' && canMove(-1)) {
         currentPosition -= 1;
-        
+        drawTetromino();
+
         // Déplacement en continu si la touche reste enfoncée
         if (!moveLeftInterval) {
             moveLeftInterval = setInterval(() => {
@@ -691,7 +474,8 @@ document.addEventListener('keydown', (event) => {
 
     else if (event.key === 'ArrowRight' && canMove(1)) {
         currentPosition += 1;
-        
+        drawTetromino();
+
         // Déplacement en continu si la touche reste enfoncée
         if (!moveRightInterval) {
             moveRightInterval = setInterval(() => {
@@ -723,6 +507,7 @@ document.addEventListener('keydown', (event) => {
     drawTetromino();
 });
 
+
 // Arrêter la descente rapide quand on relâche la touche
 document.addEventListener('keyup', (event) => {
     if (event.key === 'ArrowLeft' && moveLeftInterval) {
@@ -741,26 +526,17 @@ document.addEventListener('keyup', (event) => {
     }
 });
 
-// Fonction pour afficher temporairement la touche appuyée
-document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-        case 'ArrowLeft':
-            showTemporaryMessage("⬅️ Left");
-            break;
-        case 'ArrowRight':
-            showTemporaryMessage("➡️ Right");
-            break;
-        case 'ArrowDown':
-            showTemporaryMessage("⬇️ Down");
-            break;
-        case 'ArrowUp':
-            showTemporaryMessage("⬆️ Flip");
-            break;
-        default:
-            // Optionnel : ne rien faire pour les autres touches
-            break;
+// Fonction pour afficher temporairement la touche appuyée sur la page d'accueil
+function showTemporaryMessage(message) {
+    let inputTest = document.getElementById('inputTest');
+    if (inputTest) {
+        inputTest.textContent = `Touche pressée : ${message}`;
+        clearTimeout(resetMessageTimeout);
+        resetMessageTimeout = setTimeout(() => {
+            inputTest.textContent = 'Appuyez sur une flèche pour voir l\'action';
+        }, 1000);
     }
-});
+}
 
 function checkGameOver() {
     if (isGameOver()) {
@@ -775,3 +551,6 @@ function checkGameOver() {
         }, 500); // Laisse 500ms avant la redirection
     }
 }
+
+fixTetromino();
+checkGameOver(); // Vérifie si la partie est finie après avoir fixé un bloc

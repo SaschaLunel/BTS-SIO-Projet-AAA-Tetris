@@ -2,7 +2,7 @@
 session_start(); // Démarre la session
 
 // Vérifie si un utilisateur est connecté
-$isUserLoggedIn = isset($_SESSION['username']);
+$isUserLoggedIn = isset($_SESSION['iduser']);
 $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
 ?>
 
@@ -18,6 +18,7 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
 </head>
 
 <body>
+<body onload="document.body.focus();">
 
     <!-- Section pour les boutons en haut à droite -->
     <div class="header-buttons">
@@ -40,13 +41,13 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
     <!-- Boutons de commande sur le côté droit, en bas -->
     <div class="side-buttons">
         <button id="startGameButton">Play</button>
-        <button id="statsButton">Stats</button>
-        <button id="settingsButton">Settings</button>
+        <button id="statsButton" onclick="window.location.href='stats.php'">Stats</button>
+        <button id="settingsButton" onclick="window.location.href='settings.php'">Settings</button>
         <button id="quitGameButton">Quit</button>
     </div>
     
     <!-- Score, masqué par défaut -->
-    <div id="score-box"><span id="score">0</span></div>
+    <div id="score-box"><span id="score">Score: 0</span></div>
 
     <!-- Lien vers le script JavaScript -->
     <script src="../js/script_constversion.js"></script> 
