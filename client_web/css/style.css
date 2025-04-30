@@ -197,14 +197,14 @@ body {
     margin-bottom: 10px; /* Espace entre le timer et les boutons */
 }
 
-/* Style pour le message d'action */
+/* Style pour inputtest */
 #inputTest {
-    position: fixed; /* Pour le fixer en bas de la page */
-    bottom: 20px;    /* Marge de 20px par rapport au bas */
-    left: 50%;       /* Centre horizontalement */
-    transform: translateX(-50%); /* Centre parfaitement l'élément */
+    position: relative; /* Changement de fixed à relative */
+    margin: 20px auto 0; /* Réduit la marge en haut pour éviter le défilement */
+    width: fit-content; /* Ajuste la largeur à la taille du texte */
+    min-width: 200px; /* Largeur minimale pour un bon affichage */
     
-    background-color: #507555 ; /* Couleur de fond similaire aux boutons */
+    background-color: #507555; /* Couleur de fond similaire aux boutons */
     border: 4px solid #1a1a1a; /* Bordure foncée pour l'encadré */
     color: #000; /* Couleur du texte */
     font-family: 'Press Start 2P', cursive; /* Police pour le style rétro */
@@ -212,8 +212,6 @@ body {
     padding: 15px 30px; /* Espace intérieur pour l'encadré */
     text-align: center; /* Centrer le texte dans l'encadré */
     box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour un effet 3D rétro */
-    width: fit-content; /* Ajuste la largeur à la taille du texte */
-    min-width: 200px; /* Largeur minimale pour un bon affichage */
 }
 
 /* Masque la grille par défaut */
@@ -851,8 +849,8 @@ body > form {
 
 #gameModeIndicator {
     position: absolute;
-    top: 50%;
-    left: 20px;
+    top: 25%;
+    right: 20px;
     transform: translateY(-50%);
     background-color: rgba(0, 0, 0, 0.8);
     border: 3px solid #E9CB64;

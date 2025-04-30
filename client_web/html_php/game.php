@@ -71,7 +71,7 @@ if ($isUserLoggedIn) {
     
     <!-- Indicateur de mode de jeu - corrigé avec le bon id qui correspond au CSS -->
     <div id="gameModeIndicator" class="<?php echo $useExtraPieces == 1 ? 'advanced-mode-on' : ''; ?>">
-        <?php echo $useExtraPieces == 1 ? 'Mode avancé: Formes spéciales' : 'Mode standard'; ?>
+        <?php echo $useExtraPieces == 1 ? 'Advanced mode: Special shapes' : 'Standard Mode'; ?>
     </div>
     
     <!-- Timer -->

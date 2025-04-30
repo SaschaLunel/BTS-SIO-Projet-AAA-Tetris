@@ -158,7 +158,7 @@ function showTemporaryMessage(message) {
     }
 }
 
-const tetrominos = {
+const standardTetrominos = {
     I: [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
@@ -200,8 +200,10 @@ const tetrominos = {
         [1, 1, 1, 0],
         [0, 0, 0, 0],
         [0, 0, 0, 0]
-    ],
-    // Ajout de nouveaux tétrominos
+    ]
+};
+
+const advancedTetrominos = {
     P: [
         [1, 1, 0, 0],
         [1, 1, 1, 0],
@@ -239,32 +241,11 @@ const tetrominos = {
         [0, 0, 0, 0]
     ]
 };
-
-// 1. Séparation des tétrominos en deux catégories
-const standardTetrominos = {
-    I: [ /* ... */ ],
-    O: [ /* ... */ ],
-    T: [ /* ... */ ],
-    S: [ /* ... */ ],
-    Z: [ /* ... */ ],
-    J: [ /* ... */ ],
-    L: [ /* ... */ ]
-};
-
-const advancedTetrominos = {
-    P: [ /* ... */ ],
-    W: [ /* ... */ ],
-    U: [ /* ... */ ],
-    F: [ /* ... */ ],
-    V: [ /* ... */ ],
-    Y: [ /* ... */ ]
-};
-
 // Fonction pour obtenir le pool actuel de tétrominos
 function getCurrentTetrominosPool() {
     let pool = { ...standardTetrominos };
     
-    if (advancedTetrominosEnabled) {
+    if (window.advancedTetrominosEnabled) {
         // Ajouter les tétrominos avancés au pool
         pool = { ...pool, ...advancedTetrominos };
     }
@@ -298,21 +279,27 @@ function spawnTetromino() {
         return false;
     }
 
-    
     const currentPool = getCurrentTetrominosPool();
     const tetrominoKeys = Object.keys(currentPool);
+    
+    // Vérifiez que le pool n'est pas vide
+    if (tetrominoKeys.length === 0) {
+        console.error("❌ ERREUR : Aucun tétromino disponible dans le pool !");
+        return false;
+    }
+    
     const randomKey = tetrominoKeys[Math.floor(Math.random() * tetrominoKeys.length)];
     currentTetromino = currentPool[randomKey];
+    
+    // Afficher des informations de débogage
+    console.log("Tétromino choisi:", randomKey);
+    console.log("Matrice:", currentTetromino);
     
     // Calculer la position de départ pour centrer le tetromino
     // Le offset est la moitié de la largeur de la grille moins la moitié de la largeur du tetromino
     const tetrominoWidth = currentTetromino[0].length;
     currentPosition = Math.floor((GRID_WIDTH - tetrominoWidth) / 2);
     
-    if (typeof advancedTetrominosEnabled === 'undefined') {
-        var advancedTetrominosEnabled = false;
-    }
-
     return drawTetromino();
 }
 
@@ -815,11 +802,11 @@ function updateGameModeIndicator() {
     const indicator = document.getElementById('gameModeIndicator');
     if (!indicator) return;
     
-    if (advancedTetrominosEnabled) {
-        indicator.textContent = "Mode avancé: Formes spéciales";
+    if (window.advancedTetrominosEnabled) {
+        indicator.textContent = "Advanced mode: Special shapes";
         indicator.classList.add('advanced-mode-on');
     } else {
-        indicator.textContent = "Mode standard";
+        indicator.textContent = "Standard Mode";
         indicator.classList.remove('advanced-mode-on');
     }
 }
@@ -840,12 +827,12 @@ function loadGameSettings() {
     const settingsElement = document.getElementById('gameSettings');
     if (settingsElement) {
         const useExtraPieces = settingsElement.getAttribute('data-use-extra-pieces');
-        advancedTetrominosEnabled = (useExtraPieces === '1');
-        console.log("✅ Paramètres chargés : formes spéciales = " + advancedTetrominosEnabled);
+        window.advancedTetrominosEnabled = (useExtraPieces === '1');
+        console.log("✅ Paramètres chargés : formes spéciales = " + window.advancedTetrominosEnabled);
         updateGameModeIndicator();
     } else {
         console.log("ℹ️ Aucun paramètre trouvé, utilisation des valeurs par défaut");
-        advancedTetrominosEnabled = false;
+        window.advancedTetrominosEnabled = false;
     }
 }
 
@@ -861,4 +848,103 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gameGrid) {
         initGame();
     }
+});
+
+// Variable pour la gestion de la pause
+let gamePaused = false;
+let pauseOverlay = null; // Pour l'overlay de pause
+
+// Fonction pour mettre le jeu en pause
+function pauseGame() {
+    if (gamePaused) return; // Évite de mettre en pause plusieurs fois
+    
+    gamePaused = true;
+    stopAutoDrop(); // Arrête la descente automatique
+    stopTimer(); // Arrête le timer
+    
+    // Création d'un overlay de pause si nécessaire
+    if (!pauseOverlay) {
+        pauseOverlay = document.createElement('div');
+        pauseOverlay.id = 'pauseOverlay';
+        pauseOverlay.innerHTML = '<div class="pause-message">PAUSE<br><span class="pause-hint">Appuyez sur Espace pour continuer</span></div>';
+        pauseOverlay.style.position = 'absolute';
+        pauseOverlay.style.top = '0';
+        pauseOverlay.style.left = '0';
+        pauseOverlay.style.width = '100%';
+        pauseOverlay.style.height = '100%';
+        pauseOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+        pauseOverlay.style.color = 'white';
+        pauseOverlay.style.fontSize = '2em';
+        pauseOverlay.style.display = 'flex';
+        pauseOverlay.style.justifyContent = 'center';
+        pauseOverlay.style.alignItems = 'center';
+        pauseOverlay.style.zIndex = '1000';
+        pauseOverlay.style.textAlign = 'center';
+        
+        // Ajouter un style pour le texte plus petit
+        const style = document.createElement('style');
+        style.textContent = `
+        .pause-message {
+            text-align: center;
+            font-weight: bold;
+        }
+        .pause-hint {
+            font-size: 0.5em;
+            display: block;
+            margin-top: 15px;
+            opacity: 0.8;
+        }`;
+        document.head.appendChild(style);
+        
+        // Trouver le conteneur du jeu et ajouter l'overlay
+        const gameContainer = document.getElementById('gameGrid')?.parentElement || document.body;
+        gameContainer.style.position = 'relative'; // S'assurer que le conteneur a une position relative
+        gameContainer.appendChild(pauseOverlay);
+    } else {
+        pauseOverlay.style.display = 'flex'; // Afficher l'overlay s'il existe déjà
+    }
+    
+    console.log("⏸️ Jeu en pause");
+    showTemporaryMessage("⏸️ PAUSE");
+}
+
+// Fonction pour reprendre le jeu
+function resumeGame() {
+    if (!gamePaused) return; // Évite de reprendre si le jeu n'est pas en pause
+    
+    gamePaused = false;
+    startAutoDrop(); // Redémarre la descente automatique
+    startTimer(); // Redémarre le timer
+    
+    // Cacher l'overlay de pause
+    if (pauseOverlay) {
+        pauseOverlay.style.display = 'none';
+    }
+    
+    console.log("▶️ Jeu repris");
+    showTemporaryMessage("▶️ JEU REPRIS");
+}
+
+// Fonction pour basculer entre pause et reprise
+function togglePause() {
+    if (gamePaused) {
+        resumeGame();
+    } else {
+        pauseGame();
+    }
+}
+
+// Modifier la gestion des touches du clavier pour inclure la pause
+document.addEventListener('keydown', (event) => {
+    // Gérer la pause avec la barre d'espace
+    if (event.key === ' ' || event.code === 'Space') {
+        event.preventDefault(); // Empêche le défilement de la page
+        togglePause();
+        return;
+    }
+    
+    // Si le jeu est en pause, ne pas traiter les autres touches
+    if (gamePaused) return;
+    
+    // Le reste de votre gestion des touches existante...
 });
