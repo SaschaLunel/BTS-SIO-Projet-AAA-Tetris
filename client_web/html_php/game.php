@@ -4,6 +4,42 @@ session_start(); // Démarre la session
 // Vérifie si un utilisateur est connecté
 $isUserLoggedIn = isset($_SESSION['iduser']);
 $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
+
+// Charger les paramètres de l'utilisateur s'il est connecté
+$useExtraPieces = 0; // Valeur par défaut
+
+if ($isUserLoggedIn) {
+    $servername = "localhost";
+    $username_db = "root";
+    $password_db = "";
+    $dbname = "tetris_db";
+    
+    try {
+        $conn = new mysqli($servername, $username_db, $password_db, $dbname);
+        
+        // Vérification de la connexion
+        if ($conn->connect_error) {
+            throw new Exception("Connexion échouée: " . $conn->connect_error);
+        }
+        
+        $userId = $_SESSION['iduser'];
+        
+        $stmt = $conn->prepare("SELECT use_extra_pieces FROM users WHERE iduser = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $settings = $result->fetch_assoc();
+            $useExtraPieces = $settings['use_extra_pieces'];
+        }
+        
+        $stmt->close();
+        $conn->close();
+    } catch(Exception $e) {
+        // En cas d'erreur, on garde simplement la valeur par défaut
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,8 +53,9 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
     <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
 
-<body>
 <body onload="document.body.focus();">
+    <!-- Élément caché pour stocker les paramètres -->
+    <div id="gameSettings" data-use-extra-pieces="<?php echo $useExtraPieces; ?>" style="display: none;"></div>
 
     <!-- Section pour les boutons en haut à droite -->
     <div class="header-buttons">
@@ -30,6 +67,11 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
             <button id="LoginButton">Login</button>
         <?php endif; ?>
         <button id="GuestButton">Guest</button>
+    </div>
+    
+    <!-- Indicateur de mode de jeu - corrigé avec le bon id qui correspond au CSS -->
+    <div id="gameModeIndicator" class="<?php echo $useExtraPieces == 1 ? 'advanced-mode-on' : ''; ?>">
+        <?php echo $useExtraPieces == 1 ? 'Mode avancé: Formes spéciales' : 'Mode standard'; ?>
     </div>
     
     <!-- Timer -->
@@ -48,7 +90,10 @@ $username = $isUserLoggedIn ? $_SESSION['username'] : 'Login';
     
     <!-- Score, masqué par défaut -->
     <div id="score-box"><span id="score">Score: 0</span></div>
-
+    
+    <!-- Zone de test pour les entrées clavier -->
+    <div id="inputTest">Press arrow key to see action</div>
+    
     <!-- Lien vers le script JavaScript -->
     <script src="../js/script_constversion.js"></script> 
     

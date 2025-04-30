@@ -240,8 +240,37 @@ const tetrominos = {
     ]
 };
 
-// CORRECTION: La classe tetromino a été supprimée car elle causait des conflits avec l'objet tetrominos
-// La variable currentTetromino contient directement la matrice du tetromino actuel
+// 1. Séparation des tétrominos en deux catégories
+const standardTetrominos = {
+    I: [ /* ... */ ],
+    O: [ /* ... */ ],
+    T: [ /* ... */ ],
+    S: [ /* ... */ ],
+    Z: [ /* ... */ ],
+    J: [ /* ... */ ],
+    L: [ /* ... */ ]
+};
+
+const advancedTetrominos = {
+    P: [ /* ... */ ],
+    W: [ /* ... */ ],
+    U: [ /* ... */ ],
+    F: [ /* ... */ ],
+    V: [ /* ... */ ],
+    Y: [ /* ... */ ]
+};
+
+// Fonction pour obtenir le pool actuel de tétrominos
+function getCurrentTetrominosPool() {
+    let pool = { ...standardTetrominos };
+    
+    if (advancedTetrominosEnabled) {
+        // Ajouter les tétrominos avancés au pool
+        pool = { ...pool, ...advancedTetrominos };
+    }
+    
+    return pool;
+}
 
 //Fonctionnalité pour faire apparaître un tétrominos
 let currentTetromino;
@@ -269,15 +298,21 @@ function spawnTetromino() {
         return false;
     }
 
-    const tetrominoKeys = Object.keys(tetrominos);
+    
+    const currentPool = getCurrentTetrominosPool();
+    const tetrominoKeys = Object.keys(currentPool);
     const randomKey = tetrominoKeys[Math.floor(Math.random() * tetrominoKeys.length)];
-    currentTetromino = tetrominos[randomKey];
+    currentTetromino = currentPool[randomKey];
     
     // Calculer la position de départ pour centrer le tetromino
     // Le offset est la moitié de la largeur de la grille moins la moitié de la largeur du tetromino
     const tetrominoWidth = currentTetromino[0].length;
     currentPosition = Math.floor((GRID_WIDTH - tetrominoWidth) / 2);
     
+    if (typeof advancedTetrominosEnabled === 'undefined') {
+        var advancedTetrominosEnabled = false;
+    }
+
     return drawTetromino();
 }
 
@@ -358,7 +393,7 @@ function moveDown() {
     
     if (isAtBottom()) {
         fixTetromino();
-        spawnTetromino();
+        // Suppression de l'appel à spawnTetromino ici car il est déjà appelé dans fixTetromino
     }
 }
 
@@ -775,3 +810,55 @@ function checkGameOver() {
         }, 500); // Laisse 500ms avant la redirection
     }
 }
+
+function updateGameModeIndicator() {
+    const indicator = document.getElementById('gameModeIndicator');
+    if (!indicator) return;
+    
+    if (advancedTetrominosEnabled) {
+        indicator.textContent = "Mode avancé: Formes spéciales";
+        indicator.classList.add('advanced-mode-on');
+    } else {
+        indicator.textContent = "Mode standard";
+        indicator.classList.remove('advanced-mode-on');
+    }
+}
+
+// Mettez à jour l'indicateur au chargement de la page
+document.addEventListener("DOMContentLoaded", () => {
+    updateGameModeIndicator();
+    // Reste du code DOMContentLoaded...
+});
+
+
+// Variable globale pour contrôler l'utilisation des tétrominos avancés
+let advancedTetrominosEnabled = false;
+
+// Fonction pour charger les paramètres depuis la session PHP
+function loadGameSettings() {
+    // Rechercher un élément avec un data-attribute qui contiendrait le paramètre
+    const settingsElement = document.getElementById('gameSettings');
+    if (settingsElement) {
+        const useExtraPieces = settingsElement.getAttribute('data-use-extra-pieces');
+        advancedTetrominosEnabled = (useExtraPieces === '1');
+        console.log("✅ Paramètres chargés : formes spéciales = " + advancedTetrominosEnabled);
+        updateGameModeIndicator();
+    } else {
+        console.log("ℹ️ Aucun paramètre trouvé, utilisation des valeurs par défaut");
+        advancedTetrominosEnabled = false;
+    }
+}
+
+// Mettre à jour cette partie dans votre code existant
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ DOM chargé, script actif !");
+    
+    // Charger les paramètres du jeu
+    loadGameSettings();
+    
+    // Vérifier si on est sur la page de jeu en cherchant l'élément gameGrid
+    let gameGrid = document.getElementById('gameGrid');
+    if (gameGrid) {
+        initGame();
+    }
+});

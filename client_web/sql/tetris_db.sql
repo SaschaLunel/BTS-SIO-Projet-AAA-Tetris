@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS users (
     pseudo VARCHAR(50) NOT NULL UNIQUE,    -- Pseudonyme de l'utilisateur
     dBirth DATE NOT NULL,                   -- Date de naissance de l'utilisateur
     dInscr DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date d'inscription
-    dDeco DATETIME                          -- Date de dernière connexion
+    dDeco DATETIME,                         -- Date de dernière connexion
+    use_extra_pieces TINYINT(1) DEFAULT 0   -- Option pour activer les pièces spéciales
 );
 
 -- Création de la table 'score'
@@ -31,8 +32,8 @@ CREATE TABLE IF NOT EXISTS score (
 );
 
 -- Insertion d'un compte admin pour tests 
-INSERT INTO users (email, mdp, verifemail, prenom, nom, pseudo, dBirth)
-VALUES ('admin@admin.com', 'admin', TRUE, 'Admin', 'Admin', 'admin', '1990-01-01');
+INSERT INTO users (email, mdp, verifemail, prenom, nom, pseudo, dBirth, use_extra_pieces)
+VALUES ('admin@admin.com', 'admin', TRUE, 'Admin', 'Admin', 'admin', '1990-01-01', 0);
 
 -- Insertion de scores de test pour l'utilisateur admin
 INSERT INTO score (iduser, score, dScore) VALUES

@@ -1,7 +1,8 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
+// Utiliser 'iduser' au lieu de 'user_id' pour être cohérent
+if (!isset($_SESSION['iduser'])) {
     header("Location: login.php");
     exit();
 }
@@ -15,7 +16,7 @@ try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $userId = $_SESSION['user_id'];
+    $userId = $_SESSION['iduser'];
     $message = "";
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -33,6 +34,11 @@ try {
     $stmt->bindParam(':userId', $userId);
     $stmt->execute();
     $settings = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Si aucun résultat n'est trouvé, utiliser une valeur par défaut
+    if ($settings === false) {
+        $settings = ['use_extra_pieces' => 0];
+    }
 
 } catch (PDOException $e) {
     echo "Erreur : " . $e->getMessage();
@@ -47,14 +53,13 @@ try {
     <title>Settings</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    
+    <link rel="icon" type="image/x-icon" href="../images/8EB7C3.ico">
 </head>
 <body>
 
 <h2 id="page_title">Game Settings</h2>
     <form action="settings.php" method="POST" class="settings-form">
        
-
         <div class="setting-group">
             <label>
                 <input type="checkbox" name="use_extra_pieces" <?= $settings['use_extra_pieces'] ? 'checked' : '' ?>>
@@ -83,6 +88,8 @@ try {
         <button onclick="window.location.href='my_account.php'">My Account</button>
         <button onclick="window.location.href='index.php'">Quit</button>
     </div>
+
+<script src="../js/script_constversion.js"></script>
 
 </body>
 </html>
