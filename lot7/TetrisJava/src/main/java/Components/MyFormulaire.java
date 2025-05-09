@@ -79,6 +79,7 @@ public class MyFormulaire extends JPanel {
         this.add(fieldConfirmPassword, gbc);
     }
 
+    
     // Getters to retrieve user input
     public String getNom() { return fieldNom.getText(); }
     public String getPrenom() { return fieldPrenom.getText(); }

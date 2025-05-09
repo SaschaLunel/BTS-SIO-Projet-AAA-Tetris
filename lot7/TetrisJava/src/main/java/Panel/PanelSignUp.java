@@ -1,5 +1,6 @@
 package Panel;
 
+import BDD.CRequeteSql;
 import BDD.baseDeDonnees;
 import Components.ButtonMenu;
 import Components.MyFormulaire;
@@ -120,8 +121,8 @@ public class PanelSignUp extends JPanel {
             JOptionPane.showMessageDialog(this, "Le mot de passe ne respecte pas les regles de conditions.", "Erreur", JOptionPane.ERROR_MESSAGE);
         }
 
-        baseDeDonnees bdd = new baseDeDonnees();
-        boolean succes = !bdd.verifExistUser(pseudo);
+        
+        boolean succes = !CRequeteSql.verifExistUser(pseudo);
         if(succes){
             frame.createNewAccount(email, pseudo, password, prenom, nom, dBirth);
         }
