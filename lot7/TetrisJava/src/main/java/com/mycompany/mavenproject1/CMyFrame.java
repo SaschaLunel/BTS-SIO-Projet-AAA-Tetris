@@ -7,6 +7,7 @@ package com.mycompany.mavenproject1;
 import BDD.CPlayer;
 import BDD.CRequeteSql;
 import BDD.baseDeDonnees;
+import Components.ButtonMenu;
 import Panel.PanelGameOpenAI;
 import Panel.PanelGame;
 import Panel.PanelGameAI;
@@ -18,11 +19,14 @@ import java.awt.GraphicsConfiguration;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 /**
  *
@@ -108,7 +112,7 @@ public class CMyFrame extends JFrame {
     }
     
     public void addNewPanelTransition(){
-        currentPanel = new PanelTransition(mainInstance, this);
+        currentPanel = new PanelTransition(this);
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();
@@ -131,9 +135,9 @@ public class CMyFrame extends JFrame {
         currentPanel.requestFocusInWindow();
     }
     
- public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, LocalDate dBirth) throws SQLException, InterruptedException, ExecutionException {
+ public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, String dBirth) throws SQLException, InterruptedException, ExecutionException {
     // Add the login panel
-    addNewPanelLogin();
+    
 
 
     try {
@@ -149,6 +153,16 @@ public class CMyFrame extends JFrame {
         CompletableFuture<Integer> futureId = CRequeteSql.getIdUser(pseudo);
         int id = futureId.get(); // wait for the user ID
     player = new CPlayer(prenom, nom, pseudo, email, id);
+    
+     addNewPanelLogin();
 }
+
+    public void initSession(String Pseudo){
+        Map<String, String> infoPlayerList = CRequeteSql.getPlayerInfo(Pseudo);
+        player = new CPlayer(infoPlayerList.get("prenom"), infoPlayerList.get("nom"), infoPlayerList.get("pseudo"), 
+                infoPlayerList.get("email"), Integer.parseInt(infoPlayerList.get("iduser")));
+        addNewPanelTransition();
+    }
+
 
 }

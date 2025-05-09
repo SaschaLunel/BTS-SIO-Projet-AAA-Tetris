@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -52,7 +54,7 @@ public class CRequeteSql {
 
     }
 
-    public static CompletableFuture<Void> createUser(String email, String password, String prenom, String nom, String pseudo, LocalDate dBirth) {
+    public static CompletableFuture<Void> createUser(String email, String password, String prenom, String nom, String pseudo, String dBirth) {
         return CompletableFuture.runAsync(() -> {
             try {
                 String hashPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -67,7 +69,7 @@ public class CRequeteSql {
                 stmt.setString(3, prenom);
                 stmt.setString(4, nom);
                 stmt.setString(5, pseudo);
-                stmt.setDate(6, Date.valueOf(dBirth));
+                stmt.setString(6, dBirth);
 
                 // Execute update
                 stmt.executeUpdate();
@@ -119,7 +121,39 @@ public class CRequeteSql {
         });
     }
 
-    public void insertNewScore(int score, int id) {
+    public static boolean VerifPassword(String pseudo, String Password) {
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            String sql = "SELECT mdp FROM users WHERE pseudo = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, pseudo); // évite les injections SQL
+            ResultSet mdpReal = stmt.executeQuery();
+            
+            
+            if(!mdpReal.next()){
+                return false;
+            }
+            
+            if (BCrypt.checkpw(Password, mdpReal.getString("mdp"))){
+                mdpReal.close();
+                stmt.close();
+                conn.close();
+                return true;
+            }
+            mdpReal.close();
+                stmt.close();
+                conn.close();
+            return false;
+            
+           
+
+        } catch (Exception ex) {
+
+    }
+        return false;
+    }
+
+    static public void insertNewScore(int score, int id) {
         try {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql = "INSERT INTO score (score, id) VALUES (?,?)";
@@ -137,6 +171,36 @@ public class CRequeteSql {
         } finally {
 
         }
-
     }
+
+    public static Map<String, String> getPlayerInfo(String pseudo) {
+    try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE pseudo = ?")) {
+
+        stmt.setString(1, pseudo);
+        ResultSet result = stmt.executeQuery();
+
+        if (result.next()) {
+            Map<String, String> playerInfo = new HashMap<>();
+            playerInfo.put("iduser", result.getString("iduser"));
+            playerInfo.put("email", result.getString("email"));
+            playerInfo.put("prenom", result.getString("prenom"));
+            playerInfo.put("nom", result.getString("nom"));
+            playerInfo.put("pseudo", result.getString("pseudo"));
+            playerInfo.put("dBirth", result.getString("dBirth"));
+            playerInfo.put("dInscr", result.getString("dInscr"));
+            
+            
+
+            return playerInfo;
+        } else {
+            return null;
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Erreur lors de la récupération de l'utilisateur", e);
+    }
+}
+
+   
+    
 }

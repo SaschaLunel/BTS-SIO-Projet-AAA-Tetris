@@ -1,5 +1,7 @@
 package Panel;
 
+import BDD.BCrypt;
+import BDD.CRequeteSql;
 import Components.ButtonMenu;
 import com.mycompany.mavenproject1.CMyFrame;
 import com.mycompany.mavenproject1.Mavenproject1;
@@ -7,6 +9,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -75,7 +80,13 @@ public class PanelMenuLogin extends JPanel {
 
         // Create "Validate" button just below password field
         btnValidate = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonValidate.png",
-                e -> frame.addNewPanelLogin(), 4, frame.getWidth(), frame.getHeight(), -50);
+                e -> {
+            try {
+                loginSession(textFieldPseudo.getText(), String.valueOf(textFieldPassword.getPassword()));
+            } catch (SQLException ex) {
+                Logger.getLogger(PanelMenuLogin.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, 4, frame.getWidth(), frame.getHeight(), -50);
         gbc.gridy = 3;
         this.add(btnValidate, gbc);
         
@@ -85,6 +96,32 @@ public class PanelMenuLogin extends JPanel {
         gbc.gridy = 4;
         this.add(btnBack, gbc);
     }
+    
+    public void loginSession(String Pseudo, String Password) throws SQLException {
+        System.err.println(Password);
+        if (Pseudo.equals("")){
+            JOptionPane.showMessageDialog(this, "Champ pseudo vide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+            
+        if (Password.equals("")){
+           JOptionPane.showMessageDialog(this, "Champ Mot de passe vide.", "Erreur", JOptionPane.ERROR_MESSAGE); 
+           return;
+        }
+        
+        if(CRequeteSql.verifExistUser(Pseudo)){
+            if(CRequeteSql.VerifPassword(Pseudo, Password)){
+                frame.initSession(Pseudo);
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Mot de passe incorect.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Cet Utilisateur n'existe pas.", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        }
+    
 
     @Override
     protected void paintComponent(Graphics g) {

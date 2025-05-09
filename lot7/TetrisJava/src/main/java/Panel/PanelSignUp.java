@@ -108,8 +108,7 @@ public class PanelSignUp extends JPanel {
         String pseudo = formulaire.getPseudo();
         String password = formulaire.getPassword();
         String confirmPassword = formulaire.getConfirmPassword();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
-        LocalDate dBirth = LocalDate.parse(formulaire.getDateNaissance(), formatter);
+        String date = formulaire.getDateNaissance();
 
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
@@ -124,7 +123,7 @@ public class PanelSignUp extends JPanel {
         
         boolean succes = !CRequeteSql.verifExistUser(pseudo);
         if(succes){
-            frame.createNewAccount(email, pseudo, password, prenom, nom, dBirth);
+            frame.createNewAccount(email, pseudo, password, prenom, nom, date);
         }
         
         

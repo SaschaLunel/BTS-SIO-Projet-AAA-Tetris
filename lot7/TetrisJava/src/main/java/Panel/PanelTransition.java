@@ -1,5 +1,6 @@
 package Panel;
 
+import com.mycompany.mavenproject1.CMyFrame;
 import com.mycompany.mavenproject1.Mavenproject1;
 import javax.swing.*;
 import java.awt.*;
@@ -21,13 +22,11 @@ public class PanelTransition extends JPanel {
     
     private int progress = 0;
     private Image backgroundImage;
-    private JFrame frame;
-    private Mavenproject1 mainInstance;
+    private CMyFrame frame;
     
 
-    public PanelTransition(Mavenproject1 mainInstance, JFrame frame) {
+    public PanelTransition( CMyFrame frame) {
         this.frame = frame;
-        this.mainInstance = mainInstance;
         
         String directoryProject = System.getProperty("user.dir");
         String backgroundPath = directoryProject + "\\src\\main\\java\\Ressources\\background\\background3.png";
@@ -57,7 +56,7 @@ public class PanelTransition extends JPanel {
             if (progress >= 100) {
                 ((Timer) e.getSource()).stop();
                 messageTimer.stop();
-                mainInstance.addNewPanelGame();
+                frame.addNewPanelGame();
             }
         });
         progressTimer.start();
