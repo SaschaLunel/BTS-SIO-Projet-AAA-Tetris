@@ -85,6 +85,7 @@ try {
     </form>
 
     <div class="conpage-buttons">
+        <button onclick="window.location.href='game.php'">Play</button>
         <button onclick="window.location.href='my_account.php'">My Account</button>
         <button onclick="window.location.href='index.php'">Quit</button>
     </div>
