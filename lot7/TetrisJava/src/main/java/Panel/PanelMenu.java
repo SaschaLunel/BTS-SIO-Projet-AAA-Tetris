@@ -20,6 +20,7 @@ public class PanelMenu extends JPanel implements EventListener {
     private ButtonMenu btnLogin;
     private ButtonMenu btnGuest;
     private ButtonMenu btnAI;
+    private ButtonMenu btnGpt;
     private BufferedImage background;
     private JFrame frame;
     private int frameWidth;
@@ -80,10 +81,22 @@ public class PanelMenu extends JPanel implements EventListener {
             }
         }, 4, frame.getWidth(), frame.getHeight(), 150);
 
+        btnGpt = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonGPT.png",
+                e -> {
+            try {
+                frame.addNewPanelOpenAI();
+            } catch (IOException ex) {
+                Logger.getLogger(PanelMenu.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PanelMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }, 4, frame.getWidth(), frame.getHeight(), 250);
+        
         // Ajout des boutons au panel
         this.add(btnLogin, gbc);
         this.add(btnGuest, gbc);
         this.add(btnAI, gbc);
+        this.add(btnGpt, gbc);
     }
 
     // Redéfinir paintComponent pour dessiner l'image de fond
