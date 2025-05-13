@@ -4,7 +4,7 @@
  */
 package Interfaces;
 
-import BOT.OpenAIBot;
+import OpenAI.OpenAIBot;
 
 /**
  *

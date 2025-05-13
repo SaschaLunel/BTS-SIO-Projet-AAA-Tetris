@@ -1,7 +1,7 @@
 package Controllers;
 
-import BlockFolder.AbstractBlock;
-import Components.Gameplay.GridGame;
+import Tetrominos.AbstractBlock;
+import Components.Gameplay.CGameGrid;
 import java.util.Random;
 
 public class AIController {
@@ -12,15 +12,15 @@ public class AIController {
     private final int COLLISION = 3;
     private final int BLOCK_POSER = 4;
 
-    private GridGame grid;  // Référence à la grille de jeu
+    private CGameGrid grid;  // Référence à la grille de jeu
     private AbstractBlock currentPiece;  // La pièce active
 
-    public AIController(GridGame grid) {
+    public AIController(CGameGrid grid) {
         this.grid = grid;
     }
 
     // Fonction pour évaluer l'état de la grille
-    private int evaluateGrid(GridGame g) {
+    private int evaluateGrid(CGameGrid g) {
         return -g.getHeight() - 5 * g.getHoles() + 10 * g.getCompletedLines();
     }
 
@@ -32,7 +32,7 @@ public class AIController {
         // Tester toutes les rotations et positions possibles de la pièce
         for (int rotation = 0; rotation < piece.getRotationCount(); rotation++) {
             for (int col = 0; col < grid.getWidth(); col++) {
-                GridGame newGrid = grid.clone();  // Cloner la grille pour éviter de la modifier directement
+                CGameGrid newGrid = grid.clone();  // Cloner la grille pour éviter de la modifier directement
                 if (newGrid.canPlace(piece, rotation, col)) {
                     newGrid.place(piece, rotation, col);
                     int score = evaluateGrid(newGrid);

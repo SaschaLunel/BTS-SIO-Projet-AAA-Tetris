@@ -18,11 +18,11 @@ public class Mavenproject1 implements InterfaceMain {
     private static int sizeHeight = 720;
 
      private baseDeDonnees bdd;
-    private  static CMyFrame frame;
+    private  static MainFrame frame;
     private static Mavenproject1 mainInstance;
 
     public Mavenproject1() {
-        frame = new CMyFrame("TETRISCRAFT", this);
+        frame = new MainFrame("TETRISCRAFT", this);
     }
 
     
