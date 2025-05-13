@@ -107,7 +107,7 @@ public class CMyFrame extends JFrame {
     }
     
     public void addNewPanelTransition(){
-        currentPanel = new PanelTransition(mainInstance, this);
+        currentPanel = new PanelTransition(this);
         getContentPane().removeAll();
         add(currentPanel);
         revalidate();
