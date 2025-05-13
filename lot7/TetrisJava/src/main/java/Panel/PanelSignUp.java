@@ -1,7 +1,6 @@
 package Panel;
 
 import BDD.CRequeteSql;
-import BDD.baseDeDonnees;
 import Components.ButtonMenu;
 import Components.MyFormulaire;
 import com.mycompany.mavenproject1.CMyFrame;
@@ -11,8 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
