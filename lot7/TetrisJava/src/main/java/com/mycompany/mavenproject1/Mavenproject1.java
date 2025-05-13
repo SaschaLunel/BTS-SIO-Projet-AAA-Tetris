@@ -5,12 +5,8 @@ package com.mycompany.mavenproject1;
 
 
 import BDD.baseDeDonnees;
-import BOT.Config;
-import BOT.OpenAIBot;
 import events.InterfaceMain;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 
 /**

@@ -72,7 +72,7 @@ public class PanelMenu extends JPanel implements EventListener {
         btnAI = new ButtonMenu(DIRECTORYPROJECT + "\\src\\main\\java\\Ressources\\Menu\\buttonIA.png",
                 e -> {
             try {
-                frame.addNewPanelAI();
+                frame.addNewPanelOpenAI();
             } catch (IOException ex) {
                 Logger.getLogger(PanelMenu.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {

@@ -88,7 +88,7 @@ public class PanelGameOpenAI extends PanelGame implements GameActions {
         super(frame);
         
         String token = new Config().getTokenOpenAI();
-        
+        System.err.println(token);
         
          bot = new OpenAIBot(token);
          

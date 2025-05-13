@@ -130,6 +130,18 @@ public class CMyFrame extends JFrame {
         currentPanel.requestFocusInWindow();
     }
     
+    public void addNewPanelOpenAI() throws IOException, InterruptedException {
+        currentPanel = new PanelGameOpenAI(this);
+        getContentPane().removeAll();
+        add(currentPanel);
+        revalidate();
+        repaint();
+        
+        // Très important : donner le focus au nouveau panel
+        currentPanel.setFocusable(true);
+        currentPanel.requestFocusInWindow();
+    }
+    
  public void createNewAccount(String email, String pseudo, String password, String prenom, String nom, LocalDate dBirth) throws SQLException, InterruptedException, ExecutionException {
     // Add the login panel
     addNewPanelLogin();
@@ -151,5 +163,7 @@ public class CMyFrame extends JFrame {
         int id = futureId.get(); // wait for the user ID
     player = new CPlayer(prenom, nom, pseudo, email, id);
 }
+
+    
 
 }

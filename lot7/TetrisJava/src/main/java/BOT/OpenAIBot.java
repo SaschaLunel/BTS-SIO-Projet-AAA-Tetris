@@ -78,51 +78,65 @@ public class OpenAIBot {
     }
 
     public void createNewInstructions(int[][] grille) throws IOException {
+    // Clear previous instructions
+    instructions.clear();
 
-        instructions.clear();
-        
-        String strGrille = convertGrilleToString(grille);
-        String megaPrompt = "Voici la grille :" + strGrille + "Voici les règles : " + Prompt.getPromptGame()
-                + Prompt.getPromptGrille();
+    // Convert grid to string and build the prompt
+    String strGrille = convertGrilleToString(grille);
+    String megaPrompt = "Voici la grille : " + strGrille +
+                        "Voici les règles : " + Prompt.getPromptGame() +
+                        Prompt.getPromptGrille();
 
-        String testPrompt = "comment tu t'appelle ?";
+    // Create the JSON payload
+    String jsonRequest = createJsonRequest(megaPrompt);
 
-        String jsonRequest = createJsonRequest(megaPrompt);
+    // Define media type for the request
+    MediaType mediaType = MediaType.parse("application/json");
 
-        Request request = new Request.Builder()
-                .url(API_URL)
-                .header("Authorization", "Bearer " + apiKey)
-                .header("Content-Type", "application/json")
-                .post(RequestBody.create(jsonRequest, MediaType.get("application/json")))
-                .build();
+    // Build HTTP request
+    Request request = new Request.Builder()
+            .url(API_URL)
+            .header("Authorization", "Bearer " + apiKey)
+            .header("Content-Type", "application/json")
+            .post(RequestBody.create(jsonRequest, mediaType))
+            .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                System.err.println("HTTP Error: " + response);
-                throw new IOException("Unexpected code " + response);
+    // Execute request and handle response
+    try (Response response = client.newCall(request).execute()) {
+        if (!response.isSuccessful()) {
+            System.err.println("HTTP Error: " + response);
+            throw new IOException("Unexpected code " + response);
+        }
+
+        ResponseBody responseBody = response.body();
+        if (responseBody == null) {
+            throw new IOException("Response body is null");
+        }
+
+        JsonNode jsonResponse = objectMapper.readTree(responseBody.string());
+        JsonNode choicesNode = jsonResponse.path("choices");
+
+        // Check if choices exist and extract content
+        if (choicesNode.isArray() && choicesNode.size() > 0) {
+            JsonNode choice = choicesNode.get(0);
+            JsonNode messageNode = choice.path("message");
+            String content = messageNode.path("content").asText("");
+
+            System.err.println("content : " + content + "fin");
+
+            // Split and store instructions
+            String[] instructionItems = convertStringToArray(content);
+            for (String item : instructionItems) {
+                instructions.add(item);
             }
 
-            JsonNode jsonResponse = objectMapper.readTree(response.body().string());
-
-            JsonNode choicesNode = jsonResponse.path("choices");
-            if (choicesNode.isArray() && choicesNode.size() > 0) {
-                JsonNode choice = choicesNode.get(0);
-                JsonNode messageNode = choice.path("message");
-                String content = messageNode.path("content").asText("");
-                System.err.println("content : " + content + "fin");
-
-                // Parse the content string into separate instruction items and add them to the ArrayList
-                String[] instructionItems = convertStringToArray(content);
-                for (String item : instructionItems) {
-                         instructions.add(item);
-                    }
-                
-                System.err.print("First instruction: " + (!instructions.isEmpty() ? instructions.get(0) : "No instructions"));
-            } else {
-                System.err.print("Invalid response format");
-            }
+            System.err.print("First instruction: " + 
+                (!instructions.isEmpty() ? instructions.get(0) : "No instructions"));
+        } else {
+            System.err.print("Invalid response format");
         }
     }
+}
 
     private String[] convertStringToArray(String message) {
         // Utiliser une expression régulière pour trouver les mots entre virgules
