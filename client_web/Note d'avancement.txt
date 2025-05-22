@@ -2,7 +2,8 @@ Notes d'avancement
 
 Bugs actuels
 
-❌
+❌Musique (fruity loops) à intégrer
+❌Pause buggée ne stope pas les tetrominos et bouge tout les éléments de la page quand on dé-pause
 
 Progrès réalisés
 
