@@ -19,7 +19,11 @@ CREATE TABLE IF NOT EXISTS users (
     dBirth DATE NOT NULL,                   -- Date de naissance de l'utilisateur
     dInscr DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date d'inscription
     dDeco DATETIME,                         -- Date de dernière connexion
-    use_extra_pieces TINYINT(1) DEFAULT 0   -- Option pour activer les pièces spéciales
+    use_extra_pieces TINYINT(1) DEFAULT 0,  -- Option pour activer les pièces spéciales
+    --ajout exam
+    failed_attempts INT DEFAULT 0,          -- Compteur des tentatives de connexion échouées
+    account_locked BOOLEAN DEFAULT FALSE,   -- Booléen indiquant si le compte est bloqué
+    lockout_time DATETIME NULL              -- Timestamp du moment où le blocage a commencé
 );
 
 -- Création de la table 'score'
@@ -30,13 +34,3 @@ CREATE TABLE IF NOT EXISTS score (
     dScore DATETIME DEFAULT CURRENT_TIMESTAMP,  -- Date du score
     FOREIGN KEY (iduser) REFERENCES users(iduser)  -- Relation avec la table 'users'
 );
-
--- Insertion d'un compte admin pour tests 
-INSERT INTO users (email, mdp, verifemail, prenom, nom, pseudo, dBirth, use_extra_pieces)
-VALUES ('admin@admin.com', 'admin', TRUE, 'Admin', 'Admin', 'admin', '1990-01-01', 0);
-
--- Insertion de scores de test pour l'utilisateur admin
-INSERT INTO score (iduser, score, dScore) VALUES
-(1, 1000, NOW()), -- Score de 1000 pour l'utilisateur admin
-(1, 1500, NOW()), -- Score de 1500 pour l'utilisateur admin
-(1, 2000, NOW()); -- Score de 2000 pour l'utilisateur admin

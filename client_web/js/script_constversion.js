@@ -140,8 +140,8 @@ if (startGameButton) {
 let quitGameButton = document.getElementById('quitGameButton');
 if (quitGameButton) {
     quitGameButton.addEventListener('click', () => {
-        resetTimer();      
-        window.location.href = 'index.php'; //Ouvre index.php dans le même onglet
+        cleanupGame(); // 🆕 Ajouter le nettoyage
+        window.location.href = 'index.php';
     });
 }
 
@@ -649,21 +649,24 @@ function initGame() {
         return;
     }
     
-    resetTimer(); // Réinitialise le timer
-    startTimer(); // Démarre le timer
+    resetTimer();
+    startTimer();
 
     score = 0;
     updateScoreDisplay();
     
+    // exam ajout souris :
+    initMouseControls();
+    updateMouseControlsIndicator();
+    
     if (spawnTetromino()) {
-        startAutoDrop(); // Lance la descente automatique
+        startAutoDrop();
     } else {
         console.error("❌ ERREUR : Impossible de faire apparaître un tétromino !");
     }
 }
 
 //Gestion de fin de jeu 
-// Correction du Game Over check
 function isGameOver() {
     let cells = document.querySelectorAll('.cell');
     if (cells.length === 0) {
@@ -686,20 +689,20 @@ function isGameOver() {
 let dropFastInterval = null; // Intervalle pour la descente rapide
 let moveLeftInterval = null; // Intervalle pour le déplacement à gauche
 let moveRightInterval = null; // Intervalle pour le déplacement à droite
+let isHardDropping = false; // Variable pour éviter les hard drops multiples
 
 document.addEventListener('keydown', (event) => {
     // Vérifier si on a un tétromino actif et si on est sur la page de jeu
     if (!currentTetromino || document.querySelectorAll('.cell').length === 0) return;
     
-    console.log("Touche appuyée :", event.key); // 🔍 Vérification des entrées clavier
-    if (event.repeat) return; // Évite les déclenchements multiples immédiats
+    console.log("Touche appuyée :", event.key);
+    if (event.repeat) return;
 
     if (!undrawTetromino()) return;
 
     if (event.key === 'ArrowLeft' && canMove(-1)) {
         currentPosition -= 1;
         
-        // Déplacement en continu si la touche reste enfoncée
         if (!moveLeftInterval) {
             moveLeftInterval = setInterval(() => {
                 if (canMove(-1)) {
@@ -707,14 +710,12 @@ document.addEventListener('keydown', (event) => {
                     currentPosition -= 1;
                     drawTetromino();
                 }
-            }, 180); // 180ms entre chaque déplacement
+            }, 180);
         }
     } 
-
     else if (event.key === 'ArrowRight' && canMove(1)) {
         currentPosition += 1;
         
-        // Déplacement en continu si la touche reste enfoncée
         if (!moveRightInterval) {
             moveRightInterval = setInterval(() => {
                 if (canMove(1)) {
@@ -722,23 +723,19 @@ document.addEventListener('keydown', (event) => {
                     currentPosition += 1;
                     drawTetromino();
                 }
-            }, 180); // 180ms entre chaque déplacement
+            }, 180);
         }
     }
-
     else if (event.key === 'ArrowDown') {
-        moveDown(); // Descente immédiate
-        lateralMoveCount = 0; // Réinitialisation
-
-        // Activation de la descente continue
-        if (!dropFastInterval) {
-            dropFastInterval = setInterval(() => {
-                moveDown();
-            }, 100); // 100ms entre chaque descente
+        // Hard drop animé au lieu de la descente rapide répétitive
+        if (!isHardDropping) {
+            isHardDropping = true;
+            performHardDrop();
         }
+        return; // Pas besoin de redessiner ici, performHardDrop s'en charge
     }
-
-    else if (event.key === 'ArrowUp') {
+    else if (event.key === 'ArrowUp' || event.key === ' ' || event.code === 'Space') {
+        event.preventDefault(); // Empêche le défilement de la page avec Espace
         rotateTetromino();
     }
 
@@ -757,9 +754,9 @@ document.addEventListener('keyup', (event) => {
         moveRightInterval = null;
     }
 
-    if (event.key === 'ArrowDown' && dropFastInterval) {
-        clearInterval(dropFastInterval);
-        dropFastInterval = null;
+    if (event.key === 'ArrowDown') {
+        // Réinitialiser le flag de hard drop quand on relâche la touche
+        isHardDropping = false;
     }
 });
 
@@ -778,6 +775,10 @@ document.addEventListener('keydown', (event) => {
         case 'ArrowUp':
             showTemporaryMessage("⬆️ Flip");
             break;
+        case ' ':
+        case 'Space':
+            showTemporaryMessage("🔄 Rotate");
+            break;
         default:
             // Optionnel : ne rien faire pour les autres touches
             break;
@@ -786,15 +787,14 @@ document.addEventListener('keydown', (event) => {
 
 function checkGameOver() {
     if (isGameOver()) {
-        stopAutoDrop();
+        cleanupGame(); // 🆕 Utiliser la nouvelle fonction de nettoyage
         console.log("💀 GAME OVER - Redirection vers l'écran de fin !");
         
-        // ✅ Stocker le score dans le localStorage avant de quitter la page
         localStorage.setItem("lastScore", score);
 
         setTimeout(() => {
             window.location.href = 'gameover.php';
-        }, 500); // Laisse 500ms avant la redirection
+        }, 500);
     }
 }
 
@@ -850,101 +850,355 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Variable pour la gestion de la pause
-let gamePaused = false;
-let pauseOverlay = null; // Pour l'overlay de pause
+// 🎮 NOUVEAU SYSTÈME DE CONTRÔLE SOURIS - SUIVI AUTOMATIQUE DU CURSEUR
 
-// Fonction pour mettre le jeu en pause
-function pauseGame() {
-    if (gamePaused) return; // Évite de mettre en pause plusieurs fois
+// Variables pour la gestion de la souris simplifiée
+let mouseControls = {
+    isMouseOverGrid: false,
+    lastMouseX: 0,
+    doubleClickTime: 300,
+    lastClickTime: 0,
+    moveThrottle: null,
+    isEnabled: true
+};
+
+// Fonction pour convertir la position X de la souris en position de grille
+function getTetrominoPositionFromMouseX(mouseX) {
+    const gameGrid = document.getElementById('gameGrid');
+    if (!gameGrid || !currentTetromino) return currentPosition;
     
-    gamePaused = true;
-    stopAutoDrop(); // Arrête la descente automatique
-    stopTimer(); // Arrête le timer
+    const rect = gameGrid.getBoundingClientRect();
+    const relativeX = mouseX - rect.left;
     
-    // Création d'un overlay de pause si nécessaire
-    if (!pauseOverlay) {
-        pauseOverlay = document.createElement('div');
-        pauseOverlay.id = 'pauseOverlay';
-        pauseOverlay.innerHTML = '<div class="pause-message">PAUSE<br><span class="pause-hint">Appuyez sur Espace pour continuer</span></div>';
-        pauseOverlay.style.position = 'absolute';
-        pauseOverlay.style.top = '0';
-        pauseOverlay.style.left = '0';
-        pauseOverlay.style.width = '100%';
-        pauseOverlay.style.height = '100%';
-        pauseOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-        pauseOverlay.style.color = 'white';
-        pauseOverlay.style.fontSize = '2em';
-        pauseOverlay.style.display = 'flex';
-        pauseOverlay.style.justifyContent = 'center';
-        pauseOverlay.style.alignItems = 'center';
-        pauseOverlay.style.zIndex = '1000';
-        pauseOverlay.style.textAlign = 'center';
-        
-        // Ajouter un style pour le texte plus petit
-        const style = document.createElement('style');
-        style.textContent = `
-        .pause-message {
-            text-align: center;
-            font-weight: bold;
+    if (relativeX < 0 || relativeX > rect.width) {
+        return currentPosition;
+    }
+    
+    const cellWidth = rect.width / GRID_WIDTH;
+    
+    // Calculer la largeur effective du tétromino actuel
+    let tetrominoWidth = 0;
+    let minX = 4, maxX = -1;
+    
+    for (let y = 0; y < currentTetromino.length; y++) {
+        for (let x = 0; x < currentTetromino[y].length; x++) {
+            if (currentTetromino[y][x] === 1) {
+                minX = Math.min(minX, x);
+                maxX = Math.max(maxX, x);
+            }
         }
-        .pause-hint {
-            font-size: 0.5em;
-            display: block;
-            margin-top: 15px;
-            opacity: 0.8;
-        }`;
-        document.head.appendChild(style);
-        
-        // Trouver le conteneur du jeu et ajouter l'overlay
-        const gameContainer = document.getElementById('gameGrid')?.parentElement || document.body;
-        gameContainer.style.position = 'relative'; // S'assurer que le conteneur a une position relative
-        gameContainer.appendChild(pauseOverlay);
-    } else {
-        pauseOverlay.style.display = 'flex'; // Afficher l'overlay s'il existe déjà
     }
+    tetrominoWidth = maxX - minX + 1;
     
-    console.log("⏸️ Jeu en pause");
-    showTemporaryMessage("⏸️ PAUSE");
+    // Calculer la position centrée du tétromino sous la souris
+    const targetGridX = Math.floor(relativeX / cellWidth) - Math.floor(tetrominoWidth / 2);
+    
+    // Obtenir la ligne actuelle du tétromino
+    const currentRow = Math.floor(currentPosition / GRID_WIDTH);
+    let newPosition = currentRow * GRID_WIDTH + targetGridX;
+    
+    // S'assurer que le tétromino reste dans les limites de la grille
+    const minPosition = currentRow * GRID_WIDTH;
+    const maxPosition = currentRow * GRID_WIDTH + GRID_WIDTH - tetrominoWidth;
+    newPosition = Math.max(minPosition, Math.min(maxPosition, newPosition));
+    
+    return newPosition;
 }
 
-// Fonction pour reprendre le jeu
-function resumeGame() {
-    if (!gamePaused) return; // Évite de reprendre si le jeu n'est pas en pause
+// Fonction pour vérifier si le mouvement est possible
+function canMoveToMousePosition(newPosition) {
+    if (!currentTetromino) return false;
     
-    gamePaused = false;
-    startAutoDrop(); // Redémarre la descente automatique
-    startTimer(); // Redémarre le timer
+    const cells = document.querySelectorAll('.cell');
+    if (cells.length === 0) return false;
     
-    // Cacher l'overlay de pause
-    if (pauseOverlay) {
-        pauseOverlay.style.display = 'none';
+    for (let y = 0; y < currentTetromino.length; y++) {
+        for (let x = 0; x < currentTetromino[y].length; x++) {
+            if (currentTetromino[y][x] === 1) {
+                const cellIndex = newPosition + (y * GRID_WIDTH) + x;
+                const colPosition = (newPosition % GRID_WIDTH) + x;
+                
+                if (
+                    cellIndex < 0 || 
+                    cellIndex >= GRID_SIZE || 
+                    colPosition < 0 || 
+                    colPosition >= GRID_WIDTH ||
+                    cells[cellIndex].classList.contains('fixed')
+                ) {
+                    return false;
+                }
+            }
+        }
     }
-    
-    console.log("▶️ Jeu repris");
-    showTemporaryMessage("▶️ JEU REPRIS");
+    return true;
 }
 
-// Fonction pour basculer entre pause et reprise
-function togglePause() {
-    if (gamePaused) {
-        resumeGame();
-    } else {
-        pauseGame();
+// Fonction pour déplacer le tétromino vers la position de la souris
+function moveTetrominoToMouse(mouseX) {
+    if (!currentTetromino || !mouseControls.isEnabled) return;
+    
+    const newPosition = getTetrominoPositionFromMouseX(mouseX);
+    
+    if (newPosition !== currentPosition && canMoveToMousePosition(newPosition)) {
+        undrawTetromino();
+        currentPosition = newPosition;
+        drawTetromino();
     }
 }
 
-// Modifier la gestion des touches du clavier pour inclure la pause
-document.addEventListener('keydown', (event) => {
-    // Gérer la pause avec la barre d'espace
-    if (event.key === ' ' || event.code === 'Space') {
-        event.preventDefault(); // Empêche le défilement de la page
-        togglePause();
+// Gestionnaire de mouvement de souris optimisé
+function handleMouseMove(event) {
+    if (!mouseControls.isMouseOverGrid || !currentTetromino) return;
+    
+    if (mouseControls.moveThrottle) return;
+    
+    mouseControls.moveThrottle = setTimeout(() => {
+        moveTetrominoToMouse(event.clientX);
+        mouseControls.moveThrottle = null;
+    }, 16); // ~60 FPS
+    
+    mouseControls.lastMouseX = event.clientX;
+}
+
+// Gestionnaire d'entrée de la souris sur la grille
+function handleMouseEnter(event) {
+    if (!currentTetromino) return;
+    
+    mouseControls.isMouseOverGrid = true;
+    const gameGrid = document.getElementById('gameGrid');
+    if (gameGrid) {
+        gameGrid.style.cursor = 'none';
+        gameGrid.classList.add('mouse-tracking');
+    }
+    
+    moveTetrominoToMouse(event.clientX);
+    showTemporaryMessage("🖱️ Suivi activé");
+}
+
+// Gestionnaire de sortie de la souris de la grille
+function handleMouseLeave(event) {
+    mouseControls.isMouseOverGrid = false;
+    const gameGrid = document.getElementById('gameGrid');
+    if (gameGrid) {
+        gameGrid.style.cursor = 'crosshair';
+        gameGrid.classList.remove('mouse-tracking');
+    }
+    
+    if (mouseControls.moveThrottle) {
+        clearTimeout(mouseControls.moveThrottle);
+        mouseControls.moveThrottle = null;
+    }
+    
+    showTemporaryMessage("🖱️ Suivi désactivé");
+}
+
+// Gestionnaire de clic pour hard drop et rotation
+function handleClick(event) {
+    if (!currentTetromino || !mouseControls.isMouseOverGrid) return;
+    
+    event.preventDefault();
+    
+    const currentTime = Date.now();
+    if (currentTime - mouseControls.lastClickTime < mouseControls.doubleClickTime) {
+        rotateTetromino();
+        showTemporaryMessage("🔄 Rotation");
+        mouseControls.lastClickTime = 0;
         return;
     }
     
-    // Si le jeu est en pause, ne pas traiter les autres touches
-    if (gamePaused) return;
+    mouseControls.lastClickTime = currentTime;
+    performHardDrop();
+}
+
+// Fonction pour effectuer un hard drop animé
+function performHardDrop() {
+    if (!currentTetromino) return;
     
-    // Le reste de votre gestion des touches existante...
-});
+    // Désactiver la descente automatique pendant le hard drop
+    const wasAutoDropping = dropInterval !== null;
+    if (wasAutoDropping) {
+        stopAutoDrop();
+    }
+    
+    // Fonction récursive pour animer la descente
+    function animatedDrop() {
+        // Vérifier si on peut encore descendre
+        const nextPosition = currentPosition + GRID_WIDTH;
+        const cells = document.querySelectorAll('.cell');
+        
+        let canMoveDown = true;
+        for (let y = 0; y < currentTetromino.length; y++) {
+            for (let x = 0; x < currentTetromino[y].length; x++) {
+                if (currentTetromino[y][x] === 1) {
+                    const cellIndex = nextPosition + (y * GRID_WIDTH) + x;
+                    
+                    // Si on dépasse la grille ou qu'il y a un bloc fixé
+                    if (cellIndex >= GRID_SIZE || 
+                        (cellIndex < GRID_SIZE && cells[cellIndex].classList.contains('fixed'))) {
+                        canMoveDown = false;
+                        break;
+                    }
+                }
+            }
+            if (!canMoveDown) break;
+        }
+        
+        if (canMoveDown) {
+            // Descendre d'une ligne
+            undrawTetromino();
+            currentPosition += GRID_WIDTH;
+            drawTetromino();
+            
+            // Continuer l'animation après un court délai
+            setTimeout(animatedDrop, 50); // 50ms = descente rapide mais visible
+        } else {
+            // Arrivé au bas, fixer le tétromino
+            fixTetromino();
+            
+            // Redémarrer la descente automatique si elle était active
+            if (wasAutoDropping) {
+                startAutoDrop();
+            }
+            
+            // Réinitialiser le flag de hard drop
+            isHardDropping = false;
+            
+            showTemporaryMessage("⬇️ Hard Drop");
+        }
+    }
+    
+    // Démarrer l'animation
+    animatedDrop();
+}
+
+// Gestionnaire pour la molette
+function handleWheel(event) {
+    if (!currentTetromino || !mouseControls.isMouseOverGrid) return;
+    
+    event.preventDefault();
+    rotateTetromino();
+    showTemporaryMessage("🔄 Molette");
+}
+
+// Fonction pour activer/désactiver les contrôles souris
+function toggleMouseControls(enabled = true) {
+    mouseControls.isEnabled = enabled;
+    
+    if (!enabled) {
+        mouseControls.isMouseOverGrid = false;
+        const gameGrid = document.getElementById('gameGrid');
+        if (gameGrid) {
+            gameGrid.style.cursor = 'default';
+            gameGrid.classList.remove('mouse-tracking');
+        }
+    }
+}
+
+// Fonction pour initialiser les contrôles souris
+function initMouseControls() {
+    const gameGrid = document.getElementById('gameGrid');
+    if (!gameGrid) return;
+    
+    gameGrid.addEventListener('mouseenter', handleMouseEnter);
+    gameGrid.addEventListener('mouseleave', handleMouseLeave);
+    gameGrid.addEventListener('mousemove', handleMouseMove);
+    gameGrid.addEventListener('click', handleClick);
+    gameGrid.addEventListener('wheel', handleWheel);
+    
+    gameGrid.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+    });
+    
+    gameGrid.style.cursor = 'crosshair';
+    
+    console.log("🖱️ Contrôles souris (suivi automatique) initialisés");
+}
+
+// Fonction pour nettoyer les contrôles souris
+function cleanupMouseControls() {
+    const gameGrid = document.getElementById('gameGrid');
+    if (!gameGrid) return;
+    
+    gameGrid.removeEventListener('mouseenter', handleMouseEnter);
+    gameGrid.removeEventListener('mouseleave', handleMouseLeave);
+    gameGrid.removeEventListener('mousemove', handleMouseMove);
+    gameGrid.removeEventListener('click', handleClick);
+    gameGrid.removeEventListener('wheel', handleWheel);
+    gameGrid.removeEventListener('contextmenu', (event) => event.preventDefault());
+    
+    if (mouseControls.moveThrottle) {
+        clearTimeout(mouseControls.moveThrottle);
+        mouseControls.moveThrottle = null;
+    }
+}
+
+// Ajouter des indicateurs visuels pour les contrôles souris
+function updateMouseControlsIndicator() {
+    let indicator = document.getElementById('mouseControlsInfo');
+    if (!indicator) {
+        indicator = document.createElement('div');
+        indicator.id = 'mouseControlsInfo';
+        indicator.innerHTML = `
+            <div class="controls-info">
+                🖱️ <strong>Contrôles souris :</strong><br>
+                • Survol = Suivi automatique<br>
+                • Clic simple = Hard Drop<br>
+                • Touche espace = Rotation<br>
+                • Molette = Rotation
+            </div>
+        `;
+        
+        const style = document.createElement('style');
+        style.textContent += `
+        .controls-info {
+            position: fixed;
+            left: 10px;
+            top: 500px;
+            z-index: 1000;
+            
+            background-color: rgba(0, 0, 0, 0.8);
+            border: 3px solid #E9CB64;
+            border-radius: 5px;
+            box-shadow: 4px 4px 0 #1a1a1a;
+            
+            padding: 15px;
+            color: #E9CB64;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 9px;
+            line-height: 1.6;
+            
+            max-width: 450px;
+            text-align: left;
+            
+            transition: all 0.3s ease;
+        }
+        
+        .controls-info:hover {
+            transform: scale(1.05);
+            box-shadow: 6px 6px 0 #1a1a1a;
+        }
+        
+        .controls-info strong {
+            color: #00ff00;
+        }
+        
+        #gameGrid {
+            transition: cursor 0.2s ease;
+        }
+        
+        #gameGrid.mouse-tracking {
+            cursor: none !important;
+        }
+        `;
+        document.head.appendChild(style);
+        
+        document.body.appendChild(indicator);
+    }
+}
+
+// Fonction de nettoyage du jeu
+function cleanupGame() {
+    stopAutoDrop();
+    stopTimer();
+    cleanupMouseControls();
+}

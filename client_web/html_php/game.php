@@ -97,5 +97,40 @@ if ($isUserLoggedIn) {
     <!-- Lien vers le script JavaScript -->
     <script src="../js/script_constversion.js"></script> 
     
+    <script>
+        //empechement de defillment ? 
+
+// Empêcher le défilement avec les touches fléchées, espace, page up/down, etc.
+document.addEventListener('keydown', function(e) {
+    // Liste des codes de touches qui provoquent un défilement
+    const scrollKeys = [
+        32, // Espace
+        33, // Page Up
+        34, // Page Down
+        35, // End
+        36, // Home
+        37, // Flèche gauche
+        38, // Flèche haut
+        39, // Flèche droite
+        40  // Flèche bas
+    ];
+    
+    // Si la touche pressée est dans la liste des touches de défilement
+    if (scrollKeys.includes(e.keyCode)) {
+        e.preventDefault(); // Empêche l'action par défaut (défilement)
+        return false;
+    }
+});
+
+// Empêcher le défilement avec la molette de la souris
+document.addEventListener('wheel', function(e) {
+    e.preventDefault();
+}, { passive: false });
+
+// Empêcher le défilement tactile sur mobile
+document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });
+    </script>
 </body>
 </html>

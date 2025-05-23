@@ -179,7 +179,7 @@ body {
 /* Style pour le petit encadré de test du timer dans la page index.php*/
 #timer-test {
     position: absolute; 
-    top: 20px; 
+    top: 90px; 
     left: 20px;
     background-color: rgba(242, 233, 208, 0.8); /* Un fond semi-transparent */
     border: 4px solid #E9CB64; /* Bordure sombre */
@@ -191,10 +191,21 @@ body {
 
 /* Style pour le timer */
 #timer {
-    font-family: 'Press Start 2P', sans-serif;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    
+    background-color: rgba(0, 0, 0, 0.8); /* Fond noir transparent */
+    border: 3px solid #E9CB64; /* Bordure dorée */
+    border-radius: 5px;
+    box-shadow: 4px 4px 0 #1a1a1a; /* Ombre pour effet 3D rétro */
+    
+    padding: 15px;
+    color: #E9CB64; /* Texte doré */
+    font-family: 'Press Start 2P', cursive; /* Police pixel art */
     font-size: 18px;
-    color: white;
-    margin-bottom: 10px; /* Espace entre le timer et les boutons */
+    text-align: center;
 }
 
 /* Style pour inputtest */
